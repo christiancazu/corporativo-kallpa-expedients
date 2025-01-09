@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 
 import usePushNotifications from '../modules/shared/hooks/usePushNotifications'
 import setupNotificationPermission from '../notifications'
+import persisterUtil from '../utils/persister.util'
 import ButtonBase from './base/ButtonBase'
 
 export default function NotificationModal(): React.ReactNode {
@@ -20,7 +21,13 @@ export default function NotificationModal(): React.ReactNode {
 		})
 
 		setTimeout(() => {
-			setShowModal(Notification.permission === 'default')
+			const isSubscribed = persisterUtil.get('subscribed')
+
+			setShowModal(
+				'Notification' in window &&
+					!isSubscribed &&
+					Notification.permission === 'default',
+			)
 		}, 2000)
 	}, [])
 

@@ -14,3 +14,14 @@ export enum ORDER_SPRITES {
 export function getSpritePositionX(extension: string | undefined) {
 	return +(ORDER_SPRITES[extension as unknown as ORDER_SPRITES] ?? 0) * -32
 }
+
+export function isPlatformIOS() {
+	return [
+		'iPad Simulator',
+		'iPhone Simulator',
+		'iPod Simulator',
+		'iPad',
+		'iPhone',
+		'iPod',
+	].includes(navigator.platform)
+}

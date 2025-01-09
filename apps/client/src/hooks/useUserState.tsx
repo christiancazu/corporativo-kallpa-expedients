@@ -15,7 +15,8 @@ const useUserState = (user?: User) => {
 
 	const isUserNotificationEnabled = useQuery({
 		queryKey: ['notifications-enabled'],
-		initialData: Notification.permission === 'granted',
+		initialData:
+			'Notification' in window && Notification.permission === 'granted',
 	}).data
 
 	const setUserNotificationEnabled = (value: boolean) => {

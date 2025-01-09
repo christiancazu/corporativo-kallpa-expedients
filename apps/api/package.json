@@ -14,7 +14,9 @@
     "migration:generate": "npx typeorm-ts-node-commonjs -d ./apps/expedients/src/modules/config/typeorm.config.ts migration:generate ./apps/expedients/src/migrations/$name",
     "migration:create": "npx typeorm-ts-node-commonjs migration:create ./apps/expedients/src/migrations/$name",
     "migration:revert": "npx typeorm-ts-node-commonjs -d ./apps/expedients/src/modules/config/typeorm.config.ts migration:revert",
-    "lint": "pnpm biome lint ."
+    "lint": "pnpm biome lint .",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.675.0",

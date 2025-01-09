@@ -1,10 +1,8 @@
 self.addEventListener('install', () => {
-	console.log('service worker installed')
 	self.skipWaiting()
 })
 
 self.addEventListener('push', (e) => {
-	console.log('push notification')
 	const { title, body, redirectUrl } = e.data.json()
 
 	self.registration.showNotification(title, {
@@ -16,7 +14,6 @@ self.addEventListener('push', (e) => {
 })
 
 self.addEventListener('notificationclick', (event) => {
-	console.log('on notification click: ', event.notification.data)
 	event.notification.close()
 
 	event.waitUntil(

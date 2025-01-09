@@ -12,9 +12,17 @@ import persisterUtil from '../../../utils/persister.util'
 let sw: ServiceWorkerRegistration
 
 async function registerServiceWorker() {
-	if ('serviceWorker' in navigator) {
+	persisterUtil.remove('subscribed')
+
+	if ('Notification' in window && 'serviceWorker' in navigator) {
 		sw = await navigator.serviceWorker.register('/service-worker.js', {
 			scope: '/',
+		})
+
+		sw.pushManager.getSubscription().then((subscription) => {
+			if (subscription) {
+				persisterUtil.set('subscribed', subscription)
+			}
 		})
 	}
 }

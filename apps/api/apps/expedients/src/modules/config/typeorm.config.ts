@@ -11,7 +11,6 @@ import { User } from '../users/entities/user.entity'
 import './dotenv'
 
 const config: DataSourceOptions = {
-	name: 'default',
 	type: 'postgres',
 	host: `${process.env.POSTGRES_HOST}`,
 	port: +`${process.env.POSTGRES_PORT}`,

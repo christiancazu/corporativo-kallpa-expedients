@@ -28,5 +28,6 @@ export default {
 	purgeSession: () => {
 		localStorage.removeItem('user')
 		localStorage.removeItem('token')
+		localStorage.removeItem('subscribed')
 	},
 }

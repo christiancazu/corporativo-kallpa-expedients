@@ -118,7 +118,7 @@ export class Expedient {
 	updatedAt: Date
 
 	@BeforeInsert()
-	async defaultStatus() {
+	defaultStatus() {
 		if (!this.status) {
 			this.status = EXPEDIENT_STATUS.EN_EJECUCION
 		}
