@@ -1,4 +1,4 @@
-import type { Expedient, User } from '@expedients/shared'
+import { IExpedient, IUser } from '@expedients/shared'
 import axios, { type AxiosRequestConfig } from 'axios'
 import { httpClient } from '../config/httpClient'
 import type { CreateEvent, UserSession } from '../types'
@@ -21,36 +21,65 @@ export async function verifyAccount(data: {
 		.then((res) => res.data)
 }
 
-export async function getExpedients(params: any = {}) {
-	return httpClient.get('/expedients', { params }).then((res) => res.data)
+export async function getEmpresaExpedients({ params }: { params: any }) {
+	return httpClient.get('/empresa', { params }).then((res) => res.data)
 }
 
-export async function getExpedient(id: string): Promise<Expedient> {
-	return httpClient.get(`/expedients/${id}`).then((res) => res.data)
+export async function getEmpresaExpedient(id: string): Promise<IExpedient> {
+	return httpClient.get(`/empresa/${id}`).then((res) => res.data)
 }
 
-export async function createExpedient(expedient: Expedient) {
-	return httpClient.post('/expedients', expedient).then((res) => res.data)
+export async function createEmpresaExpedient(expedient: IExpedient) {
+	return httpClient.post('/empresa', expedient).then((res) => res.data)
+}
+
+export async function updateEmpresaExpedient({
+	id,
+	expedient,
+}: { id: string; expedient: IExpedient }): Promise<any> {
+	return httpClient.patch(`/empresa/${id}`, expedient).then((res) => res.data)
+}
+
+export async function getEmpresaExpedientsEvents(): Promise<IExpedient[]> {
+	return httpClient.get('/empresa/events').then((res) => res.data)
+}
+
+export async function getEmpresaExpedientEvents(
+	expedientId: string,
+): Promise<IExpedient> {
+	return httpClient
+		.get(`/empresa/${expedientId}/events`)
+		.then((res) => res.data)
+}
+
+export async function getExpedients({ params }: { params: any }) {
+	return httpClient.get('/asesoria', { params }).then((res) => res.data)
+}
+
+export async function getExpedient(id: string): Promise<IExpedient> {
+	return httpClient.get(`/asesoria/${id}`).then((res) => res.data)
+}
+
+export async function createExpedient(expedient: IExpedient) {
+	return httpClient.post('/asesoria', expedient).then((res) => res.data)
 }
 
 export async function updateExpedient({
 	id,
 	expedient,
-}: { id: string; expedient: Expedient }): Promise<any> {
-	return httpClient
-		.patch(`/expedients/${id}`, expedient)
-		.then((res) => res.data)
+}: { id: string; expedient: IExpedient }): Promise<any> {
+	return httpClient.patch(`/asesoria/${id}`, expedient).then((res) => res.data)
 }
 
-export async function getExpedientsEvents(): Promise<Expedient[]> {
-	return httpClient.get('/expedients/events').then((res) => res.data)
+export async function getExpedientsEvents(): Promise<IExpedient[]> {
+	return httpClient.get('/asesoria/events').then((res) => res.data)
 }
 
 export async function getExpedientEvents(
 	expedientId: string,
-): Promise<Expedient> {
+): Promise<IExpedient> {
 	return httpClient
-		.get(`/expedients/${expedientId}/events`)
+		.get(`/asesoria/${expedientId}/events`)
 		.then((res) => res.data)
 }
 
@@ -66,11 +95,11 @@ export async function deleteExpedientReview(id: string) {
 	return httpClient.delete(`/reviews/${id}`).then((res) => res.data)
 }
 
-export async function getUsers(): Promise<User[]> {
+export async function getUsers(): Promise<IUser[]> {
 	return httpClient.get('/users').then((res) => res.data)
 }
 
-export async function getMe(): Promise<User> {
+export async function getMe(): Promise<IUser> {
 	return httpClient.get('/users/me').then((res) => res.data)
 }
 

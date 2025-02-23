@@ -1,6 +1,10 @@
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import react from '@vitejs/plugin-react-swc'
 import { monorepoRootSync } from 'monorepo-root'
 import { defineConfig, loadEnv } from 'vite'
+
+const currentDir = dirname(fileURLToPath(import.meta.url))
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -40,7 +44,7 @@ export default defineConfig(({ mode }) => {
 				sass: {},
 				scss: {
 					silenceDeprecations: ['legacy-js-api'],
-					additionalData: '@use "./src/assets/styles/_variables.scss" as *;',
+					additionalData: `@use "${join(currentDir, './src/assets/styles/_variables.scss')}" as *;`,
 				},
 			},
 		},

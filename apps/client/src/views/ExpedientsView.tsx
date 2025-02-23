@@ -1,18 +1,18 @@
-import { useQuery } from '@tanstack/react-query'
 import type React from 'react'
 import { useEffect, useState } from 'react'
 
-import type { EXPEDIENT_STATUS, Expedient } from '@expedients/shared'
-import { useNavigate } from 'react-router'
+import type { EXPEDIENT_STATUS } from '@expedients/shared'
+import { Form } from 'antd'
+import { useNavigate, useSearchParams } from 'react-router'
 import FilterExpedients from '../components/ExpedientsFilters'
 import TableExpedients from '../components/ExpedientsTable'
 import ButtonBase from '../components/base/ButtonBase'
 import DocumentDetail from '../components/document/DocumentDetail'
-import useNotify from '../hooks/useNotification'
-import { getExpedients } from '../services/api.service'
+import { useExpedientsState } from '../hooks/useExpedientsState'
+import { useExpedientsService } from '../services/expedients.service'
 import type { DocumentFile } from './ExpedientView'
 
-interface SearchParams {
+export interface SearchParams {
 	byText?: string[]
 	text?: string | null
 	status?: EXPEDIENT_STATUS | null
@@ -23,14 +23,11 @@ const dom = document
 let mentions: HTMLElement[] | Element[] = []
 
 const ExpedientsView: React.FC = () => {
+	const [_, setSearchParams] = useSearchParams()
+	const { currentExpedientType } = useExpedientsState()
+
 	const navigate = useNavigate()
-	const [params, setParams] = useState<SearchParams>({
-		byText: [],
-		text: null,
-		status: null,
-		updatedByUser: null,
-	})
-	const notify = useNotify()
+	const [form] = Form.useForm<SearchParams>()
 	const [documentFile, setDocumentFile] = useState<DocumentFile>({
 		id: '',
 		showDetail: false,
@@ -39,23 +36,34 @@ const ExpedientsView: React.FC = () => {
 		action: 'create',
 	})
 
-	const { data, isFetching, isFetched } = useQuery({
-		queryKey: ['expedients', params],
-		queryFn: (): Promise<Expedient[]> => getExpedients(params),
-		refetchOnMount: true,
-		select: (expedients) =>
-			expedients.map((expedient) => ({ ...expedient, key: expedient.id })),
-	})
+	const { getExpedients } = useExpedientsService()
+
+	const { data, isFetching, refetch } = getExpedients
 
 	const handleSearch = (search: SearchParams) => {
-		setParams((prev) => ({ prev, ...search }))
+		const urlSearchParams = new URLSearchParams()
+
+		for (const key in search) {
+			const searchKey = key as keyof SearchParams
+			if (search[searchKey]) {
+				if (Array.isArray(search[searchKey])) {
+					for (const value of search[searchKey] as string[]) {
+						urlSearchParams.append(key, value)
+					}
+				} else {
+					urlSearchParams.append(key, search[searchKey] as string)
+				}
+			}
+		}
+
+		setSearchParams(urlSearchParams)
+
+		refetch()
 	}
 
 	useEffect(() => {
-		if (isFetched && data?.length === 0) {
-			notify({ message: 'La busqueda no produjo resultados', type: 'info' })
-		}
-	})
+		refetch()
+	}, [currentExpedientType])
 
 	const docEventListeners = (event: any) => {
 		if (!(event.target instanceof HTMLSpanElement)) {
@@ -98,12 +106,16 @@ const ExpedientsView: React.FC = () => {
 			<ButtonBase
 				primary
 				className="mb-4"
-				onClick={() => navigate('/expedients/create')}
+				onClick={() => navigate(`/${currentExpedientType}/create`)}
 			>
-				Crear expediente
+				Crear {currentExpedientType}
 			</ButtonBase>
 
-			<FilterExpedients loading={isFetching} onSearch={handleSearch} />
+			<FilterExpedients
+				loading={isFetching}
+				form={form}
+				onSearch={handleSearch}
+			/>
 
 			<TableExpedients
 				expedients={data!}

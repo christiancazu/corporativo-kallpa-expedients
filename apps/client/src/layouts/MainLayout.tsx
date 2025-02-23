@@ -1,10 +1,11 @@
 import {
+	AuditOutlined,
 	FolderOutlined,
 	MenuFoldOutlined,
 	MenuUnfoldOutlined,
 } from '@ant-design/icons'
 import { Button, Flex, Grid, Layout, Menu, type MenuProps, theme } from 'antd'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Outlet, useMatches, useNavigate } from 'react-router'
 
 import Text from 'antd/es/typography/Text'
@@ -49,12 +50,27 @@ const MainLayout: React.FC = () => {
 		}
 	}, [])
 
-	const items: MenuProps['items'] = [FolderOutlined].map((icon, index) => ({
-		key: String(index + 1),
-		icon: React.createElement(icon),
-		label: 'Expedientes',
-		onClick: () => navigate('/expedients'),
-	}))
+	const menuItems: MenuProps['items'] = [
+		{
+			key: '/empresa',
+			icon: React.createElement(FolderOutlined),
+			label: 'Empresa',
+			onClick: () => navigate('/empresa'),
+		},
+		{
+			key: '/asesoria',
+			icon: React.createElement(AuditOutlined),
+			label: 'Asesoría',
+			onClick: () => navigate('/asesoria'),
+		},
+	]
+
+	const defaultActiveKey = useMemo(
+		() =>
+			menuItems.find((i: any) => location.pathname.includes(i.key))
+				?.key as string,
+		[menuItems, location.pathname],
+	)
 
 	return (
 		<>
@@ -75,8 +91,8 @@ const MainLayout: React.FC = () => {
 							</div>
 
 							<Menu
-								defaultSelectedKeys={['1']}
-								items={items}
+								defaultSelectedKeys={[defaultActiveKey]}
+								items={menuItems}
 								mode="inline"
 								style={{ backgroundColor: 'transparent' }}
 								theme="dark"
@@ -101,8 +117,8 @@ const MainLayout: React.FC = () => {
 								</div>
 
 								<Menu
-									defaultSelectedKeys={['1']}
-									items={items}
+									defaultSelectedKeys={[defaultActiveKey]}
+									items={menuItems}
 									mode="inline"
 									style={{ backgroundColor: 'transparent' }}
 									theme="dark"

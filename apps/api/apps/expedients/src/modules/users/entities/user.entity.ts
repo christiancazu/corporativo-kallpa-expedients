@@ -1,4 +1,4 @@
-import { FIELD, USER_ROLES } from '@expedients/shared'
+import { FIELD, IUser, USER_ROLES } from '@expedients/shared'
 import { compare, hash } from 'bcryptjs'
 import {
 	BeforeInsert,
@@ -15,7 +15,7 @@ import { Notification } from '../../notifications/entities/notification.entity'
 import { Review } from '../../reviews/entities/review.entity'
 
 @Entity('users')
-export class User {
+export class User implements IUser {
 	@PrimaryGeneratedColumn('uuid')
 	id: string
 

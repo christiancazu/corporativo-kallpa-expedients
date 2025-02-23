@@ -36,21 +36,39 @@ export const SETTINGS = {
 }
 
 export enum EXPEDIENT_STATUS {
-	TACHADO = 'TACHADO',
+	DEMANDA = 'DEMANDA',
+	INADMISIBLE = 'INADMISIBLE',
+	AUTO_EMISARIO = 'AUTO EMISARIO',
+	CONTESTACION = 'CONTESTACIÓN DE DEMANDA',
 	SANEADO = 'SANEADO',
-	APELADO = 'APELADO',
-	EN_EJECUCION = 'EN_EJECUCION',
-	EN_PROCESO = 'EN_PROCESO',
-	EN_TRAMITE = 'EN_TRAMITE',
-	FINALIZADO = 'FINALIZADO',
-	RECHAZADO = 'RECHAZADO',
-	SENTENCIADO = 'SENTENCIADO',
-	RESUELTO = 'RESUELTO',
+	FIJACION_PUNTOS = 'FIJACIÓN PUNTOS CONTROVERTIDOS',
+	SANEAMIENTO = 'SANEAMIENTO PROBATORIO',
+	SENTENCIA = 'SENTENCIA',
+	APELACION = 'APELACIÓN',
+	CASACION = 'CASACIÓN',
+	EN_EJECUCION = 'EN EJECUCIÓN',
+}
+
+export enum EXPEDIENT_TYPE {
+	EMPRESA = 'EMPRESA',
+	ASESORIA = 'ASESORIA',
+}
+
+export enum PENAL_PART_TYPES {
+	DENUNCIANTE = 'DENUNCIANTE',
+	DENUNCIADO = 'DENUNCIADO',
+}
+
+export enum CIVIL_PART_TYPES {
+	DEMANDANTE = 'DEMANDANTE',
+	DEMANDADO = 'DEMANDADO',
 }
 
 export enum PART_TYPES {
 	DENUNCIANTE = 'DENUNCIANTE',
 	DENUNCIADO = 'DENUNCIADO',
+	DEMANDANTE = 'DEMANDANTE',
+	DEMANDADO = 'DEMANDADO',
 }
 
 export enum USER_ROLES {
@@ -59,63 +77,70 @@ export enum USER_ROLES {
 	PRACTICANTE = 'PRACTICANTE',
 }
 
-export interface User {
+export interface IUser {
 	id: string
 	email: string
 	firstName: string
 	surname: string
 	role: USER_ROLES
 	avatar?: string
-	createdExpedients?: Expedient[]
-	updatedExpedients?: Expedient[]
+	createdExpedients: IExpedient[]
+	updatedExpedients: IExpedient[]
+	assignedLawyerExpedients: IExpedient[]
+	assignedAssistantExpedients: IExpedient[]
+	createdDocuments: IDocument[]
+	updatedDocuments: IDocument[]
+	events: IEvent[]
+
+	verifiedAt: Date | string
 	createdAt: Date | string
-	updatedAt: Date | string
 }
 
-export interface Expedient {
+export interface IExpedient {
 	id: string
 	code: string
+	type: EXPEDIENT_TYPE
 	subject: string
 	process: string
 	court: string
 	status: EXPEDIENT_STATUS
 	statusDescription: string
-	assignedLawyer?: User
-	assignedAssistant?: User
-	createdByUser: User
-	updatedByUser: User
-	parts: Part[]
-	reviews: Review[]
+	assignedLawyer: IUser
+	assignedAssistant: IUser
+	createdByUser: IUser
+	updatedByUser: IUser
+	parts: IPart[]
+	reviews: IReview[]
 	events: IEvent[]
-	documents: Document[]
+	documents: IDocument[]
+
 	createdAt: Date | string
 	updatedAt: Date | string
 }
 
-export interface Part {
+export interface IPart {
 	id: string
 	name: string
 	type: PART_TYPES
-	expedient?: Expedient
+	expedient: IExpedient
 }
 
-export interface Review {
+export interface IReview {
 	id: string
 	description: string
-	expedient?: Expedient
-	createdByUser?: User
+	expedient?: IExpedient
+	createdByUser?: IUser
 	createdAt: Date | string
 }
 
-export interface Document {
+export interface IDocument {
 	id: string
 	name: string
 	key: string
-	url: string
 	extension: string
-	expedient: Expedient
-	createdByUser: User
-	updatedByUser: User
+	expedient: IExpedient
+	createdByUser: IUser
+	updatedByUser: IUser
 	createdAt: Date | string
 	updatedAt: Date | string
 }
@@ -127,7 +152,7 @@ export interface IEvent {
 	isSeenByLawyer: boolean
 	isSeenByAssistant: boolean
 	createdAt: Date | string
-	createdByUser: User
+	createdByUser: IUser
 	scheduledAt: Date | string
-	expedient: Expedient
+	expedient: IExpedient
 }

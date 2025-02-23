@@ -1,4 +1,9 @@
-import { EXPEDIENT_STATUS, FIELD } from '@expedients/shared'
+import {
+	EXPEDIENT_STATUS,
+	EXPEDIENT_TYPE,
+	FIELD,
+	IExpedient,
+} from '@expedients/shared'
 import {
 	BeforeInsert,
 	Column,
@@ -16,7 +21,7 @@ import { Review } from '../../reviews/entities/review.entity'
 import { User } from '../../users/entities/user.entity'
 
 @Entity('expedients')
-export class Expedient {
+export class Expedient implements IExpedient {
 	@PrimaryGeneratedColumn('uuid')
 	id: string
 
@@ -25,7 +30,16 @@ export class Expedient {
 		type: 'varchar',
 		length: FIELD.EXPEDIENT_CODE_MAX_LENGTH,
 	})
-	code?: string
+	code: string
+
+	@Column({
+		type: 'enum',
+		name: 'type',
+		enumName: 'expedient_type',
+		enum: EXPEDIENT_TYPE,
+		default: EXPEDIENT_TYPE.EMPRESA,
+	})
+	type: EXPEDIENT_TYPE
 
 	@Column({
 		type: 'varchar',

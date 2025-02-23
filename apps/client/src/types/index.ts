@@ -1,4 +1,4 @@
-import type { User } from '@expedients/shared'
+import type { IUser } from '@expedients/shared'
 
 export interface CreateEvent {
 	message: string
@@ -7,7 +7,7 @@ export interface CreateEvent {
 }
 
 export interface UserSession {
-	user: User
+	user: IUser
 	token: string
 	vapidKey: string
 }

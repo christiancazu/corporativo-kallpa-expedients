@@ -7,9 +7,10 @@ import {
 } from 'typeorm'
 import { Expedient } from '../../expedients/entities/expedient.entity'
 import { User } from '../../users/entities/user.entity'
+import { IEvent } from '@expedients/shared'
 
 @Entity('events')
-export class Event {
+export class Event implements IEvent {
 	@PrimaryGeneratedColumn('uuid')
 	id: string
 

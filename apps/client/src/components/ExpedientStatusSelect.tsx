@@ -2,10 +2,12 @@ import { EXPEDIENT_STATUS } from '@expedients/shared'
 import { Form, Select } from 'antd'
 import type React from 'react'
 
-const expedientStatusOptions = Object.keys(EXPEDIENT_STATUS).map((status) => ({
-	label: status.replace('_', ' '),
-	value: status,
-}))
+const expedientStatusOptions = Object.entries(EXPEDIENT_STATUS).map(
+	([value, label]) => ({
+		label,
+		value,
+	}),
+)
 
 interface Props {
 	label?: string

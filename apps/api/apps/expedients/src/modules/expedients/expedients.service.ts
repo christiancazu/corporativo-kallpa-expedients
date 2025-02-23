@@ -1,4 +1,9 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common'
+import {
+	Inject,
+	Injectable,
+	UnprocessableEntityException,
+} from '@nestjs/common'
+import { REQUEST } from '@nestjs/core'
 import { InjectRepository } from '@nestjs/typeorm'
 import type { Repository } from 'typeorm'
 import { Part } from '../parts/entities/part.entity'
@@ -8,14 +13,21 @@ import type { CreateExpedientDto } from './dto/create-expedient.dto'
 import type { FindExpedientDto } from './dto/find-expedient.dto'
 import type { UpdateExpedientDto } from './dto/update-expedient.dto'
 import { Expedient } from './entities/expedient.entity'
+import { REQUEST_EXPEDIENT_TYPE } from './guards/expedient-type.guard'
 
+// TODO: cuando se borra una review poner la ultima la mas reciente
 @Injectable()
 export class ExpedientsService {
-	@InjectRepository(Expedient)
-	private readonly _expedientRepository: Repository<Expedient>
+	constructor(
+		@InjectRepository(Expedient)
+		private readonly _expedientRepository: Repository<Expedient>,
 
-	@InjectRepository(Part)
-	private readonly _partsRepository: Repository<Part>
+		@InjectRepository(Part)
+		private readonly _partsRepository: Repository<Part>,
+
+		@Inject(REQUEST)
+		private readonly _request: any,
+	) {}
 
 	async create(user: User, dto: CreateExpedientDto, expedient?: Expedient) {
 		const { parts, ...restExpedient } = dto
@@ -55,6 +67,8 @@ export class ExpedientsService {
 		}
 
 		try {
+			expedientCreated.type = this.getExpedientType()
+
 			const expedientSaved =
 				await this._expedientRepository.save(expedientCreated)
 
@@ -102,6 +116,7 @@ export class ExpedientsService {
 				'assignedLawyer.avatar',
 			])
 			.leftJoinAndSelect('expedients.parts', 'parts')
+			.where('expedients.type = :type', { type: this.getExpedientType() })
 
 		/** If exists filter: text will filter by each byText item */
 		if (text) {
@@ -354,7 +369,7 @@ export class ExpedientsService {
 		}
 
 		if (expedient.code === dto.code) {
-			expedient.code = undefined
+			expedient.code = undefined!
 			dto.code = undefined
 		}
 
@@ -375,5 +390,9 @@ export class ExpedientsService {
 
 	remove(id: number) {
 		return `This action removes a #${id} expedient`
+	}
+
+	private getExpedientType() {
+		return this._request.headers[REQUEST_EXPEDIENT_TYPE]
 	}
 }

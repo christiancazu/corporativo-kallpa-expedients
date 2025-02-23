@@ -14,8 +14,12 @@ import {
 	Row,
 	theme,
 } from 'antd'
+import { FormInstance } from 'antd/lib'
 import type React from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router'
+import { useExpedientsState } from '../hooks/useExpedientsState'
+import { SearchParams } from '../views/ExpedientsView'
 import ExpedientStatusSelect from './ExpedientStatusSelect'
 import UsersSelect from './UsersSelect'
 
@@ -28,14 +32,48 @@ const textFilterOptions: CheckboxOptionType[] = [
 interface Props {
 	onSearch: (values: any) => void
 	loading: boolean
+	form: FormInstance
 }
 
-const FilterExpedients: React.FC<Props> = ({ onSearch, loading }) => {
+const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 	const {
 		token: { colorBgContainer, borderRadiusLG, paddingMD, marginMD },
 	} = theme.useToken()
 
-	const [form] = Form.useForm()
+	const { currentExpedientType } = useExpedientsState()
+	const [searchParams] = useSearchParams()
+
+	useEffect(() => {
+		const formSearchParams: SearchParams = {
+			byText: [],
+			text: null,
+			status: null,
+			updatedByUser: null,
+		}
+
+		for (const searchKey in formSearchParams) {
+			let value: string | string[] | null = null
+
+			if (Array.isArray(formSearchParams[searchKey as keyof SearchParams])) {
+				value = searchParams.getAll(searchKey)
+			} else {
+				value = searchParams.get(searchKey)
+			}
+
+			formSearchParams[searchKey as keyof SearchParams] = value as any
+		}
+
+		if (!formSearchParams.byText?.length) {
+			formSearchParams.byText = ['code', 'subject', 'court']
+		}
+
+		form.setFieldsValue(formSearchParams)
+
+		if (searchParams.size) {
+			setCanDeleteFilters(true)
+		}
+	}, [currentExpedientType])
+
 	const [canDeleteFilter, setCanDeleteFilters] = useState(false)
 
 	function handleOnChange() {
@@ -58,10 +96,13 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading }) => {
 			<Form
 				autoComplete="off"
 				form={form}
+				onChange={handleOnChange}
 				initialValues={{
 					byText: ['code', 'subject', 'court'],
+					text: null,
+					status: null,
+					updatedByUser: null,
 				}}
-				onChange={handleOnChange}
 				onFinish={onSearch}
 			>
 				<Flex justify="space-between">
@@ -116,10 +157,6 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading }) => {
 								handleOnChange()
 							}}
 						/>
-
-						{/* <Form.Item name="updatedByUser">
-              <UsersSelect ={ updatedByUser => { form.setFieldsValue({ updatedByUser }); handleOnChange() } } />
-            </Form.Item> */}
 					</Col>
 
 					<Col md={4} sm={24}>

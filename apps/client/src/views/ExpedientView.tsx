@@ -33,8 +33,8 @@ import TextEditor from '../components/text-editor/TextEditor'
 import { useConfirmModal } from '../hooks/useConfirmModal'
 
 import type {
-	Document as DocumentType,
-	Expedient as ExpedientType,
+	IDocument as DocumentType,
+	IExpedient as ExpedientType,
 	IEvent,
 } from '@expedients/shared'
 import PopconfirmDelete from '../components/PopconfirmDelete'
@@ -137,7 +137,7 @@ const ExpedientView: React.FC = () => {
 		queryFn: () => getExpedientEvents(id!),
 		refetchOnMount: true,
 		select: (expedient) => {
-			expedient.events = expedient.events.map((event) => ({
+			expedient.events = expedient.events.map((event: IEvent) => ({
 				...event,
 				scheduledAt: dateUtil.formatDate(event.scheduledAt),
 			}))
@@ -468,7 +468,7 @@ const ExpedientView: React.FC = () => {
 							style={{ height: expedientEvents?.events.length ? 250 : 0 }}
 						>
 							<Flex vertical wrap align="start">
-								{expedientEvents?.events.map((event) => (
+								{expedientEvents?.events.map((event: IEvent) => (
 									<StyledCardNotification className="mb-3" key={event.id}>
 										<Flex>
 											<Flex>

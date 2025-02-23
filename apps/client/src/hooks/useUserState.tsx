@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
 
-import type { User } from '@expedients/shared'
+import type { IUser } from '@expedients/shared'
 import { setToken } from '../config/httpClient'
 import { queryClient } from '../config/queryClient'
 import persisterUtil from '../utils/persister.util'
 
-const useUserState = (user?: User) => {
-	const setUser = (value: Partial<User> | null) => {
-		queryClient.setQueryData(['user'], (prevState: User) => ({
+const useUserState = (user?: IUser) => {
+	const setUser = (value: Partial<IUser> | null) => {
+		queryClient.setQueryData(['user'], (prevState: IUser) => ({
 			...prevState,
 			...value,
 		}))
@@ -24,13 +24,13 @@ const useUserState = (user?: User) => {
 	}
 
 	return {
-		user: useQuery<User | null>({
+		user: useQuery<IUser | null>({
 			queryKey: ['user'],
 			enabled: false,
 			initialData: user,
 		}).data,
 		setUser,
-		setUserSession(data: { user: User; token: string; vapidKey: string }) {
+		setUserSession(data: { user: IUser; token: string; vapidKey: string }) {
 			persisterUtil.setUser(data.user)
 			persisterUtil.setVapidKey(data.vapidKey)
 			setUser(data.user)

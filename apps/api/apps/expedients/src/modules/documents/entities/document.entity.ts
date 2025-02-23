@@ -1,6 +1,5 @@
-import { FIELD } from '@expedients/shared'
+import { FIELD, IDocument } from '@expedients/shared'
 import {
-	BaseEntity,
 	Column,
 	CreateDateColumn,
 	Entity,
@@ -13,7 +12,7 @@ import { Expedient } from '../../expedients/entities/expedient.entity'
 import { User } from '../../users/entities/user.entity'
 
 @Entity('documents')
-export class Document extends BaseEntity {
+export class Document implements IDocument {
 	@PrimaryGeneratedColumn('uuid')
 	id: string
 

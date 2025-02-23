@@ -5,11 +5,12 @@ import type React from 'react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 
-import type { Expedient } from '@expedients/shared'
+import type { IExpedient } from '@expedients/shared'
 import NavigationBackBtn from '../components/NavigationBackBtn'
+import { useExpedientsState } from '../hooks/useExpedientsState'
 import useNotify from '../hooks/useNotification'
 import ExpedientForm from '../modules/components/ExpedientForm'
-import { createExpedient } from '../services/api.service'
+import { useExpedientsService } from '../services/expedients.service'
 
 const ExpedientsCreateView: React.FC = () => {
 	const {
@@ -23,14 +24,19 @@ const ExpedientsCreateView: React.FC = () => {
 		marginBottom: marginMD,
 	}
 
+	const { currentExpedientType } = useExpedientsState()
+
 	const navigate = useNavigate()
 	const [open, setOpen] = useState(false)
-	const [createdExpedient, setCreatedExpedient] = useState<Expedient>()
+	const [createdExpedient, setCreatedExpedient] = useState<IExpedient>()
 	const notify = useNotify()
 	const [form] = useForm()
+
+	const { createExpedient } = useExpedientsService()
+
 	const { mutate, isPending } = useMutation({
 		mutationKey: ['expedient-create'],
-		mutationFn: () => createExpedient(form.getFieldsValue()),
+		mutationFn: createExpedient,
 		onSuccess: (res) => {
 			notify({ message: 'Expediente creado con éxito' })
 			setCreatedExpedient((prev) => ({ ...prev, ...res }))
@@ -38,13 +44,21 @@ const ExpedientsCreateView: React.FC = () => {
 		},
 	})
 
+	const handleCreate = () => {
+		mutate(form.getFieldsValue())
+	}
+
 	return (
 		<div style={sectionStyle}>
-			<NavigationBackBtn to="/expedients" />
+			<NavigationBackBtn to={`/${currentExpedientType}`} />
 			<Divider className="my-3" />
 
 			<div className="d-flex justify-content-center">
-				<ExpedientForm form={form} isPending={isPending} onFinish={mutate} />
+				<ExpedientForm
+					form={form}
+					isPending={isPending}
+					onFinish={handleCreate}
+				/>
 			</div>
 
 			<Modal
@@ -60,12 +74,14 @@ const ExpedientsCreateView: React.FC = () => {
 						>
 							Quedarme aquí
 						</Button>
-						<Button onClick={() => navigate('/expedients')}>
+						<Button onClick={() => navigate(`/${currentExpedientType}`)}>
 							Ver todos los expedientes
 						</Button>
 						<Button
 							type="primary"
-							onClick={() => navigate(`/expedients/${createdExpedient?.id}`)}
+							onClick={() =>
+								navigate(`/${currentExpedientType}/${createdExpedient?.id}`)
+							}
 						>
 							Ver expediente
 						</Button>

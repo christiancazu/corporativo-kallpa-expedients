@@ -90,27 +90,63 @@ const router = createBrowserRouter(
 			children: [
 				{
 					index: true,
-					element: <Navigate replace to="/expedients" />,
+					element: <Navigate replace to="/empresa" />,
 				},
 				{
-					path: 'expedients',
-					handle: 'Expedientes',
-					element: <ExpedientsView />,
+					path: 'empresa',
+					handle: 'empresa',
+					element: <Outlet />,
+					children: [
+						{
+							index: true,
+							path: '',
+							handle: 'Empresa',
+							element: <ExpedientsView />,
+						},
+						{
+							path: 'create',
+							handle: 'Crear expediente empresa',
+							element: <ExpedientsCreateView />,
+						},
+						{
+							path: ':id/edit',
+							handle: 'Editar expediente empresa',
+							element: <ExpedientsIdEditView />,
+						},
+						{
+							path: ':id',
+							handle: 'Detalle de expediente empresa',
+							element: <ExpedientView />,
+						},
+					],
 				},
 				{
-					path: 'expedients/create',
-					handle: 'Crear expediente',
-					element: <ExpedientsCreateView />,
-				},
-				{
-					path: 'expedients/:id/edit',
-					handle: 'Editar expediente',
-					element: <ExpedientsIdEditView />,
-				},
-				{
-					path: 'expedients/:id',
-					handle: 'Detalle de expediente',
-					element: <ExpedientView />,
+					path: 'asesoria',
+					handle: 'asesoria',
+					element: <Outlet />,
+					children: [
+						{
+							index: true,
+							path: '',
+							handle: 'Asesoria',
+							element: <ExpedientsView />,
+						},
+						{
+							path: 'create',
+							handle: 'Crear expediente asesoría',
+							element: <ExpedientsCreateView />,
+						},
+						{
+							path: ':id/edit',
+							handle: 'Editar expediente asesoría',
+							element: <ExpedientsIdEditView />,
+						},
+						{
+							path: ':id',
+							handle: 'Detalle de expediente asesoría',
+							element: <ExpedientView />,
+						},
+					],
 				},
 				{
 					path: 'users/profile',

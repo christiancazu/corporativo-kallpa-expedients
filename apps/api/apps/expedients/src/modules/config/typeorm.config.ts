@@ -18,7 +18,7 @@ const config: DataSourceOptions = {
 	password: `${process.env.POSTGRES_PASSWORD}`,
 	database: `${process.env.POSTGRES_DATABASE}`,
 	entities: [User, Document, Part, Review, Expedient, Event, Notification],
-	migrations: [`${__dirname}../../migrations/*{.ts,.js}`],
+	migrations: [`${__dirname}../../../migrations/*{.ts,.js}`],
 	synchronize: false,
 	migrationsTableName: 'migrations',
 }

@@ -1,9 +1,9 @@
-import { FIELD, PART_TYPES } from '@expedients/shared'
+import { FIELD, IPart, PART_TYPES } from '@expedients/shared'
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { Expedient } from '../../expedients/entities/expedient.entity'
 
 @Entity('parts')
-export class Part {
+export class Part implements IPart {
 	@PrimaryGeneratedColumn('uuid')
 	id: string
 
@@ -13,7 +13,7 @@ export class Part {
 	@Column({
 		type: 'enum',
 		name: 'type',
-		enumName: 'type',
+		enumName: 'part_type',
 		enum: PART_TYPES,
 		nullable: true,
 	})
