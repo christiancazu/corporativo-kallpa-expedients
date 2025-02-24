@@ -51,6 +51,7 @@ export class EventsConsumer extends WorkerHost {
 						assignedAssistant: expedient.assignedAssistant,
 						expedientId: expedient.id,
 						eventMessage: event!.message,
+						expedientType: expedient.type,
 					},
 				),
 			)
@@ -81,7 +82,7 @@ export class EventsConsumer extends WorkerHost {
 					},
 					title: 'Recordatorio',
 					body: event!.message,
-					redirectUrl: `/expedients/${expedient.id}`,
+					redirectUrl: `/${expedient.type.toLowerCase()}/${expedient.id}`,
 				})),
 			),
 		)

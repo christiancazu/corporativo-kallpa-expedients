@@ -4,7 +4,7 @@ import ReactCrop, { centerCrop, Crop, makeAspectCrop } from 'react-image-crop'
 import NavigationBackBtn from '../../../components/NavigationBackBtn'
 import 'react-image-crop/src/ReactCrop.scss'
 import { FileImageOutlined } from '@ant-design/icons'
-import { User } from '@expedients/shared'
+import { IUser } from '@expedients/shared'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import useNotify from '../../../hooks/useNotification'
 import useUserState from '../../../hooks/useUserState'
@@ -18,7 +18,7 @@ export default function ProfileView(): React.ReactNode {
 	const { setUser } = useUserState()
 
 	const notify = useNotify()
-	const { refetch } = useQuery<User>({
+	const { refetch } = useQuery<IUser>({
 		queryKey: ['me'],
 		queryFn: () => getMe(),
 		enabled: false,
@@ -109,7 +109,7 @@ export default function ProfileView(): React.ReactNode {
 
 	return (
 		<section>
-			<NavigationBackBtn to="/expedients" />
+			<NavigationBackBtn to="/" />
 			<Divider className="my-3" />
 			<Flex justify="center">
 				<Card

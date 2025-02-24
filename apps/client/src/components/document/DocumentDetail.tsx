@@ -1,5 +1,5 @@
 import { DownloadOutlined } from '@ant-design/icons'
-import type { Document } from '@expedients/shared'
+import type { IDocument } from '@expedients/shared'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { Modal, Typography } from 'antd'
 import { Grid } from 'antd'
@@ -51,7 +51,7 @@ export default function DocumentDetail({
 	const [showDetailModal, setShowDetailModal] = useState(false)
 	const [showPreviewModal, setShowPreviewModal] = useState(false)
 
-	const { data, isSuccess } = useQuery<Document & { link: string }>({
+	const { data, isSuccess } = useQuery<IDocument & { url: string }>({
 		queryKey: ['document', documentFile.id],
 		queryFn: () => getDocument(documentFile.id),
 	})

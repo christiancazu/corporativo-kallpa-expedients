@@ -3,14 +3,22 @@ import { Divider, theme } from 'antd'
 import { useEffect } from 'react'
 import { useParams } from 'react-router'
 
+import { IExpedient } from '@expedients/shared'
 import { useForm } from 'antd/es/form/Form'
+import Title from 'antd/es/typography/Title'
+import { AxiosError, HttpStatusCode } from 'axios'
 import NavigationBackBtn from '../../../components/NavigationBackBtn'
+import { useExpedientsState } from '../../../hooks/useExpedientsState'
 import useNotify from '../../../hooks/useNotification'
-import { getExpedient, updateExpedient } from '../../../services/api.service'
+import { useExpedientsService } from '../../../services/expedients.service'
 import ExpedientForm from '../../components/ExpedientForm'
 
 export default function ExpedientsIdEditView(): React.ReactNode {
 	const { id } = useParams<{ id: string }>()
+
+	const { currentExpedientType } = useExpedientsState()
+
+	const { getExpedient, updateExpedient } = useExpedientsService()
 
 	const {
 		token: { colorBgContainer, borderRadiusLG, paddingMD, marginMD },
@@ -25,7 +33,7 @@ export default function ExpedientsIdEditView(): React.ReactNode {
 	const notify = useNotify()
 	const [form] = useForm()
 
-	const { data, isSuccess } = useQuery({
+	const { data, isSuccess, error } = useQuery<IExpedient, AxiosError>({
 		queryKey: ['expedient', id],
 		queryFn: () => getExpedient(id!),
 		refetchOnMount: true,
@@ -50,17 +58,24 @@ export default function ExpedientsIdEditView(): React.ReactNode {
 
 	return (
 		<div style={sectionStyle}>
-			<NavigationBackBtn to="/expedients" />
+			<NavigationBackBtn to={`/${currentExpedientType}`} />
+
 			<Divider className="my-3" />
 
-			<div className="d-flex justify-content-center">
-				<ExpedientForm
-					form={form}
-					isPending={isPending}
-					mode="edit"
-					onFinish={mutate}
-				/>
-			</div>
+			{error?.status === HttpStatusCode.BadRequest ? (
+				<Title level={4} className="text-center pt-4">
+					El expediente no ha sido encontrado
+				</Title>
+			) : (
+				<div className="d-flex justify-content-center">
+					<ExpedientForm
+						form={form}
+						isPending={isPending}
+						mode="edit"
+						onFinish={mutate}
+					/>
+				</div>
+			)}
 		</div>
 	)
 }

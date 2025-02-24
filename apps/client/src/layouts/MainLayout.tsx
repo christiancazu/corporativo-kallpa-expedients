@@ -1,9 +1,4 @@
-import {
-	AuditOutlined,
-	FolderOutlined,
-	MenuFoldOutlined,
-	MenuUnfoldOutlined,
-} from '@ant-design/icons'
+import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons'
 import { Button, Flex, Grid, Layout, Menu, type MenuProps, theme } from 'antd'
 import React, { useEffect, useMemo, useState } from 'react'
 import { Outlet, useMatches, useNavigate } from 'react-router'
@@ -12,7 +7,11 @@ import Text from 'antd/es/typography/Text'
 import NotificationModal from '../components/NotificationModal'
 import HeaderToolbar from '../components/header/HeaderToolbar'
 import { StyledAvatar } from '../components/styled/avatar.styled'
+import { useExpedientsState } from '../hooks/useExpedientsState'
 import { StyledHeader, StyledSider, StyledSiderDrawer } from './styled'
+
+import asesoriaIcon from '../assets/images/asesoria.png'
+import empresaIcon from '../assets/images/empresa.png'
 
 const { Content } = Layout
 const { useBreakpoint } = Grid
@@ -21,6 +20,7 @@ const MainLayout: React.FC = () => {
 	const navigate = useNavigate()
 	const matches = useMatches()
 	const screens = useBreakpoint()
+	const { currentExpedientType } = useExpedientsState()
 
 	const { colorBgLayout } = theme.useToken().token
 
@@ -53,13 +53,17 @@ const MainLayout: React.FC = () => {
 	const menuItems: MenuProps['items'] = [
 		{
 			key: '/empresa',
-			icon: React.createElement(FolderOutlined),
+			icon: React.createElement(() => (
+				<img alt="empresa" src={empresaIcon} className="mr-2" />
+			)),
 			label: 'Empresa',
 			onClick: () => navigate('/empresa'),
 		},
 		{
 			key: '/asesoria',
-			icon: React.createElement(AuditOutlined),
+			icon: React.createElement(() => (
+				<img alt="asesoria" src={asesoriaIcon} className="mr-2" />
+			)),
 			label: 'Asesoría',
 			onClick: () => navigate('/asesoria'),
 		},
@@ -69,7 +73,7 @@ const MainLayout: React.FC = () => {
 		() =>
 			menuItems.find((i: any) => location.pathname.includes(i.key))
 				?.key as string,
-		[menuItems, location.pathname],
+		[location.pathname, currentExpedientType],
 	)
 
 	return (
@@ -91,7 +95,7 @@ const MainLayout: React.FC = () => {
 							</div>
 
 							<Menu
-								defaultSelectedKeys={[defaultActiveKey]}
+								selectedKeys={[defaultActiveKey]}
 								items={menuItems}
 								mode="inline"
 								style={{ backgroundColor: 'transparent' }}
@@ -117,7 +121,7 @@ const MainLayout: React.FC = () => {
 								</div>
 
 								<Menu
-									defaultSelectedKeys={[defaultActiveKey]}
+									selectedKeys={[defaultActiveKey]}
 									items={menuItems}
 									mode="inline"
 									style={{ backgroundColor: 'transparent' }}

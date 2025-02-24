@@ -21,6 +21,7 @@ import {
 	Row,
 	Space,
 	Spin,
+	Tag,
 	Tooltip,
 	Typography,
 	theme,
@@ -37,6 +38,8 @@ import type {
 	IExpedient as ExpedientType,
 	IEvent,
 } from '@expedients/shared'
+import Title from 'antd/es/typography/Title'
+import { AxiosError, HttpStatusCode } from 'axios'
 import PopconfirmDelete from '../components/PopconfirmDelete'
 import ScheduleEvent, {
 	type ScheduleEventProps,
@@ -47,15 +50,12 @@ import {
 	StyledCardNotificationText,
 } from '../components/header/styled'
 import { queryClient } from '../config/queryClient'
+import { useExpedientsState } from '../hooks/useExpedientsState'
 import useNotify from '../hooks/useNotification'
 import useUserState from '../hooks/useUserState'
 import UserAvatarName from '../modules/shared/components/UserAvatarName'
-import {
-	deleteEvent,
-	deleteExpedientReview,
-	getExpedient,
-	getExpedientEvents,
-} from '../services/api.service'
+import { deleteEvent, deleteExpedientReview } from '../services/api.service'
+import { useExpedientsService } from '../services/expedients.service'
 import { dateUtil, getSpritePositionX } from '../utils'
 
 const { Text } = Typography
@@ -80,6 +80,9 @@ interface Expedient extends ExpedientType {
 }
 
 const ExpedientView: React.FC = () => {
+	const { currentExpedientType } = useExpedientsState()
+	const { getExpedient, getExpedientEvents } = useExpedientsService()
+
 	const { id } = useParams<{ id: string }>()
 	const navigate = useNavigate()
 	const notify = useNotify()
@@ -113,7 +116,7 @@ const ExpedientView: React.FC = () => {
 		marginBottom: marginMD,
 	}
 
-	const { data, error } = useQuery({
+	const { data, error } = useQuery<Expedient, AxiosError>({
 		queryKey: ['expedient', id],
 		queryFn: () => getExpedient(id!) as any,
 		refetchOnMount: true,
@@ -209,12 +212,25 @@ const ExpedientView: React.FC = () => {
 					(event: IEvent) => event.id !== eventId,
 				),
 			}))
+			queryClient.invalidateQueries({
+				queryKey: ['expedients-events'],
+				exact: true,
+			})
 		},
 	})
 
-	if (!data) {
-		return <div>{JSON.stringify(error?.message)}</div>
+	if (error?.status === HttpStatusCode.BadRequest) {
+		return (
+			<>
+				<NavigationBackBtn to={`/${currentExpedientType}`} />
+				<Title level={4} className="text-center pt-4">
+					El expediente no ha sido encontrado
+				</Title>
+			</>
+		)
 	}
+
+	if (!data) return null
 
 	return (
 		<Row gutter={16}>
@@ -223,13 +239,15 @@ const ExpedientView: React.FC = () => {
 					<div style={sectionStyle}>
 						<Flex className="flex justify-between flex-wrap">
 							<Flex align="center">
-								<NavigationBackBtn to="/expedients" />
+								<NavigationBackBtn to={`/${currentExpedientType}`} />
 								<Text className="ml-1 text-lg">{data.code}</Text>
 							</Flex>
 							<Space>
 								{isEditableByUser && (
 									<Button
-										onClick={() => navigate(`/expedients/${data.id}/edit`)}
+										onClick={() =>
+											navigate(`/${currentExpedientType}/${data.id}/edit`)
+										}
 										variant="outlined"
 										icon={<EditOutlined />}
 									>
@@ -309,8 +327,10 @@ const ExpedientView: React.FC = () => {
 								md={8}
 								xs={24}
 							>
-								<span className="mb-2">{data.status.replace('_', ' ')}</span>
-								<em style={{ color: colorTextSecondary }}>
+								<Tag className="mb-2 mr-0" color="warning">
+									{data.status}
+								</Tag>
+								<em className="text-xs" style={{ color: colorTextSecondary }}>
 									{data.statusDescription}
 								</em>
 							</Col>
@@ -319,6 +339,8 @@ const ExpedientView: React.FC = () => {
 						<Row align={'middle'} className="mb-3">
 							<Col md={12} xs={24}>
 								<strong>Informes:</strong>
+
+								{!data.reviews?.length && <span> No registra</span>}
 							</Col>
 						</Row>
 

@@ -1,11 +1,13 @@
+import { EXPEDIENT_TYPE } from '@expedients/shared'
 import {
+	BadRequestException,
 	Inject,
 	Injectable,
 	UnprocessableEntityException,
 } from '@nestjs/common'
 import { REQUEST } from '@nestjs/core'
 import { InjectRepository } from '@nestjs/typeorm'
-import type { Repository } from 'typeorm'
+import { And, Brackets, type Repository } from 'typeorm'
 import { Part } from '../parts/entities/part.entity'
 import { Review } from '../reviews/entities/review.entity'
 import { User } from '../users/entities/user.entity'
@@ -13,6 +15,7 @@ import type { CreateExpedientDto } from './dto/create-expedient.dto'
 import type { FindExpedientDto } from './dto/find-expedient.dto'
 import type { UpdateExpedientDto } from './dto/update-expedient.dto'
 import { Expedient } from './entities/expedient.entity'
+import { expedientByTextFilterableFields } from './expedients.consts'
 import { REQUEST_EXPEDIENT_TYPE } from './guards/expedient-type.guard'
 
 // TODO: cuando se borra una review poner la ultima la mas reciente
@@ -92,7 +95,7 @@ export class ExpedientsService {
 	}
 
 	async findAll(query: FindExpedientDto): Promise<Expedient[]> {
-		const { byText, text, updatedByUser, status } = query
+		const { text, updatedByUser, status } = query
 
 		const qb = this._expedientRepository
 			.createQueryBuilder('expedients')
@@ -118,27 +121,20 @@ export class ExpedientsService {
 			.leftJoinAndSelect('expedients.parts', 'parts')
 			.where('expedients.type = :type', { type: this.getExpedientType() })
 
-		/** If exists filter: text will filter by each byText item */
+		/** If exists filter: text will filter by each filterable field */
 		if (text) {
-			const byTextLength = byText?.length
-
-			/** include AND WHERE if exists at least one byText item */
-			if (byTextLength) {
-				const _byText = byText[0]
-				qb.andWhere(`expedients.${_byText}::text ILIKE :q${_byText}`, {
-					[`q${_byText}`]: `%${text}%`,
-				})
-			}
-
-			/** include OR WHERE if exists multiple byText item */
-			if (byTextLength > 1) {
-				for (let index = 0; index < byTextLength - 1; index++) {
-					const _byText = byText[index + 1]
-					qb.orWhere(`expedients.${_byText}::text ILIKE :q${_byText}`, {
-						[`q${_byText}`]: `%${text}%`,
+			qb.andWhere(
+				new Brackets((_qb) => {
+					_qb.where('expedients.code::text ILIKE :qcode', {
+						qcode: `%${text}%`,
 					})
-				}
-			}
+					for (const field of expedientByTextFilterableFields) {
+						_qb.orWhere(`expedients.${field}::text ILIKE :q${field}`, {
+							[`q${field}`]: `%${text}%`,
+						})
+					}
+				}),
+			)
 		}
 
 		/** If exists filter: updatedByUser will filter by his id */
@@ -188,6 +184,7 @@ export class ExpedientsService {
 			},
 			select: {
 				id: true,
+				type: true,
 				assignedLawyer: {
 					id: true,
 					email: true,
@@ -204,9 +201,9 @@ export class ExpedientsService {
 		})
 	}
 
-	findOne(id: string) {
-		return this._expedientRepository.findOne({
-			where: { id },
+	async findOne(id: string) {
+		const expedient = await this._expedientRepository.findOne({
+			where: { id, type: this.getExpedientType() },
 			relations: {
 				parts: true,
 				assignedLawyer: true,
@@ -276,6 +273,12 @@ export class ExpedientsService {
 				},
 			},
 		})
+
+		if (!expedient) {
+			throw new BadRequestException()
+		}
+
+		return expedient
 	}
 
 	findEvents(user: User) {
@@ -392,7 +395,7 @@ export class ExpedientsService {
 		return `This action removes a #${id} expedient`
 	}
 
-	private getExpedientType() {
+	private getExpedientType(): EXPEDIENT_TYPE {
 		return this._request.headers[REQUEST_EXPEDIENT_TYPE]
 	}
 }

@@ -1,7 +1,7 @@
-import type { Expedient, IEvent } from '@expedients/shared'
+import type { IEvent, IExpedient } from '@expedients/shared'
 import { useQuery } from '@tanstack/react-query'
 import type { AxiosError } from 'axios'
-import { getExpedientsEvents } from '../services/api.service'
+import { useExpedientsService } from '../services/expedients.service'
 import { dateUtil } from '../utils'
 
 type ExpedientEvent = IEvent & {
@@ -12,10 +12,12 @@ type ExpedientEvent = IEvent & {
 }
 
 export const useEvents = () => {
-	const query = useQuery<Expedient[], AxiosError, ExpedientEvent[]>({
+	const { getExpedientsEvents } = useExpedientsService()
+
+	const query = useQuery<IExpedient[], AxiosError, ExpedientEvent[]>({
 		queryKey: ['expedients-events'],
-		queryFn: () => getExpedientsEvents(),
-		select: (expedient: Expedient[]) =>
+		queryFn: getExpedientsEvents,
+		select: (expedient: IExpedient[]) =>
 			expedient
 				.map((ex) => ({
 					events: ex.events.map((e) => ({

@@ -6,7 +6,7 @@ import {
 	InboxOutlined,
 	UploadOutlined,
 } from '@ant-design/icons'
-import { type Document, type Expedient, FIELD } from '@expedients/shared'
+import { FIELD, type IDocument, type IExpedient } from '@expedients/shared'
 import { useMutation } from '@tanstack/react-query'
 import {
 	Button,
@@ -84,9 +84,9 @@ const DocumentUpload: React.FC<Props> = ({ documentFile, setDocumentFile }) => {
 				: updateDocument(requestSetup.formData, requestSetup.config)
 		},
 
-		onSuccess: (newDocument: Document) => {
+		onSuccess: (newDocument: IDocument) => {
 			let updatedDocuments =
-				queryClient.getQueryData<Expedient>(['expedient', id])?.documents || []
+				queryClient.getQueryData<IExpedient>(['expedient', id])?.documents || []
 
 			if (documentFile.action === 'create') {
 				updatedDocuments = [{ ...newDocument }, ...updatedDocuments]
@@ -96,7 +96,7 @@ const DocumentUpload: React.FC<Props> = ({ documentFile, setDocumentFile }) => {
 				)
 			}
 
-			queryClient.setQueryData(['expedient', id], (old: Expedient) => {
+			queryClient.setQueryData(['expedient', id], (old: IExpedient) => {
 				return {
 					...old,
 					documents: updatedDocuments,

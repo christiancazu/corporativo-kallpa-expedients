@@ -40,21 +40,21 @@ export const useExpedientsService = () => {
 	}
 
 	const getExpedientsEvents = (): Promise<IExpedient[]> => {
-		return httpClient
-			.get(`${currentExpedientType}/events`)
-			.then((res) => res.data)
+		return httpClient.get('expedients/events').then((res) => res.data)
 	}
 
-	const getEmpresaExpedientEvents = (
-		expedientId: string,
-	): Promise<IExpedient> => {
+	const getExpedientEvents = (expedientId: string): Promise<IExpedient> => {
 		return httpClient
 			.get(`${currentExpedientType}/${expedientId}/events`)
 			.then((res) => res.data)
 	}
 
 	return {
+		getExpedient,
 		getExpedients,
 		createExpedient,
+		updateExpedient,
+		getExpedientsEvents,
+		getExpedientEvents,
 	}
 }

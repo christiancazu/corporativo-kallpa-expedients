@@ -1,6 +1,7 @@
 import type React from 'react'
 import { useEffect, useState } from 'react'
 
+import { PlusOutlined } from '@ant-design/icons'
 import type { EXPEDIENT_STATUS } from '@expedients/shared'
 import { Form } from 'antd'
 import { useNavigate, useSearchParams } from 'react-router'
@@ -13,7 +14,6 @@ import { useExpedientsService } from '../services/expedients.service'
 import type { DocumentFile } from './ExpedientView'
 
 export interface SearchParams {
-	byText?: string[]
 	text?: string | null
 	status?: EXPEDIENT_STATUS | null
 	updatedByUser?: string | null
@@ -106,6 +106,7 @@ const ExpedientsView: React.FC = () => {
 			<ButtonBase
 				primary
 				className="mb-4"
+				icon={<PlusOutlined />}
 				onClick={() => navigate(`/${currentExpedientType}/create`)}
 			>
 				Crear {currentExpedientType}

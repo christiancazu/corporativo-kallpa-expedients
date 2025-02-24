@@ -3,31 +3,15 @@ import {
 	FilterOutlined,
 	SearchOutlined,
 } from '@ant-design/icons'
-import {
-	Button,
-	Checkbox,
-	type CheckboxOptionType,
-	Col,
-	Flex,
-	Form,
-	Input,
-	Row,
-	theme,
-} from 'antd'
+import { Button, Col, Flex, Form, Input, Row, theme } from 'antd'
 import { FormInstance } from 'antd/lib'
 import type React from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { useExpedientsState } from '../hooks/useExpedientsState'
 import { SearchParams } from '../views/ExpedientsView'
 import ExpedientStatusSelect from './ExpedientStatusSelect'
 import UsersSelect from './UsersSelect'
-
-const textFilterOptions: CheckboxOptionType[] = [
-	{ label: 'Código', value: 'code' },
-	{ label: 'Materia', value: 'subject' },
-	{ label: 'Juzgado', value: 'court' },
-]
 
 interface Props {
 	onSearch: (values: any) => void
@@ -40,12 +24,11 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 		token: { colorBgContainer, borderRadiusLG, paddingMD, marginMD },
 	} = theme.useToken()
 
-	const { currentExpedientType } = useExpedientsState()
+	const { currentExpedientType, isExpedientEmpresa } = useExpedientsState()
 	const [searchParams] = useSearchParams()
 
 	useEffect(() => {
 		const formSearchParams: SearchParams = {
-			byText: [],
 			text: null,
 			status: null,
 			updatedByUser: null,
@@ -61,10 +44,6 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 			}
 
 			formSearchParams[searchKey as keyof SearchParams] = value as any
-		}
-
-		if (!formSearchParams.byText?.length) {
-			formSearchParams.byText = ['code', 'subject', 'court']
 		}
 
 		form.setFieldsValue(formSearchParams)
@@ -84,6 +63,14 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 		)
 	}
 
+	const textPlaceHolder = useMemo(
+		() =>
+			isExpedientEmpresa
+				? 'Busqueda por: empresa, materia proceso o juzgado...'
+				: 'Busqueda por: asesoría, materia, entidad o trámite/consulta...',
+		[isExpedientEmpresa],
+	)
+
 	return (
 		<div
 			style={{
@@ -98,7 +85,6 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 				form={form}
 				onChange={handleOnChange}
 				initialValues={{
-					byText: ['code', 'subject', 'court'],
 					text: null,
 					status: null,
 					updatedByUser: null,
@@ -127,20 +113,11 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 				</Flex>
 
 				<Row gutter={marginMD}>
-					<Col md={6} sm={24}>
-						<Form.Item label="Filtrar por" name="byText">
-							<Checkbox.Group
-								options={textFilterOptions}
-								onChange={handleOnChange}
-							/>
-						</Form.Item>
-					</Col>
-
-					<Col md={7} sm={24}>
+					<Col md={11} sm={24}>
 						<Form.Item name="text">
 							<Input
 								allowClear
-								placeholder="Ingrese una busqueda..."
+								placeholder={textPlaceHolder}
 								style={{ width: '100%' }}
 								suffix={<SearchOutlined />}
 								onClear={handleOnChange}
@@ -148,7 +125,7 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 						</Form.Item>
 					</Col>
 
-					<Col md={4} sm={24}>
+					<Col md={5} sm={24}>
 						<UsersSelect
 							name={'updatedByUser'}
 							placeholder={'Actualizado por'}
@@ -159,7 +136,7 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 						/>
 					</Col>
 
-					<Col md={4} sm={24}>
+					<Col md={5} sm={24}>
 						<ExpedientStatusSelect name={'status'} onChange={handleOnChange} />
 					</Col>
 

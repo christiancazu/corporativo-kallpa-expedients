@@ -1,4 +1,4 @@
-import type { User } from '@expedients/shared'
+import type { IUser } from '@expedients/shared'
 
 export default {
 	set: (key: string, value: any) => localStorage.setItem(key, value),
@@ -7,18 +7,18 @@ export default {
 
 	get: (key: string) => localStorage.getItem(key) ?? null,
 
-	setUser: (user: User) => localStorage.setItem('user', JSON.stringify(user)),
+	setUser: (user: IUser) => localStorage.setItem('user', JSON.stringify(user)),
 
 	purgeUser: () => localStorage.removeItem('user'),
 
-	getUser: (): User | undefined => {
+	getUser: (): IUser | undefined => {
 		const user = JSON.parse(localStorage.getItem('user') || '{}')
 
 		if (!user?.id) {
 			return undefined
 		}
 
-		return user as User
+		return user as IUser
 	},
 
 	setVapidKey: (key: string) => localStorage.setItem('vapidKey', key),

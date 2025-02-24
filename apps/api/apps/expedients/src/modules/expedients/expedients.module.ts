@@ -5,11 +5,16 @@ import { Part } from '../parts/entities/part.entity'
 import { Expedient } from './entities/expedient.entity'
 import { ExpedientsAsesoriaController } from './expedients-asesoria.controller'
 import { ExpedientsEmpresaController } from './expedients-empresa.controller'
+import { ExpedientsController } from './expedients.controller'
 import { ExpedientsService } from './expedients.service'
 
 @Module({
 	imports: [TypeOrmModule.forFeature([Expedient, Part])],
-	controllers: [ExpedientsEmpresaController, ExpedientsAsesoriaController],
+	controllers: [
+		ExpedientsController,
+		ExpedientsEmpresaController,
+		ExpedientsAsesoriaController,
+	],
 	providers: [ExpedientsService, ExecutionContextHost],
 	exports: [ExpedientsService],
 })

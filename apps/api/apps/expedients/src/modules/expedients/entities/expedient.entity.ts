@@ -26,7 +26,6 @@ export class Expedient implements IExpedient {
 	id: string
 
 	@Column({
-		unique: true,
 		type: 'varchar',
 		length: FIELD.EXPEDIENT_CODE_MAX_LENGTH,
 	})

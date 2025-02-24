@@ -4,6 +4,7 @@ import type { FormInstance } from 'antd/lib'
 import ExpedientStatusSelect from '../../components/ExpedientStatusSelect'
 import PartsTypeSelect from '../../components/PartsTypeSelect'
 import UsersSelect from '../../components/UsersSelect'
+import { useExpedientsState } from '../../hooks/useExpedientsState'
 
 interface Props {
 	form: FormInstance
@@ -21,6 +22,8 @@ export default function ExpedientForm({
 }: Props): React.ReactNode {
 	const screens = useBreakpoint()
 
+	const { currentExpedientType, isExpedientEmpresa } = useExpedientsState()
+
 	return (
 		<Form
 			autoComplete="off"
@@ -31,8 +34,9 @@ export default function ExpedientForm({
 			onFinish={onFinish}
 		>
 			<Form.Item
-				label="Expediente"
+				label={currentExpedientType}
 				name="code"
+				className="capitalize"
 				rules={[{ required: true, message: 'El campo es requerido' }]}
 			>
 				<Input />
@@ -47,7 +51,7 @@ export default function ExpedientForm({
 			</Form.Item>
 
 			<Form.Item
-				label="Proceso"
+				label={isExpedientEmpresa ? 'Proceso' : 'Entidad'}
 				name="process"
 				rules={[{ required: true, message: 'El campo es requerido' }]}
 			>
@@ -55,7 +59,7 @@ export default function ExpedientForm({
 			</Form.Item>
 
 			<Form.Item
-				label="Juzgado"
+				label={isExpedientEmpresa ? 'Juzgado' : 'Trámite/Consulta'}
 				name="court"
 				rules={[{ required: true, message: 'El campo es requerido' }]}
 			>

@@ -36,11 +36,11 @@ const TableExpedients: React.FC<Props> = ({
 	loading,
 	onChangePagination,
 }) => {
-	const { currentExpedientType } = useExpedientsState()
+	const { currentExpedientType, isExpedientEmpresa } = useExpedientsState()
 
 	const columns: TableColumnsType<DataType> = [
 		{
-			title: 'Expediente',
+			title: isExpedientEmpresa ? 'Empresa' : 'Asesoría',
 			dataIndex: 'code',
 			key: 'code',
 			width: 150,
@@ -74,13 +74,13 @@ const TableExpedients: React.FC<Props> = ({
 			width: 140,
 		},
 		{
-			title: 'Proceso',
+			title: isExpedientEmpresa ? 'Proceso' : 'Entidad',
 			dataIndex: 'process',
 			key: 'process',
 			width: 140,
 		},
 		{
-			title: 'Juzgado',
+			title: isExpedientEmpresa ? 'Juzgado' : 'Trámite/Consulta',
 			dataIndex: 'court',
 			key: 'court',
 			width: 140,
@@ -149,7 +149,7 @@ const TableExpedients: React.FC<Props> = ({
 			fixed: 'right',
 			render: (_, expedient) => (
 				<Space>
-					<Link to={`/expedients/${expedient.id}/edit`}>
+					<Link to={`/${currentExpedientType}/${expedient.id}/edit`}>
 						<Tooltip title="Editar expediente">
 							<Button
 								icon={<EditOutlined />}
@@ -159,7 +159,7 @@ const TableExpedients: React.FC<Props> = ({
 							/>
 						</Tooltip>
 					</Link>
-					<Link to={`/expedients/${expedient.id}`}>
+					<Link to={`/${currentExpedientType}/${expedient.id}`}>
 						<Tooltip title="Ver expediente">
 							<Button icon={<SearchOutlined />} shape="circle" />
 						</Tooltip>

@@ -1,3 +1,4 @@
+import { EXPEDIENT_TYPE } from '@expedients/shared'
 import { User } from 'apps/expedients/src/modules/users/entities/user.entity'
 import { WebPushError } from 'web-push'
 
@@ -11,6 +12,7 @@ export interface ScheduledEventPayload {
 	assignedAssistant: User
 	eventMessage: string
 	expedientId: string
+	expedientType: EXPEDIENT_TYPE
 }
 
 export interface ErrorPushNotification {

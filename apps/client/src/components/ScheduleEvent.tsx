@@ -44,6 +44,10 @@ export default function ScheduleEvent({
 				queryKey: ['expedients-events', event.expedientId],
 			})
 			form.resetFields()
+			queryClient.invalidateQueries({
+				queryKey: ['expedients-events'],
+				exact: true,
+			})
 		},
 	})
 

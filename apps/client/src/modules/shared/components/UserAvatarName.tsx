@@ -1,11 +1,11 @@
 import { UserOutlined } from '@ant-design/icons'
-import { User } from '@expedients/shared'
+import { IUser } from '@expedients/shared'
 import { Avatar, Flex, Typography } from 'antd'
 
 const { Text } = Typography
 
 interface Props {
-	user: Partial<User>
+	user: Partial<IUser>
 	title?: string
 }
 

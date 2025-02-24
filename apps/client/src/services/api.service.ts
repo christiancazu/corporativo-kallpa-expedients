@@ -1,4 +1,4 @@
-import { IExpedient, IUser } from '@expedients/shared'
+import { IUser } from '@expedients/shared'
 import axios, { type AxiosRequestConfig } from 'axios'
 import { httpClient } from '../config/httpClient'
 import type { CreateEvent, UserSession } from '../types'
@@ -18,68 +18,6 @@ export async function verifyAccount(data: {
 }): Promise<UserSession> {
 	return await httpClient
 		.post('/auth/verify-account', { ...data })
-		.then((res) => res.data)
-}
-
-export async function getEmpresaExpedients({ params }: { params: any }) {
-	return httpClient.get('/empresa', { params }).then((res) => res.data)
-}
-
-export async function getEmpresaExpedient(id: string): Promise<IExpedient> {
-	return httpClient.get(`/empresa/${id}`).then((res) => res.data)
-}
-
-export async function createEmpresaExpedient(expedient: IExpedient) {
-	return httpClient.post('/empresa', expedient).then((res) => res.data)
-}
-
-export async function updateEmpresaExpedient({
-	id,
-	expedient,
-}: { id: string; expedient: IExpedient }): Promise<any> {
-	return httpClient.patch(`/empresa/${id}`, expedient).then((res) => res.data)
-}
-
-export async function getEmpresaExpedientsEvents(): Promise<IExpedient[]> {
-	return httpClient.get('/empresa/events').then((res) => res.data)
-}
-
-export async function getEmpresaExpedientEvents(
-	expedientId: string,
-): Promise<IExpedient> {
-	return httpClient
-		.get(`/empresa/${expedientId}/events`)
-		.then((res) => res.data)
-}
-
-export async function getExpedients({ params }: { params: any }) {
-	return httpClient.get('/asesoria', { params }).then((res) => res.data)
-}
-
-export async function getExpedient(id: string): Promise<IExpedient> {
-	return httpClient.get(`/asesoria/${id}`).then((res) => res.data)
-}
-
-export async function createExpedient(expedient: IExpedient) {
-	return httpClient.post('/asesoria', expedient).then((res) => res.data)
-}
-
-export async function updateExpedient({
-	id,
-	expedient,
-}: { id: string; expedient: IExpedient }): Promise<any> {
-	return httpClient.patch(`/asesoria/${id}`, expedient).then((res) => res.data)
-}
-
-export async function getExpedientsEvents(): Promise<IExpedient[]> {
-	return httpClient.get('/asesoria/events').then((res) => res.data)
-}
-
-export async function getExpedientEvents(
-	expedientId: string,
-): Promise<IExpedient> {
-	return httpClient
-		.get(`/asesoria/${expedientId}/events`)
 		.then((res) => res.data)
 }
 

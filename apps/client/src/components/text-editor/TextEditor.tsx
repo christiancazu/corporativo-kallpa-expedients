@@ -3,7 +3,7 @@ import type React from 'react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { FileTextOutlined } from '@ant-design/icons'
-import type { Expedient } from '@expedients/shared'
+import type { IExpedient } from '@expedients/shared'
 import { useMutation } from '@tanstack/react-query'
 import { type Editor, EditorContent, Extension, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
@@ -50,10 +50,10 @@ const TextEditor: React.FC<{ expedientId: string }> = ({ expedientId }) => {
 	const { user } = useUserState()
 	const [isModalOpen, setIsModalOpen] = useState(false)
 
-	const expedient = queryClient.getQueryData<Expedient>([
+	const expedient = queryClient.getQueryData<IExpedient>([
 		'expedient',
 		expedientId,
-	]) as Expedient
+	]) as IExpedient
 
 	const getSuggestions = useMemo(
 		() =>
@@ -127,7 +127,7 @@ const TextEditor: React.FC<{ expedientId: string }> = ({ expedientId }) => {
 		onSuccess: (data) => {
 			queryClient.setQueryData(
 				['expedient', expedientId],
-				(old: Expedient) => ({
+				(old: IExpedient) => ({
 					...old,
 					updatedAt: data.createdAt,
 					reviews: [

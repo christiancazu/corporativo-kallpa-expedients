@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Form, Select, Tag } from 'antd'
 import type React from 'react'
 
-import type { User } from '@expedients/shared'
+import type { IUser } from '@expedients/shared'
 import { DefaultOptionType } from 'antd/es/select'
 import { SelectProps } from 'antd/lib'
 import UserAvatarName from '../modules/shared/components/UserAvatarName'
@@ -51,7 +51,7 @@ const UsersSelect: React.FC<Props> = ({ ...props }) => {
 
 	return (
 		<Form.Item {...props}>
-			<Select<string, DefaultOptionType & User>
+			<Select<string, DefaultOptionType & IUser>
 				allowClear
 				showSearch
 				disabled={isFetching}

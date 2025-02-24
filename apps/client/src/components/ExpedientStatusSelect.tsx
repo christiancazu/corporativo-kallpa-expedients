@@ -3,9 +3,9 @@ import { Form, Select } from 'antd'
 import type React from 'react'
 
 const expedientStatusOptions = Object.entries(EXPEDIENT_STATUS).map(
-	([value, label]) => ({
+	([_, label]) => ({
 		label,
-		value,
+		value: label,
 	}),
 )
 
