@@ -44,6 +44,7 @@ export default function ExpedientsIdEditView(): React.ReactNode {
 			...data,
 			assignedLawyerId: data?.assignedLawyer?.id,
 			assignedAssistantId: data?.assignedAssistant?.id,
+			processTypeId: data?.processType?.id,
 		})
 	}, [data, isSuccess])
 

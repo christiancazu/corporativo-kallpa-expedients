@@ -80,7 +80,7 @@ interface Expedient extends ExpedientType {
 }
 
 const ExpedientView: React.FC = () => {
-	const { currentExpedientType } = useExpedientsState()
+	const { isExpedientEmpresa, currentExpedientType } = useExpedientsState()
 	const { getExpedient, getExpedientEvents } = useExpedientsService()
 
 	const { id } = useParams<{ id: string }>()
@@ -267,7 +267,15 @@ const ExpedientView: React.FC = () => {
 								</p>
 
 								<p className="mb-3">
-									<strong>Proceso:</strong> {data.process}
+									{isExpedientEmpresa ? (
+										<>
+											<strong>Proceso:</strong> {data.processType?.description}
+										</>
+									) : (
+										<>
+											<strong>Entidad:</strong> {data.entity}
+										</>
+									)}
 								</p>
 
 								<p className="mb-3">

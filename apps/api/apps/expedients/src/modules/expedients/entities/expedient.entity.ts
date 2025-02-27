@@ -19,6 +19,7 @@ import { Event } from '../../events/entities/event.entity'
 import { Part } from '../../parts/entities/part.entity'
 import { Review } from '../../reviews/entities/review.entity'
 import { User } from '../../users/entities/user.entity'
+import { ProcessType } from '../process-types/entities/process-types.entity'
 
 @Entity('expedients')
 export class Expedient implements IExpedient {
@@ -48,10 +49,16 @@ export class Expedient implements IExpedient {
 
 	@Column({
 		type: 'varchar',
-		length: FIELD.EXPEDIENT_PROCESS_MAX_LENGTH,
+		length: FIELD.EXPEDIENT_ENTITY_MAX_LENGTH,
 		nullable: true,
 	})
-	process: string
+	entity: string
+
+	@ManyToOne(
+		() => ProcessType,
+		(processType) => processType.expedients,
+	)
+	processType: ProcessType
 
 	@Column({
 		type: 'varchar',

@@ -78,6 +78,10 @@ const TableExpedients: React.FC<Props> = ({
 			dataIndex: 'process',
 			key: 'process',
 			width: 140,
+			render: (_, expedient) =>
+				isExpedientEmpresa
+					? expedient.processType?.description
+					: expedient.entity,
 		},
 		{
 			title: isExpedientEmpresa ? 'Juzgado' : 'Trámite/Consulta',

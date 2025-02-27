@@ -4,6 +4,8 @@
       "name": "expedients",
       "script": "pnpm",
       "args": "api start:prod",
+      "out_file": "/root/.pm2/logs/expedients-out.log",
+      "error_file": "/root/.pm2/logs/expedients-error.log",
       "interpreter": "/bin/bash"
     }
   ]

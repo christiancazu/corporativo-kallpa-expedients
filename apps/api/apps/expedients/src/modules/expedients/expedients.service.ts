@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common'
 import { REQUEST } from '@nestjs/core'
 import { InjectRepository } from '@nestjs/typeorm'
-import { And, Brackets, type Repository } from 'typeorm'
+import { Brackets, type Repository } from 'typeorm'
 import { Part } from '../parts/entities/part.entity'
 import { Review } from '../reviews/entities/review.entity'
 import { User } from '../users/entities/user.entity'
@@ -17,6 +17,7 @@ import type { UpdateExpedientDto } from './dto/update-expedient.dto'
 import { Expedient } from './entities/expedient.entity'
 import { expedientByTextFilterableFields } from './expedients.consts'
 import { REQUEST_EXPEDIENT_TYPE } from './guards/expedient-type.guard'
+import { ProcessType } from './process-types/entities/process-types.entity'
 
 // TODO: cuando se borra una review poner la ultima la mas reciente
 @Injectable()
@@ -47,13 +48,15 @@ export class ExpedientsService {
 		expedientCreated.updatedByUser = user
 
 		if (dto.assignedLawyerId) {
-			const assignedLawyer = new User(dto.assignedLawyerId)
-			expedientCreated.assignedLawyer = assignedLawyer
+			expedientCreated.assignedLawyer = new User(dto.assignedLawyerId)
 		}
 
 		if (dto.assignedAssistantId) {
-			const assignedAssistant = new User(dto.assignedAssistantId)
-			expedientCreated.assignedAssistant = assignedAssistant
+			expedientCreated.assignedAssistant = new User(dto.assignedAssistantId)
+		}
+
+		if (dto.processTypeId) {
+			expedientCreated.processType = new ProcessType(dto.processTypeId)
 		}
 
 		let deletedParts: Part[] = []
@@ -100,6 +103,8 @@ export class ExpedientsService {
 		const qb = this._expedientRepository
 			.createQueryBuilder('expedients')
 			.select('expedients')
+			.leftJoin('expedients.processType', 'processType')
+			.addSelect(['processType.id', 'processType.description'])
 			.leftJoin('expedients.updatedByUser', 'updatedByUser')
 			.addSelect([
 				'updatedByUser.firstName',
@@ -211,6 +216,7 @@ export class ExpedientsService {
 				createdByUser: true,
 				updatedByUser: true,
 				documents: true,
+				processType: true,
 				reviews: {
 					createdByUser: true,
 				},

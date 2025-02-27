@@ -1,4 +1,4 @@
-import { IUser } from '@expedients/shared'
+import { IProcessType, IUser } from '@expedients/shared'
 import axios, { type AxiosRequestConfig } from 'axios'
 import { httpClient } from '../config/httpClient'
 import type { CreateEvent, UserSession } from '../types'
@@ -91,4 +91,8 @@ export async function uploadAvatar(formData: FormData): Promise<any> {
 			headers: { 'content-type': 'multipart/form-data' },
 		})
 		.then((res) => res.data)
+}
+
+export async function getProcessTypes(): Promise<IProcessType[]> {
+	return httpClient.get('/process-types').then((res) => res.data)
 }

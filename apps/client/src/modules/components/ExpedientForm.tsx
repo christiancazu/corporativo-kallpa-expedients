@@ -3,6 +3,7 @@ import { Button, Card, Col, Form, Grid, Input, Row } from 'antd'
 import type { FormInstance } from 'antd/lib'
 import ExpedientStatusSelect from '../../components/ExpedientStatusSelect'
 import PartsTypeSelect from '../../components/PartsTypeSelect'
+import ProcessTypesSelect from '../../components/ProcessTypesSelect '
 import UsersSelect from '../../components/UsersSelect'
 import { useExpedientsState } from '../../hooks/useExpedientsState'
 
@@ -51,20 +52,27 @@ export default function ExpedientForm({
 			</Form.Item>
 
 			<Form.Item
-				label={isExpedientEmpresa ? 'Proceso' : 'Entidad'}
-				name="process"
-				rules={[{ required: true, message: 'El campo es requerido' }]}
-			>
-				<Input />
-			</Form.Item>
-
-			<Form.Item
 				label={isExpedientEmpresa ? 'Juzgado' : 'Trámite/Consulta'}
 				name="court"
 				rules={[{ required: true, message: 'El campo es requerido' }]}
 			>
 				<Input />
 			</Form.Item>
+
+			{isExpedientEmpresa ? (
+				<ProcessTypesSelect
+					name="processTypeId"
+					rules={[{ required: true, message: 'El campo es requerido' }]}
+				/>
+			) : (
+				<Form.Item
+					label={'Entidad'}
+					name="entity"
+					rules={[{ required: true, message: 'El campo es requerido' }]}
+				>
+					<Input />
+				</Form.Item>
+			)}
 
 			<ExpedientStatusSelect
 				label={'Estado'}

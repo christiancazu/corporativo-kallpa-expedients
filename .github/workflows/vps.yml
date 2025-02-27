@@ -45,7 +45,7 @@ jobs:
       - name: Build apps/client
         run: |
           export NODE_OPTIONS="--max-old-space-size=4096"
-          pnpm client build
+          pnpm client build:remote
 
       - name: Start pm2
         run: pm2 start expedients
