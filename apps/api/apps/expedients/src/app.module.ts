@@ -12,6 +12,7 @@ import { AppConfigModule } from './modules/config/app-config.module'
 import { DocumentsModule } from './modules/documents/documents.module'
 import { EventsModule } from './modules/events/events.module'
 import { ExpedientsModule } from './modules/expedients/expedients.module'
+import { AlsModule } from './modules/global/als/als.module'
 import { NotificationsModule } from './modules/notifications/notifications.module'
 import { PartsModule } from './modules/parts/parts.module'
 import { ReviewsModule } from './modules/reviews/reviews.module'
@@ -20,6 +21,7 @@ import { UsersModule } from './modules/users/users.module'
 @Module({
 	imports: [
 		AppConfigModule,
+
 		ServeStaticModule.forRootAsync({
 			inject: [ConfigService],
 			useFactory: async (configService: ConfigService) => [
@@ -34,11 +36,13 @@ import { UsersModule } from './modules/users/users.module'
 					: {},
 			],
 		}),
+
 		TypeOrmModule.forRootAsync({
 			inject: [ConfigService],
 			useFactory: async (configService: ConfigService) =>
 				configService.get('typeorm') as TypeOrmModuleOptions,
 		}),
+
 		BullModule.forRootAsync({
 			imports: [ConfigModule],
 			inject: [ConfigService],
@@ -49,15 +53,26 @@ import { UsersModule } from './modules/users/users.module'
 				},
 			}),
 		}),
+
 		ScheduleModule.forRoot(),
+
 		UsersModule,
+
 		ExpedientsModule,
+
 		PartsModule,
+
 		ReviewsModule,
+
 		DocumentsModule,
+
 		AuthModule,
+
 		EventsModule,
+
 		NotificationsModule,
+
+		AlsModule,
 	],
 	providers: [
 		{

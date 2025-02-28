@@ -8,14 +8,13 @@ import {
 	IsString,
 	IsUUID,
 	MaxLength,
-	ValidateIf,
 	ValidateNested,
 } from 'class-validator'
 import { CreatePartDto } from '../../parts/dto/create-part.dto'
+import { EsUsuarioGrupoNombre } from '../validators/test.validator'
 
 export class CreateExpedientDto {
 	@IsNotEmpty()
-	@IsString()
 	@MaxLength(FIELD.EXPEDIENT_CODE_MAX_LENGTH)
 	code: string
 
@@ -24,15 +23,14 @@ export class CreateExpedientDto {
 	@MaxLength(FIELD.EXPEDIENT_SUBJECT_MAX_LENGTH)
 	subject: string
 
-	@ValidateIf((o) => o.processTypeId === null)
-	@IsNotEmpty()
 	@IsString()
 	@MaxLength(FIELD.EXPEDIENT_ENTITY_MAX_LENGTH)
-	entity: string
+	@EsUsuarioGrupoNombre()
+	entity?: string
 
-	@IsOptional()
 	@IsUUID()
-	processTypeId: string
+	@EsUsuarioGrupoNombre()
+	processTypeId?: string
 
 	@IsNotEmpty()
 	@IsString()

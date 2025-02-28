@@ -72,6 +72,12 @@ export class ExpedientsService {
 			}, [])
 		}
 
+		if (this.getExpedientType() === EXPEDIENT_TYPE.EMPRESA) {
+			expedientCreated.entity = null!
+		} else {
+			expedientCreated.processType = null!
+		}
+
 		try {
 			expedientCreated.type = this.getExpedientType()
 

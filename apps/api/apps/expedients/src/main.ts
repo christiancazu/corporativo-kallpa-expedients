@@ -5,17 +5,24 @@ import { NestFactory } from '@nestjs/core'
 import { type MicroserviceOptions, Transport } from '@nestjs/microservices'
 import type { NestExpressApplication } from '@nestjs/platform-express'
 import { MessengerModule } from 'apps/messenger/src/messenger.module'
+import { useContainer } from 'class-validator'
 import { AppModule } from './app.module'
 
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule)
+
+	useContainer(app.select(AppModule), { fallbackOnErrors: true })
 
 	if (process.env.NODE_ENV === 'development') {
 		app.enableCors()
 	}
 	app.setGlobalPrefix('api')
 
-	app.useGlobalPipes(new ValidationPipe({ whitelist: true }))
+	app.useGlobalPipes(
+		new ValidationPipe({
+			whitelist: true,
+		}),
+	)
 
 	const path = app.get(ConfigService).get('path')
 
