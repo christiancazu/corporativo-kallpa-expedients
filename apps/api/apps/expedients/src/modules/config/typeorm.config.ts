@@ -3,13 +3,15 @@ import { DataSource, type DataSourceOptions } from 'typeorm'
 import { Document } from '../documents/entities/document.entity'
 import { Event } from '../events/entities/event.entity'
 import { Expedient } from '../expedients/entities/expedient.entity'
+import { ExpedientStatus } from '../expedients/modules/expedient-status/entities/expedient-status.entity'
+import { MatterType } from '../expedients/modules/matter-types/entities/matter-types.entity'
+import { ProcessType } from '../expedients/modules/process-types/entities/process-types.entity'
 import { Notification } from '../notifications/entities/notification.entity'
 import { Part } from '../parts/entities/part.entity'
 import { Review } from '../reviews/entities/review.entity'
 import { User } from '../users/entities/user.entity'
 
 import './dotenv'
-import { ProcessType } from '../expedients/process-types/entities/process-types.entity'
 
 const config: DataSourceOptions = {
 	type: 'postgres',
@@ -27,6 +29,8 @@ const config: DataSourceOptions = {
 		Event,
 		Notification,
 		ProcessType,
+		MatterType,
+		ExpedientStatus,
 	],
 	migrations: [`${__dirname}../../../migrations/*{.ts,.js}`],
 	synchronize: process.env.POSTGRES_SYNC === 'true',

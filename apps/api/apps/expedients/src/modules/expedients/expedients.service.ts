@@ -17,7 +17,7 @@ import type { UpdateExpedientDto } from './dto/update-expedient.dto'
 import { Expedient } from './entities/expedient.entity'
 import { expedientByTextFilterableFields } from './expedients.consts'
 import { REQUEST_EXPEDIENT_TYPE } from './guards/expedient-type.guard'
-import { ProcessType } from './process-types/entities/process-types.entity'
+import { ProcessType } from './modules/process-types/entities/process-types.entity'
 
 // TODO: cuando se borra una review poner la ultima la mas reciente
 @Injectable()

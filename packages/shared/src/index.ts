@@ -12,7 +12,9 @@ export const FIELD = {
 	EXPEDIENT_COURT_MAX_LENGTH: 100,
 	EXPEDIENT_STATUS_DESCRIPTION_MAX_LENGTH: 255,
 
-	PROCESS_TYPE_DESCRIPTION_MAX_LENGTH: 50,
+	EXPEDIENT_STATUS_MAX_LENGTH: 50,
+	PROCESS_TYPE_MAX_LENGTH: 50,
+	MATTER_TYPE_MAX_LENGTH: 50,
 
 	PART_NAME_MAX_LENGTH: 50,
 
@@ -106,7 +108,7 @@ export interface IExpedient {
 	entity: string
 	court: string
 	processType: IProcessType
-	status: EXPEDIENT_STATUS
+	status: IExpedientStatus
 	statusDescription: string
 	assignedLawyer: IUser
 	assignedAssistant: IUser
@@ -121,7 +123,17 @@ export interface IExpedient {
 	updatedAt: Date | string
 }
 
+export interface IExpedientStatus {
+	id: string
+	description: string
+}
+
 export interface IProcessType {
+	id: string
+	description: string
+}
+
+export interface IMatterType {
 	id: string
 	description: string
 }

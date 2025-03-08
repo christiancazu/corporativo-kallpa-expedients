@@ -1,13 +1,6 @@
-import { EXPEDIENT_TYPE } from '@expedients/shared'
-import {
-	BadRequestException,
-	Inject,
-	Injectable,
-	UnprocessableEntityException,
-} from '@nestjs/common'
-import { REQUEST } from '@nestjs/core'
+import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { And, Brackets, type Repository } from 'typeorm'
+import { type Repository } from 'typeorm'
 import { ProcessType } from './entities/process-types.entity'
 
 @Injectable()

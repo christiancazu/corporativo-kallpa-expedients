@@ -8,11 +8,18 @@ import { ExpedientsAsesoriaController } from './expedients-asesoria.controller'
 import { ExpedientsEmpresaController } from './expedients-empresa.controller'
 import { ExpedientsController } from './expedients.controller'
 import { ExpedientsService } from './expedients.service'
-import { ProcessTypesModule } from './process-types/process-types.module'
+import { ExpedientStatusModule } from './modules/expedient-status/expedient-status.module'
+import { MatterTypesModule } from './modules/matter-types/matter-types.module'
+import { ProcessTypesModule } from './modules/process-types/process-types.module'
 import { UsuarioGrupoNombre } from './validators/test.validator'
 
 @Module({
-	imports: [TypeOrmModule.forFeature([Expedient, Part]), ProcessTypesModule],
+	imports: [
+		TypeOrmModule.forFeature([Expedient, Part]),
+		ProcessTypesModule,
+		MatterTypesModule,
+		ExpedientStatusModule,
+	],
 	controllers: [
 		ExpedientsController,
 		ExpedientsEmpresaController,

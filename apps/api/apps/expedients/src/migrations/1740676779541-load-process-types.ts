@@ -6,7 +6,10 @@ export class LoadProcessTypes1740676779541 implements MigrationInterface {
 			'Conocimiento',
 			'Abreviado',
 			'Sumarísimo',
-			'Proceso Único de Ejecución',
+			'Colegiado',
+			'Unipersonal',
+			'Investigación preparatoria',
+			'Proceso único de Ejecución',
 			'Ejecución de garantías',
 		]
 

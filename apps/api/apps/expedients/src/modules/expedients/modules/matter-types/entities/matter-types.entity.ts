@@ -1,21 +1,21 @@
-import { FIELD, IProcessType } from '@expedients/shared'
+import { FIELD, IMatterType } from '@expedients/shared'
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
-import { Expedient } from '../../entities/expedient.entity'
+import { Expedient } from '../../../entities/expedient.entity'
 
-@Entity('process_types')
-export class ProcessType implements IProcessType {
+@Entity('matter_types')
+export class MatterType implements IMatterType {
 	@PrimaryGeneratedColumn('uuid')
 	id: string
 
 	@Column({
 		type: 'varchar',
-		length: FIELD.PROCESS_TYPE_DESCRIPTION_MAX_LENGTH,
+		length: FIELD.MATTER_TYPE_MAX_LENGTH,
 	})
 	description: string
 
 	@OneToMany(
 		() => Expedient,
-		(expedient) => expedient.processType,
+		(expedient) => expedient.matterType,
 		{ cascade: true },
 	)
 	expedients: Expedient[]

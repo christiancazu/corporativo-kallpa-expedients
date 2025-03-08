@@ -1,11 +1,5 @@
+import { EXPEDIENT_TYPE, FIELD, IExpedient } from '@expedients/shared'
 import {
-	EXPEDIENT_STATUS,
-	EXPEDIENT_TYPE,
-	FIELD,
-	IExpedient,
-} from '@expedients/shared'
-import {
-	BeforeInsert,
 	Column,
 	CreateDateColumn,
 	Entity,
@@ -19,7 +13,9 @@ import { Event } from '../../events/entities/event.entity'
 import { Part } from '../../parts/entities/part.entity'
 import { Review } from '../../reviews/entities/review.entity'
 import { User } from '../../users/entities/user.entity'
-import { ProcessType } from '../process-types/entities/process-types.entity'
+import { ExpedientStatus } from '../modules/expedient-status/entities/expedient-status.entity'
+import { MatterType } from '../modules/matter-types/entities/matter-types.entity'
+import { ProcessType } from '../modules/process-types/entities/process-types.entity'
 
 @Entity('expedients')
 export class Expedient implements IExpedient {
@@ -60,20 +56,23 @@ export class Expedient implements IExpedient {
 	)
 	processType: ProcessType
 
+	@ManyToOne(
+		() => MatterType,
+		(matterType) => matterType.expedients,
+	)
+	matterType: MatterType
+
 	@Column({
 		type: 'varchar',
 		length: FIELD.EXPEDIENT_COURT_MAX_LENGTH,
 	})
 	court: string
 
-	@Column({
-		type: 'enum',
-		name: 'status',
-		enumName: 'status',
-		enum: EXPEDIENT_STATUS,
-		default: EXPEDIENT_STATUS.EN_EJECUCION,
-	})
-	status: EXPEDIENT_STATUS
+	@ManyToOne(
+		() => ExpedientStatus,
+		(matterType) => matterType.expedients,
+	)
+	status: ExpedientStatus
 
 	@Column({
 		type: 'varchar',
@@ -136,13 +135,6 @@ export class Expedient implements IExpedient {
 
 	@UpdateDateColumn()
 	updatedAt: Date
-
-	@BeforeInsert()
-	defaultStatus() {
-		if (!this.status) {
-			this.status = EXPEDIENT_STATUS.EN_EJECUCION
-		}
-	}
 
 	constructor(id?: string) {
 		if (id) {

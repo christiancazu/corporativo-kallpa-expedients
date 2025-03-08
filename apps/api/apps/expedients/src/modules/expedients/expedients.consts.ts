@@ -1,1 +1,1 @@
-export const expedientByTextFilterableFields = ['subject', 'process', 'court']
+export const expedientByTextFilterableFields = ['subject', 'court']
