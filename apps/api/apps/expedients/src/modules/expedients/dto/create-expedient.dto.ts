@@ -1,4 +1,4 @@
-import { EXPEDIENT_STATUS, FIELD } from '@expedients/shared'
+import { FIELD, JUDICIAL_PROCESSES_INSTANCES } from '@expedients/shared'
 import { Type } from 'class-transformer'
 import {
 	IsArray,
@@ -11,7 +11,9 @@ import {
 	ValidateNested,
 } from 'class-validator'
 import { CreatePartDto } from '../../parts/dto/create-part.dto'
-import { EsUsuarioGrupoNombre } from '../validators/test.validator'
+import { ValidateExpedientStatus } from '../validators/expedient-status.validator'
+import { ValidateExpedientType } from '../validators/expedient-type.validator'
+import { ValidateMatterType } from '../validators/matter-type.validator'
 
 export class CreateExpedientDto {
 	@IsNotEmpty()
@@ -20,30 +22,38 @@ export class CreateExpedientDto {
 
 	@IsNotEmpty()
 	@IsString()
-	@MaxLength(FIELD.EXPEDIENT_SUBJECT_MAX_LENGTH)
-	subject: string
+	@MaxLength(FIELD.EXPEDIENT_PROCEDURE_MAX_LENGTH)
+	procedure?: string
 
 	@IsString()
 	@MaxLength(FIELD.EXPEDIENT_ENTITY_MAX_LENGTH)
-	@EsUsuarioGrupoNombre()
+	@ValidateExpedientType()
 	entity?: string
 
-	@IsUUID()
-	@EsUsuarioGrupoNombre()
-	processTypeId?: string
-
-	@IsNotEmpty()
-	@IsString()
+	@ValidateExpedientType()
 	@MaxLength(FIELD.EXPEDIENT_COURT_MAX_LENGTH)
 	court: string
 
-	@IsOptional()
-	@IsEnum(EXPEDIENT_STATUS)
-	status?: EXPEDIENT_STATUS
+	@IsUUID()
+	@ValidateExpedientType()
+	processTypeId?: string
+
+	@IsUUID()
+	@ValidateMatterType('id')
+	matterTypeId?: string
+
+	@IsUUID()
+	@ValidateExpedientStatus('id')
+	statusId?: string
 
 	@IsOptional()
 	@IsString()
 	statusDescription?: string
+
+	@ValidateExpedientType()
+	@IsOptional()
+	@IsEnum(JUDICIAL_PROCESSES_INSTANCES)
+	instance?: JUDICIAL_PROCESSES_INSTANCES
 
 	@IsOptional()
 	@IsUUID()

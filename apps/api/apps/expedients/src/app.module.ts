@@ -56,6 +56,8 @@ import { UsersModule } from './modules/users/users.module'
 
 		ScheduleModule.forRoot(),
 
+		AuthModule,
+
 		UsersModule,
 
 		ExpedientsModule,
@@ -65,8 +67,6 @@ import { UsersModule } from './modules/users/users.module'
 		ReviewsModule,
 
 		DocumentsModule,
-
-		AuthModule,
 
 		EventsModule,
 

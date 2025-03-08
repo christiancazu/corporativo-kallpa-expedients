@@ -31,7 +31,8 @@ export const useExpedientsState = () => {
 	}).data
 
 	const isExpedientEmpresa = useMemo(
-		() => currentExpedientType?.toUpperCase() === EXPEDIENT_TYPE.EMPRESA,
+		() =>
+			currentExpedientType?.toUpperCase() === EXPEDIENT_TYPE.JUDICIAL_PROCESSES,
 		[currentExpedientType],
 	)
 

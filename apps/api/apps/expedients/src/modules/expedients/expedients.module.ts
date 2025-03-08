@@ -4,14 +4,19 @@ import { ExecutionContextHost } from '@nestjs/core/helpers/execution-context-hos
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { Part } from '../parts/entities/part.entity'
 import { Expedient } from './entities/expedient.entity'
-import { ExpedientsAsesoriaController } from './expedients-asesoria.controller'
-import { ExpedientsEmpresaController } from './expedients-empresa.controller'
+import { ExpedientsConsultancyController } from './expedients-consultancy.controller'
+import { ExpedientsInvestigationProcessesController } from './expedients-investigation-processes.controller'
+import { ExpedientsJudicialProcessesController } from './expedients-judicial-processes.controller'
 import { ExpedientsController } from './expedients.controller'
 import { ExpedientsService } from './expedients.service'
+import { ExpedientStatus } from './modules/expedient-status/entities/expedient-status.entity'
 import { ExpedientStatusModule } from './modules/expedient-status/expedient-status.module'
+import { ExpedientStatusService } from './modules/expedient-status/expedient-status.service'
 import { MatterTypesModule } from './modules/matter-types/matter-types.module'
 import { ProcessTypesModule } from './modules/process-types/process-types.module'
-import { UsuarioGrupoNombre } from './validators/test.validator'
+import { ExpedientStatusValidator } from './validators/expedient-status.validator'
+import { ExpedientTypeValidator } from './validators/expedient-type.validator'
+import { MatterTypeValidator } from './validators/matter-type.validator'
 
 @Module({
 	imports: [
@@ -22,18 +27,22 @@ import { UsuarioGrupoNombre } from './validators/test.validator'
 	],
 	controllers: [
 		ExpedientsController,
-		ExpedientsEmpresaController,
-		ExpedientsAsesoriaController,
+		ExpedientsJudicialProcessesController,
+		ExpedientsInvestigationProcessesController,
+		ExpedientsConsultancyController,
 	],
 	providers: [
 		ExpedientsService,
 		ExecutionContextHost,
-		UsuarioGrupoNombre,
+		ExpedientStatusService,
+		ExpedientTypeValidator,
+		ExpedientStatusValidator,
+		MatterTypeValidator,
 		{
 			provide: APP_INTERCEPTOR,
-			useClass: UsuarioGrupoNombre,
+			useClass: ExpedientTypeValidator,
 		},
 	],
-	exports: [ExpedientsService],
+	exports: [TypeOrmModule, ExpedientsService, ExpedientStatusService],
 })
 export class ExpedientsModule {}

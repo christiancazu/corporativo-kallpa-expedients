@@ -13,4 +13,8 @@ export class ExpedientStatusService {
 	findAll() {
 		return this._repository.find()
 	}
+
+	getExpedientStatusOtros() {
+		return this._repository.findOne({ where: { description: 'Otros' } })
+	}
 }

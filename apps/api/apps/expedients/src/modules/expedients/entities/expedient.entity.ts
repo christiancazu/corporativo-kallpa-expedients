@@ -1,4 +1,9 @@
-import { EXPEDIENT_TYPE, FIELD, IExpedient } from '@expedients/shared'
+import {
+	EXPEDIENT_TYPE,
+	FIELD,
+	IExpedient,
+	JUDICIAL_PROCESSES_INSTANCES,
+} from '@expedients/shared'
 import {
 	Column,
 	CreateDateColumn,
@@ -26,29 +31,37 @@ export class Expedient implements IExpedient {
 		type: 'varchar',
 		length: FIELD.EXPEDIENT_CODE_MAX_LENGTH,
 	})
-	code: string
+	code: string // [ASESORIA] -> EMPRESA | [PROCESOS JUDICIALES] Expediente | [PROCESOS DE INVESTIGACION] CARPETA FISCAL
 
 	@Column({
 		type: 'enum',
 		name: 'type',
 		enumName: 'expedient_type',
 		enum: EXPEDIENT_TYPE,
-		default: EXPEDIENT_TYPE.EMPRESA,
+		nullable: true,
 	})
 	type: EXPEDIENT_TYPE
 
 	@Column({
 		type: 'varchar',
-		length: FIELD.EXPEDIENT_SUBJECT_MAX_LENGTH,
+		length: FIELD.EXPEDIENT_PROCEDURE_MAX_LENGTH,
+		nullable: true,
 	})
-	subject: string
+	procedure: string | null // [ASESORIA] trámite/consulta
 
 	@Column({
 		type: 'varchar',
 		length: FIELD.EXPEDIENT_ENTITY_MAX_LENGTH,
 		nullable: true,
 	})
-	entity: string
+	entity: string | null // [ASESORIA]
+
+	@Column({
+		type: 'varchar',
+		length: FIELD.EXPEDIENT_COURT_MAX_LENGTH,
+		nullable: true,
+	})
+	court: string | null // [PROCESOS JUDICIALES] corte | [PROCESOS DE INVESTIGACION] fiscalía
 
 	@ManyToOne(
 		() => ProcessType,
@@ -62,12 +75,6 @@ export class Expedient implements IExpedient {
 	)
 	matterType: MatterType
 
-	@Column({
-		type: 'varchar',
-		length: FIELD.EXPEDIENT_COURT_MAX_LENGTH,
-	})
-	court: string
-
 	@ManyToOne(
 		() => ExpedientStatus,
 		(matterType) => matterType.expedients,
@@ -79,7 +86,16 @@ export class Expedient implements IExpedient {
 		length: FIELD.EXPEDIENT_STATUS_DESCRIPTION_MAX_LENGTH,
 		nullable: true,
 	})
-	statusDescription: string
+	statusDescription: string | null
+
+	@Column({
+		type: 'enum',
+		name: 'instance',
+		enumName: 'expedient_instance',
+		enum: JUDICIAL_PROCESSES_INSTANCES,
+		nullable: true,
+	})
+	instance: JUDICIAL_PROCESSES_INSTANCES
 
 	@ManyToOne(
 		() => User,

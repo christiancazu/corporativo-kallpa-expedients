@@ -16,20 +16,19 @@ import { CreateExpedientDto } from './dto/create-expedient.dto'
 import { FindExpedientDto } from './dto/find-expedient.dto'
 import { UpdateExpedientDto } from './dto/update-expedient.dto'
 import { ExpedientsService } from './expedients.service'
-import { ExpedientTypeGuard } from './guards/expedient-type.guard'
+import { SetExpedientType } from './guards/expedient-type.guard'
 
-@Controller('asesoria')
-@ExpedientTypeGuard(EXPEDIENT_TYPE.ASESORIA)
-export class ExpedientsAsesoriaController {
+@Controller('investigation-processes')
+@SetExpedientType(EXPEDIENT_TYPE.INVESTIGATION_PROCESSES)
+export class ExpedientsInvestigationProcessesController {
 	constructor(private readonly expedientsService: ExpedientsService) {}
 
 	@Post()
 	@HttpCode(201)
-	create(
-		@Body() createExpedientDto: CreateExpedientDto,
-		@UserRequest() user: User,
-	) {
-		return this.expedientsService.create(user, createExpedientDto)
+	create(@Body() dto: CreateExpedientDto, @UserRequest() user: User) {
+		const { entity, procedure, instance, ...availableFieldsDto } = dto
+
+		return this.expedientsService.create(user, availableFieldsDto)
 	}
 
 	@Get()
@@ -58,6 +57,8 @@ export class ExpedientsAsesoriaController {
 		@Body() dto: UpdateExpedientDto,
 		@UserRequest() user: User,
 	) {
-		return this.expedientsService.update(user, dto, id)
+		const { entity, procedure, instance, ...availableFieldsDto } = dto
+
+		return this.expedientsService.update(user, availableFieldsDto, id)
 	}
 }

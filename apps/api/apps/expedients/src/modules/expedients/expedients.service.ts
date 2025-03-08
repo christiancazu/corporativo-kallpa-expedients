@@ -1,4 +1,7 @@
-import { EXPEDIENT_TYPE } from '@expedients/shared'
+import {
+	EXPEDIENT_TYPE,
+	JUDICIAL_PROCESSES_INSTANCES,
+} from '@expedients/shared'
 import {
 	BadRequestException,
 	Inject,
@@ -15,8 +18,10 @@ import type { CreateExpedientDto } from './dto/create-expedient.dto'
 import type { FindExpedientDto } from './dto/find-expedient.dto'
 import type { UpdateExpedientDto } from './dto/update-expedient.dto'
 import { Expedient } from './entities/expedient.entity'
-import { expedientByTextFilterableFields } from './expedients.consts'
 import { REQUEST_EXPEDIENT_TYPE } from './guards/expedient-type.guard'
+import { ExpedientStatus } from './modules/expedient-status/entities/expedient-status.entity'
+import { ExpedientStatusService } from './modules/expedient-status/expedient-status.service'
+import { MatterType } from './modules/matter-types/entities/matter-types.entity'
 import { ProcessType } from './modules/process-types/entities/process-types.entity'
 
 // TODO: cuando se borra una review poner la ultima la mas reciente
@@ -31,39 +36,60 @@ export class ExpedientsService {
 
 		@Inject(REQUEST)
 		private readonly _request: any,
+
+		private readonly _expedientStatusService: ExpedientStatusService,
 	) {}
 
-	async create(user: User, dto: CreateExpedientDto, expedient?: Expedient) {
+	async create(
+		user: User,
+		dto: Partial<CreateExpedientDto>,
+		expedient?: Expedient,
+	) {
 		const { parts, ...restExpedient } = dto
 
-		const expedientCreated = this._expedientRepository.create({
+		const createdExpedient = this._expedientRepository.create({
 			...restExpedient,
 			id: expedient?.id,
 		})
 
 		if (!expedient) {
-			expedientCreated.createdByUser = user
+			createdExpedient.createdByUser = user
 		}
 
-		expedientCreated.updatedByUser = user
+		createdExpedient.updatedByUser = user
 
 		if (dto.assignedLawyerId) {
-			expedientCreated.assignedLawyer = new User(dto.assignedLawyerId)
+			createdExpedient.assignedLawyer = new User(dto.assignedLawyerId)
 		}
 
 		if (dto.assignedAssistantId) {
-			expedientCreated.assignedAssistant = new User(dto.assignedAssistantId)
+			createdExpedient.assignedAssistant = new User(dto.assignedAssistantId)
 		}
 
 		if (dto.processTypeId) {
-			expedientCreated.processType = new ProcessType(dto.processTypeId)
+			createdExpedient.processType = new ProcessType(dto.processTypeId)
+		}
+
+		if (dto.matterTypeId) {
+			createdExpedient.matterType = new MatterType(dto.matterTypeId)
+		}
+
+		if (dto.statusId) {
+			createdExpedient.status = new ExpedientStatus(dto.statusId)
+
+			const expedientStatusOtros =
+				await this._expedientStatusService.getExpedientStatusOtros()
+
+			if (dto.statusId === expedientStatusOtros?.id) {
+				createdExpedient.statusDescription = null
+			}
 		}
 
 		let deletedParts: Part[] = []
 
 		if (expedient) {
 			deletedParts = expedient?.parts.reduce<Part[]>((acc, part) => {
-				const existsPart = parts.find((p) => p.id === part.id)
+				const existsPart = parts!.find((p) => p.id === part.id)
 
 				if (!existsPart) {
 					acc.push(part)
@@ -72,30 +98,24 @@ export class ExpedientsService {
 			}, [])
 		}
 
-		if (this.getExpedientType() === EXPEDIENT_TYPE.EMPRESA) {
-			expedientCreated.entity = null!
-		} else {
-			expedientCreated.processType = null!
-		}
-
 		try {
-			expedientCreated.type = this.getExpedientType()
+			createdExpedient.type = this.getExpedientType()
 
-			const expedientSaved =
-				await this._expedientRepository.save(expedientCreated)
+			const savedExpedient =
+				await this._expedientRepository.save(createdExpedient)
 
 			if (parts?.length) {
-				const result = this._partsRepository.create(
-					parts.map((part) => ({ ...part, expedient: expedientSaved })),
+				const createdParts = this._partsRepository.create(
+					parts.map((part) => ({ ...part, expedient: savedExpedient })),
 				)
 
-				await this._partsRepository.save(result)
+				await this._partsRepository.save(createdParts)
 			}
 
 			if (deletedParts.length) {
 				await this._partsRepository.remove(deletedParts)
 			}
-			return expedientSaved
+			return savedExpedient
 		} catch (error) {
 			throw new UnprocessableEntityException(
 				error?.driverError?.detail ?? error,
@@ -103,15 +123,17 @@ export class ExpedientsService {
 		}
 	}
 
-	async findAll(query: FindExpedientDto): Promise<Expedient[]> {
-		const { text, updatedByUser, status } = query
+	async findAll(dto: FindExpedientDto): Promise<Expedient[]> {
+		const { text, updatedByUser, status, matterType } = dto
 
 		const qb = this._expedientRepository
 			.createQueryBuilder('expedients')
 			.select('expedients')
-			.leftJoin('expedients.processType', 'processType')
-			.addSelect(['processType.id', 'processType.description'])
+			.leftJoinAndSelect('expedients.processType', 'processType')
+			.leftJoinAndSelect('expedients.matterType', 'matterType')
+			.leftJoinAndSelect('expedients.status', 'status')
 			.leftJoin('expedients.updatedByUser', 'updatedByUser')
+			.leftJoinAndSelect('expedients.parts', 'parts')
 			.addSelect([
 				'updatedByUser.firstName',
 				'updatedByUser.surname',
@@ -129,7 +151,6 @@ export class ExpedientsService {
 				'assignedAssistant.surname',
 				'assignedLawyer.avatar',
 			])
-			.leftJoinAndSelect('expedients.parts', 'parts')
 			.where('expedients.type = :type', { type: this.getExpedientType() })
 
 		/** If exists filter: text will filter by each filterable field */
@@ -139,7 +160,17 @@ export class ExpedientsService {
 					_qb.where('expedients.code::text ILIKE :qcode', {
 						qcode: `%${text}%`,
 					})
-					for (const field of expedientByTextFilterableFields) {
+
+					if (this.getExpedientType() !== EXPEDIENT_TYPE.CONSULTANCY) {
+						_qb.orWhere(
+							'"processType".description::text ILIKE :qProcessTypeDescription',
+							{
+								qProcessTypeDescription: `%${text}%`,
+							},
+						)
+					}
+
+					for (const field of this.defaultFieldsFilterablesByText()) {
 						_qb.orWhere(`expedients.${field}::text ILIKE :q${field}`, {
 							[`q${field}`]: `%${text}%`,
 						})
@@ -157,8 +188,14 @@ export class ExpedientsService {
 
 		/** If exists filter: status will filter by it */
 		if (status) {
-			qb.andWhere('expedients.status = :status', {
-				status,
+			qb.andWhere('status.description = :statusDescription', {
+				statusDescription: status,
+			})
+		}
+
+		if (matterType) {
+			qb.andWhere('matterType.description = :matterTypeDescription', {
+				matterTypeDescription: matterType,
 			})
 		}
 
@@ -184,6 +221,18 @@ export class ExpedientsService {
 		qb.orderBy('expedients.updatedAt', 'DESC')
 
 		return await qb.getMany()
+	}
+
+	private defaultFieldsFilterablesByText(): string[] {
+		const entityType = this.getExpedientType()
+
+		switch (entityType) {
+			case EXPEDIENT_TYPE.CONSULTANCY:
+				return ['entity', 'procedure']
+
+			default:
+				return ['court']
+		}
 	}
 
 	findOneWithUsers(id: string) {

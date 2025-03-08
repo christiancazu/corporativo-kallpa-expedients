@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common'
 import { ExpedientStatusService } from './expedient-status.service'
 
-@Controller('expedient-status')
+@Controller('expedients-status')
 export class ExpedientStatusController {
 	constructor(private readonly _service: ExpedientStatusService) {}
 

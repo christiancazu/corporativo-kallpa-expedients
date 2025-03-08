@@ -1,14 +1,18 @@
-import { EXPEDIENT_STATUS } from '@expedients/shared'
-import { IsEnum, IsOptional } from 'class-validator'
+import { IFindExpedientDto } from '@expedients/shared'
+import { IsOptional } from 'class-validator'
+import { ValidateExpedientStatus } from '../validators/expedient-status.validator'
 
-export class FindExpedientDto {
+export class FindExpedientDto implements IFindExpedientDto {
 	@IsOptional()
-	text: string
-
-	@IsOptional()
-	updatedByUser: string
+	text?: string
 
 	@IsOptional()
-	@IsEnum(EXPEDIENT_STATUS)
-	status?: EXPEDIENT_STATUS
+	updatedByUser?: string
+
+	@IsOptional()
+	matterType?: string
+
+	@IsOptional()
+	@ValidateExpedientStatus('description')
+	status?: string
 }

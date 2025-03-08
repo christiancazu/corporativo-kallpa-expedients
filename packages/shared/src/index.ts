@@ -7,7 +7,7 @@ export const FIELD = {
 	USER_LAST_NAME_MAX_LENGTH: 50,
 
 	EXPEDIENT_CODE_MAX_LENGTH: 100,
-	EXPEDIENT_SUBJECT_MAX_LENGTH: 100,
+	EXPEDIENT_PROCEDURE_MAX_LENGTH: 100,
 	EXPEDIENT_ENTITY_MAX_LENGTH: 100,
 	EXPEDIENT_COURT_MAX_LENGTH: 100,
 	EXPEDIENT_STATUS_DESCRIPTION_MAX_LENGTH: 255,
@@ -54,8 +54,9 @@ export enum EXPEDIENT_STATUS {
 }
 
 export enum EXPEDIENT_TYPE {
-	EMPRESA = 'EMPRESA',
-	ASESORIA = 'ASESORIA',
+	CONSULTANCY = 'Asesoría',
+	JUDICIAL_PROCESSES = 'Procesos judiciales',
+	INVESTIGATION_PROCESSES = 'Procesos de investigación',
 }
 
 export enum PENAL_PART_TYPES {
@@ -81,6 +82,12 @@ export enum USER_ROLES {
 	PRACTICANTE = 'PRACTICANTE',
 }
 
+export enum JUDICIAL_PROCESSES_INSTANCES {
+	FIRST_INSTANCE = 'Primera Instancia',
+	SECOND_INSTANCE = 'Segunda Instancia',
+	RATING = 'Tasación',
+}
+
 export interface IUser {
 	id: string
 	email: string
@@ -102,14 +109,16 @@ export interface IUser {
 
 export interface IExpedient {
 	id: string
-	code: string
+	code: string // [ASESORIA] -> EMPRESA | [PROCESOS JUDICIALES] Expediente | [PROCESOS DE INVESTIGACION] CARPETA FISCAL
 	type: EXPEDIENT_TYPE
-	subject: string
-	entity: string
-	court: string
+	procedure: string | null // [ASESORIA] -> trámite/consulta
+	entity: string | null // [ASESORIA]
+	court: string | null // [PROCESOS JUDICIALES] corte | [PROCESOS DE INVESTIGACION] fiscalía
 	processType: IProcessType
+	matterType: IMatterType
 	status: IExpedientStatus
-	statusDescription: string
+	statusDescription: string | null
+	instance: JUDICIAL_PROCESSES_INSTANCES
 	assignedLawyer: IUser
 	assignedAssistant: IUser
 	createdByUser: IUser
@@ -175,4 +184,11 @@ export interface IEvent {
 	createdByUser: IUser
 	scheduledAt: Date | string
 	expedient: IExpedient
+}
+
+export interface IFindExpedientDto {
+	text?: string
+	updatedByUser?: string
+	matterType?: string
+	status?: string
 }

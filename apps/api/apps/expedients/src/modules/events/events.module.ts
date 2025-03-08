@@ -1,11 +1,13 @@
 import { SETTINGS } from '@expedients/shared'
 import { BullModule } from '@nestjs/bullmq'
-import { Module } from '@nestjs/common'
+import { Global, Module } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { ClientsModule, Transport } from '@nestjs/microservices'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { Expedient } from '../expedients/entities/expedient.entity'
+import { ExpedientsModule } from '../expedients/expedients.module'
 import { ExpedientsService } from '../expedients/expedients.service'
+import { ExpedientStatusService } from '../expedients/modules/expedient-status/expedient-status.service'
 import { Notification } from '../notifications/entities/notification.entity'
 import { NotificationsService } from '../notifications/notifications.service'
 import { Part } from '../parts/entities/part.entity'
@@ -18,7 +20,8 @@ import { EVENT_QUEUE } from './types'
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([Expedient, Part, Notification, Event]),
+		TypeOrmModule.forFeature([Part, Notification, Event]),
+		ExpedientsModule,
 		BullModule.registerQueue({
 			name: EVENT_QUEUE,
 		}),
