@@ -7,12 +7,12 @@ import { getMatterTypes } from '../services/api.service'
 interface Props {
 	label?: string
 	name: [number, string] | string
-	rules?: [{ required: boolean; message: string }]
+	rules?: [{ required: boolean; message?: string }]
 	onChange?: () => void
 	fieldNames?: SelectProps['fieldNames']
 }
 
-const MatterTypeSelect: React.FC<Props> = ({
+const MatterTypesSelect: React.FC<Props> = ({
 	label,
 	fieldNames = { value: 'value', label: 'label' },
 	...props
@@ -47,7 +47,6 @@ const MatterTypeSelect: React.FC<Props> = ({
 					</Tag>
 				)}
 				options={data}
-				placeholder="Materia"
 				style={{ width: '100%' }}
 				onChange={props.onChange}
 			/>
@@ -55,4 +54,4 @@ const MatterTypeSelect: React.FC<Props> = ({
 	)
 }
 
-export default MatterTypeSelect
+export default MatterTypesSelect

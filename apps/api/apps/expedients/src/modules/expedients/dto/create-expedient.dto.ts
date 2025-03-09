@@ -20,20 +20,21 @@ export class CreateExpedientDto {
 	@MaxLength(FIELD.EXPEDIENT_CODE_MAX_LENGTH)
 	code: string
 
-	@IsNotEmpty()
-	@IsString()
+	@IsOptional()
 	@MaxLength(FIELD.EXPEDIENT_PROCEDURE_MAX_LENGTH)
 	procedure?: string
 
-	@IsString()
+	@IsOptional()
 	@MaxLength(FIELD.EXPEDIENT_ENTITY_MAX_LENGTH)
 	@ValidateExpedientType()
 	entity?: string
 
+	@IsOptional()
 	@ValidateExpedientType()
 	@MaxLength(FIELD.EXPEDIENT_COURT_MAX_LENGTH)
 	court: string
 
+	@IsOptional()
 	@IsUUID()
 	@ValidateExpedientType()
 	processTypeId?: string
@@ -47,11 +48,11 @@ export class CreateExpedientDto {
 	statusId?: string
 
 	@IsOptional()
-	@IsString()
+	@MaxLength(FIELD.EXPEDIENT_STATUS_DESCRIPTION_MAX_LENGTH)
 	statusDescription?: string
 
-	@ValidateExpedientType()
 	@IsOptional()
+	@ValidateExpedientType()
 	@IsEnum(JUDICIAL_PROCESSES_INSTANCES)
 	instance?: JUDICIAL_PROCESSES_INSTANCES
 

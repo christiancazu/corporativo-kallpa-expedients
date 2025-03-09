@@ -7,12 +7,12 @@ import { getProcessTypes } from '../services/api.service'
 interface Props {
 	label?: string
 	name: [number, string] | string
-	rules?: [{ required: boolean; message: string }]
+	rules?: [{ required: boolean; message?: string }]
 	className?: string
 }
 
 const ProcessTypesSelect: React.FC<Props & FormItemInputProps> = ({
-	label = 'Tipo de proceso',
+	label = 'Proceso',
 	...props
 }) => {
 	const { data, isFetching } = useQuery({
@@ -32,7 +32,6 @@ const ProcessTypesSelect: React.FC<Props & FormItemInputProps> = ({
 				loading={isFetching}
 				options={data}
 				style={{ width: '100%' }}
-				placeholder="Tipo de proceso"
 			/>
 		</Form.Item>
 	)

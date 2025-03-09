@@ -36,7 +36,6 @@ const UsersSelect: React.FC<Props> = ({ ...props }) => {
 					})) || []
 				}
 				optionRender={(option) => <UserAvatarName user={option.data} />}
-				placeholder={props.placeholder}
 				className="w-full"
 				filterOption={(input, option) =>
 					((option?.label as string) ?? '')

@@ -11,7 +11,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { useExpedientsState } from '../hooks/useExpedientsState'
 import ExpedientStatusSelect from './ExpedientStatusSelect'
-import MatterTypeSelect from './MatterTypeSelect'
+import MatterTypesSelect from './MatterTypeSelect'
 import UsersSelect from './UsersSelect'
 
 interface Props {
@@ -138,7 +138,7 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 					</Col>
 
 					<Col md={4} sm={24}>
-						<MatterTypeSelect
+						<MatterTypesSelect
 							fieldNames={{ label: 'label', value: 'label' }}
 							name={'matterType'}
 							onChange={handleOnChange}

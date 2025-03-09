@@ -76,8 +76,8 @@ const TableExpedients: React.FC<Props> = ({
 		},
 		{
 			title: 'Materia',
-			dataIndex: 'subject',
-			key: 'subject',
+			dataIndex: 'matterType',
+			key: 'matterType',
 			width: 140,
 			render: (_: any, expedient: IExpedient) =>
 				expedient.matterType ? (
@@ -124,7 +124,12 @@ const TableExpedients: React.FC<Props> = ({
 			key: 'status',
 			width: 140,
 			align: 'center',
-			render: (_, expedient) => <Tag>{expedient.status?.description}</Tag>,
+			render: (_, expedient) =>
+				expedient.status?.description !== 'Otros' ? (
+					<Tag>{expedient.status?.description}</Tag>
+				) : (
+					<>{expedient.statusDescription}</>
+				),
 		},
 		{
 			title: 'Asignados',

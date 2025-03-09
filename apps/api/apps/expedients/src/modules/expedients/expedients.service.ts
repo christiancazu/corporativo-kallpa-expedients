@@ -77,7 +77,7 @@ export class ExpedientsService {
 			const expedientStatusOtros =
 				await this._expedientStatusService.getExpedientStatusOtros()
 
-			if (dto.statusId === expedientStatusOtros?.id) {
+			if (dto.statusId !== expedientStatusOtros?.id) {
 				createdExpedient.statusDescription = null
 			}
 		}

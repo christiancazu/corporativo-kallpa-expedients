@@ -164,17 +164,17 @@ const router = createBrowserRouter(
 						},
 						{
 							path: 'crear',
-							handle: 'Crear proceso judicial',
+							handle: 'Crear proceso de investigación',
 							element: <ExpedientsCreateView />,
 						},
 						{
 							path: ':id/editar',
-							handle: 'Editar proceso judicial',
+							handle: 'Editar proceso de investigación',
 							element: <ExpedientsIdEditView />,
 						},
 						{
 							path: ':id',
-							handle: 'Detalle de proceso judicial',
+							handle: 'Detalle de proceso de investigación',
 							element: <ExpedientView />,
 						},
 					],

@@ -1,5 +1,4 @@
 import {
-	EXPEDIENT_TYPE,
 	EXPEDIENT_TYPE_CODE_NAME,
 	EXPEDIENT_TYPE_FRONTEND_TO_BACKEND_ENDPOINT,
 	EXPEDIENT_TYPE_NAME_SINGULAR,
@@ -40,13 +39,6 @@ export const useExpedientsState = () => {
 		initialData: getExpedientTypeByRoutePath(),
 	}).data
 
-	const isExpedientEmpresa = useMemo(
-		() =>
-			currentExpedientTypeRoute?.toUpperCase() ===
-			EXPEDIENT_TYPE.JUDICIAL_PROCESSES,
-		[currentExpedientTypeRoute],
-	)
-
 	const currentExpedientTypeName = useMemo(
 		() => FRONTEND_ROUTES_AS_EXPEDIENT_TYPE_NAME[currentExpedientTypeRoute],
 		[currentExpedientTypeRoute],
@@ -69,7 +61,6 @@ export const useExpedientsState = () => {
 	)
 
 	return {
-		isExpedientEmpresa,
 		currentExpedientTypeRoute,
 		currentExpedientTypeName,
 		currentExpedientTypeNameSingular,

@@ -269,7 +269,7 @@ const ExpedientView: React.FC = () => {
 							<Col md={16} xs={24}>
 								<p className="mb-3">
 									<strong>Materia:</strong>{' '}
-									<Tag color={data.matterType.color}>
+									<Tag color={data.matterType?.color}>
 										{data.matterType?.description}
 									</Tag>
 								</p>
@@ -301,6 +301,14 @@ const ExpedientView: React.FC = () => {
 									<strong>Última actualización:</strong>
 									{` ${data.updatedAt}`}
 								</p>
+
+								{currentExpedientTypeName ===
+									EXPEDIENT_TYPE.JUDICIAL_PROCESSES && (
+									<p className="mb-3">
+										<strong>Instancia:</strong>
+										{` ${data.instance}`}
+									</p>
+								)}
 
 								<p className="mb-3">
 									<strong className="mb-3">Partes:</strong>

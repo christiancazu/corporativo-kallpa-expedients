@@ -1,10 +1,19 @@
 import { CloseOutlined, FolderAddOutlined } from '@ant-design/icons'
+import {
+	EXPEDIENT_TYPE,
+	EXPEDIENT_TYPE_COURT_NAME,
+	IExpedientStatus,
+} from '@expedients/shared'
 import { Button, Card, Col, Form, Grid, Input, Row } from 'antd'
 import type { FormInstance } from 'antd/lib'
+import { useMemo } from 'react'
 import ExpedientStatusSelect from '../../components/ExpedientStatusSelect'
+import InstanceTypesSelect from '../../components/InstanceTypesSelect'
+import MatterTypesSelect from '../../components/MatterTypeSelect'
 import PartsTypeSelect from '../../components/PartsTypeSelect'
 import ProcessTypesSelect from '../../components/ProcessTypesSelect '
 import UsersSelect from '../../components/UsersSelect'
+import { queryClient } from '../../config/queryClient'
 import { useExpedientsState } from '../../hooks/useExpedientsState'
 
 interface Props {
@@ -23,8 +32,21 @@ export default function ExpedientForm({
 }: Props): React.ReactNode {
 	const screens = useBreakpoint()
 
-	const { isExpedientEmpresa, currentExpedientTypeCodeName } =
-		useExpedientsState()
+	const {
+		currentExpedientTypeCodeName,
+		currentExpedientTypeName,
+		currentExpedientTypeRoute,
+	} = useExpedientsState()
+
+	const statusId = Form.useWatch('statusId', form)
+
+	const isOtrosStatus = useMemo(() => {
+		return (
+			queryClient
+				.getQueryData<IExpedientStatus[]>(['expedient-status'])
+				?.find((status) => status.id === statusId)?.description === 'Otros'
+		)
+	}, [statusId])
 
 	return (
 		<Form
@@ -39,51 +61,70 @@ export default function ExpedientForm({
 				label={currentExpedientTypeCodeName}
 				name="code"
 				className="capitalize"
-				rules={[{ required: true, message: 'El campo es requerido' }]}
+				rules={[{ required: true }]}
 			>
 				<Input />
 			</Form.Item>
 
-			<Form.Item
+			<MatterTypesSelect
 				label="Materia"
-				name="subject"
-				rules={[{ required: true, message: 'El campo es requerido' }]}
-			>
-				<Input />
-			</Form.Item>
+				name="matterTypeId"
+				rules={[{ required: true }]}
+			/>
 
-			<Form.Item
-				label={isExpedientEmpresa ? 'Juzgado' : 'Trámite/Consulta'}
-				name="court"
-				rules={[{ required: true, message: 'El campo es requerido' }]}
-			>
-				<Input />
-			</Form.Item>
-
-			{isExpedientEmpresa ? (
-				<ProcessTypesSelect
-					name="processTypeId"
-					rules={[{ required: true, message: 'El campo es requerido' }]}
-				/>
+			{currentExpedientTypeName !== EXPEDIENT_TYPE.CONSULTANCY ? (
+				<>
+					<ProcessTypesSelect
+						name="processTypeId"
+						rules={[{ required: true }]}
+					/>
+					<Form.Item
+						label={EXPEDIENT_TYPE_COURT_NAME[currentExpedientTypeRoute]}
+						name="court"
+						rules={[{ required: true }]}
+					>
+						<Input />
+					</Form.Item>
+				</>
 			) : (
+				<>
+					<Form.Item label="Entidad" name="entity" rules={[{ required: true }]}>
+						<Input />
+					</Form.Item>
+
+					<Form.Item
+						label="Trámite/Consulta"
+						name="procedure"
+						rules={[{ required: true }]}
+					>
+						<Input />
+					</Form.Item>
+				</>
+			)}
+
+			{currentExpedientTypeName === EXPEDIENT_TYPE.JUDICIAL_PROCESSES && (
+				<InstanceTypesSelect
+					label="Instancia"
+					name="instance"
+					rules={[{ required: true }]}
+				/>
+			)}
+
+			<ExpedientStatusSelect
+				label="Estado"
+				name="statusId"
+				rules={[{ required: true }]}
+			/>
+
+			{isOtrosStatus && (
 				<Form.Item
-					label={'Entidad'}
-					name="entity"
-					rules={[{ required: true, message: 'El campo es requerido' }]}
+					label="Descripción de estado"
+					name="statusDescription"
+					rules={[{ required: true }]}
 				>
 					<Input />
 				</Form.Item>
 			)}
-
-			<ExpedientStatusSelect
-				label={'Estado'}
-				name={'status'}
-				rules={[{ required: true, message: 'El campo es requerido' }]}
-			/>
-
-			<Form.Item label="Descripción de estado" name="statusDescription">
-				<Input />
-			</Form.Item>
 
 			<UsersSelect label={'Abogado asignado'} name={'assignedLawyerId'} />
 
@@ -115,9 +156,7 @@ export default function ExpedientForm({
 											labelCol={{ span: 3 }}
 											wrapperCol={{ span: 21 }}
 											name={[field.name, 'type']}
-											rules={[
-												{ required: true, message: 'El campo es requerido' },
-											]}
+											rules={[{ required: true }]}
 										/>
 
 										<Form.Item
@@ -125,9 +164,7 @@ export default function ExpedientForm({
 											name={[field.name, 'name']}
 											labelCol={{ span: 3 }}
 											wrapperCol={{ span: 21 }}
-											rules={[
-												{ required: true, message: 'El campo es requerido' },
-											]}
+											rules={[{ required: true }]}
 										>
 											<Input />
 										</Form.Item>

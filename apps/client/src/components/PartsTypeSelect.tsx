@@ -11,7 +11,7 @@ const partTypesOptions = Object.keys(PART_TYPES).map((status) => ({
 interface Props {
 	label?: string
 	name: [number, string] | string
-	rules?: [{ required: boolean; message: string }]
+	rules?: [{ required: boolean; message?: string }]
 	className?: string
 }
 

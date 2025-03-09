@@ -1,8 +1,7 @@
-import { useQuery } from '@tanstack/react-query'
+import { JUDICIAL_PROCESSES_INSTANCES } from '@expedients/shared'
 import { Form, Select, Tag } from 'antd'
 import type { SelectProps } from 'antd'
 import type React from 'react'
-import { getExpedientStatus } from '../services/api.service'
 
 interface Props {
 	label?: string
@@ -12,27 +11,21 @@ interface Props {
 	fieldNames?: SelectProps['fieldNames']
 }
 
-const ExpedientStatusSelect: React.FC<Props> = ({
+const data = Object.entries(JUDICIAL_PROCESSES_INSTANCES).map(([_, label]) => ({
+	label,
+	value: label,
+}))
+
+const InstanceTypesSelect: React.FC<Props> = ({
 	label,
 	fieldNames = { value: 'value', label: 'label' },
 	...props
 }) => {
-	const { data, isFetching } = useQuery({
-		queryKey: ['expedient-status'],
-		queryFn: () => getExpedientStatus(),
-		select: (processTypes) =>
-			processTypes.map((processType) => ({
-				label: processType.description,
-				value: processType.id,
-			})),
-	})
-
 	return (
 		<Form.Item label={label} {...props}>
 			<Select
 				allowClear
 				fieldNames={fieldNames}
-				loading={isFetching}
 				labelRender={(option) => <Tag>{option.label}</Tag>}
 				options={data}
 				style={{ width: '100%' }}
@@ -42,4 +35,4 @@ const ExpedientStatusSelect: React.FC<Props> = ({
 	)
 }
 
-export default ExpedientStatusSelect
+export default InstanceTypesSelect
