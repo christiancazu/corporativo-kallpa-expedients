@@ -21,11 +21,9 @@ interface Props {
 }
 
 const expedientTypeTextPlaceHolder = {
-	asesoria: 'Busqueda por: empresa, materia, entidad o trámite/consulta...',
-	'procesos-judiciales':
-		'Busqueda por: expediente, materia, proceso o fiscalia...',
-	'procesos-de-investigacion':
-		'Busqueda por: expediente, materia, proceso o juzgado...',
+	asesoria: 'empresa, materia, entidad o trámite/consulta...',
+	'procesos-judiciales': 'expediente, materia, proceso o fiscalia...',
+	'procesos-de-investigacion': 'expediente, materia, proceso o juzgado...',
 }
 
 const initialFormValues: IFindExpedientDto = {
@@ -44,13 +42,6 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 	const [searchParams] = useSearchParams()
 
 	useEffect(() => {
-		// const formSearchParams: IFindExpedientDto = {
-		// 	text: null,
-		// 	status: null,
-		// 	updatedByUser: null,
-		// 	matterType: null,
-		// }
-
 		for (const searchKey in initialFormValues) {
 			let value: string | string[] | null = null
 
@@ -93,6 +84,7 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 				backgroundColor: colorBgContainer,
 				borderRadius: borderRadiusLG,
 				padding: paddingMD,
+				paddingBottom: 0,
 				marginBottom: marginMD,
 			}}
 		>
@@ -102,35 +94,14 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 				onChange={handleOnChange}
 				initialValues={initialFormValues}
 				onFinish={onSearch}
+				layout="vertical"
 			>
-				<Flex justify="space-between">
-					<h3 style={{ marginBottom: marginMD }}>
-						Filtros <FilterOutlined />
-					</h3>
-
-					{canDeleteFilter && (
-						<Button
-							danger
-							icon={<ClearOutlined />}
-							iconPosition="end"
-							type="link"
-							onClick={() => {
-								form.resetFields()
-								setCanDeleteFilters(false)
-							}}
-						>
-							Restablecer filtros
-						</Button>
-					)}
-				</Flex>
-
 				<Row gutter={marginMD}>
 					<Col md={9} sm={24}>
-						<Form.Item name="text">
+						<Form.Item name="text" label="Buscar por:">
 							<Input
 								allowClear
 								placeholder={textPlaceHolder}
-								style={{ width: '100%' }}
 								suffix={<SearchOutlined />}
 								onClear={handleOnChange}
 							/>
@@ -139,6 +110,7 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 
 					<Col md={4} sm={24}>
 						<MatterTypesSelect
+							label="Materia:"
 							fieldNames={{ label: 'label', value: 'label' }}
 							name={'matterType'}
 							onChange={handleOnChange}
@@ -147,6 +119,7 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 
 					<Col md={4} sm={24}>
 						<ExpedientStatusSelect
+							label="Estado:"
 							fieldNames={{ label: 'label', value: 'label' }}
 							name={'status'}
 							onChange={handleOnChange}
@@ -155,8 +128,8 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 
 					<Col md={4} sm={24}>
 						<UsersSelect
+							label="Actualizado por:"
 							name={'updatedByUser'}
-							placeholder={'Actualizado por'}
 							onChange={(updatedByUser) => {
 								form.setFieldsValue({ updatedByUser })
 								handleOnChange()
@@ -164,8 +137,33 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 						/>
 					</Col>
 
-					<Col md={3} sm={24}>
-						<Form.Item>
+					<Col
+						md={3}
+						sm={24}
+						className={
+							canDeleteFilter
+								? 'flex flex-col justify-between'
+								: 'flex flex-col justify-end'
+						}
+					>
+						<Form.Item className="w-full">
+							<Flex justify="end">
+								{canDeleteFilter && (
+									<Button
+										danger
+										icon={<ClearOutlined />}
+										iconPosition="end"
+										style={{ transform: 'translateY(-8px)' }}
+										type="link"
+										onClick={() => {
+											form.resetFields()
+											setCanDeleteFilters(false)
+										}}
+									>
+										Quitar filtros
+									</Button>
+								)}
+							</Flex>
 							<Button
 								block
 								htmlType="submit"

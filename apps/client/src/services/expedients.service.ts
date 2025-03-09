@@ -1,4 +1,4 @@
-import { IExpedient } from '@expedients/shared'
+import { ICreateExpedientDto, IExpedient } from '@expedients/shared'
 import { useQuery } from '@tanstack/react-query'
 import { httpClient } from '../config/httpClient'
 import { useExpedientsState } from '../hooks/useExpedientsState'
@@ -24,7 +24,7 @@ export const useExpedientsService = () => {
 			.then((res) => res.data)
 	}
 
-	const createExpedient = (expedient: IExpedient) => {
+	const createExpedient = (expedient: ICreateExpedientDto) => {
 		return httpClient
 			.post(currentExpedientTypeEndpoint, expedient)
 			.then((res) => res.data)
@@ -33,7 +33,7 @@ export const useExpedientsService = () => {
 	const updateExpedient = ({
 		id,
 		expedient,
-	}: { id: string; expedient: IExpedient }): Promise<any> => {
+	}: { id: string; expedient: ICreateExpedientDto }): Promise<any> => {
 		return httpClient
 			.patch(`${currentExpedientTypeEndpoint}/${id}`, expedient)
 			.then((res) => res.data)

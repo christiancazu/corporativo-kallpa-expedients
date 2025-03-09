@@ -5,7 +5,7 @@ import type React from 'react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 
-import type { IExpedient } from '@expedients/shared'
+import type { ICreateExpedientDto, IExpedient } from '@expedients/shared'
 import NavigationBackBtn from '../components/NavigationBackBtn'
 import { useExpedientsState } from '../hooks/useExpedientsState'
 import useNotify from '../hooks/useNotification'
@@ -34,7 +34,7 @@ const ExpedientsCreateView: React.FC = () => {
 	const [open, setOpen] = useState(false)
 	const [createdExpedient, setCreatedExpedient] = useState<IExpedient>()
 	const notify = useNotify()
-	const [form] = useForm()
+	const [form] = useForm<ICreateExpedientDto>()
 
 	const { createExpedient } = useExpedientsService()
 

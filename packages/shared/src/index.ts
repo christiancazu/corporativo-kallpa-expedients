@@ -219,3 +219,24 @@ export interface IFindExpedientDto {
 	matterType?: string | null
 	status?: string | null
 }
+
+export interface ICreateExpedientDto {
+	code?: string
+	procedure?: string
+	entity?: string
+	court?: string
+	processTypeId?: string
+	matterTypeId?: string
+	statusId?: string
+	statusDescription?: string
+	instance?: JUDICIAL_PROCESSES_INSTANCES
+	assignedLawyerId?: string
+	assignedAssistantId?: string
+	parts?: ICreatePartDto[]
+}
+
+export interface ICreatePartDto {
+	name: string
+	type: PART_TYPES
+	id: string
+}

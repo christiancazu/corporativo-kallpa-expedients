@@ -3,7 +3,7 @@ import { Divider, theme } from 'antd'
 import { useEffect } from 'react'
 import { useParams } from 'react-router'
 
-import { IExpedient } from '@expedients/shared'
+import { ICreateExpedientDto, IExpedient } from '@expedients/shared'
 import { useForm } from 'antd/es/form/Form'
 import Title from 'antd/es/typography/Title'
 import { AxiosError, HttpStatusCode } from 'axios'
@@ -16,7 +16,8 @@ import ExpedientForm from '../../components/ExpedientForm'
 export default function ExpedientsIdEditView(): React.ReactNode {
 	const { id } = useParams<{ id: string }>()
 
-	const { currentExpedientTypeRoute } = useExpedientsState()
+	const { currentExpedientTypeRoute, currentExpedientTypeNameSingular } =
+		useExpedientsState()
 
 	const { getExpedient, updateExpedient } = useExpedientsService()
 
@@ -31,7 +32,7 @@ export default function ExpedientsIdEditView(): React.ReactNode {
 		marginBottom: marginMD,
 	}
 	const notify = useNotify()
-	const [form] = useForm()
+	const [form] = useForm<ICreateExpedientDto>()
 
 	const { data, isSuccess, error } = useQuery<IExpedient, AxiosError>({
 		queryKey: ['expedient', id],
@@ -45,7 +46,9 @@ export default function ExpedientsIdEditView(): React.ReactNode {
 			assignedLawyerId: data?.assignedLawyer?.id,
 			assignedAssistantId: data?.assignedAssistant?.id,
 			processTypeId: data?.processType?.id,
-		})
+			statusId: data?.status?.id,
+			matterTypeId: data?.matterType?.id,
+		} as ICreateExpedientDto)
 	}, [data, isSuccess])
 
 	const { mutate, isPending } = useMutation({
@@ -53,7 +56,9 @@ export default function ExpedientsIdEditView(): React.ReactNode {
 		mutationFn: () =>
 			updateExpedient({ id: id!, expedient: form.getFieldsValue() }),
 		onSuccess: () => {
-			notify({ message: 'Expediente actualizado con éxito' })
+			notify({
+				message: `${currentExpedientTypeNameSingular} actualizado con éxito`,
+			})
 		},
 	})
 
@@ -65,7 +70,7 @@ export default function ExpedientsIdEditView(): React.ReactNode {
 
 			{error?.status === HttpStatusCode.BadRequest ? (
 				<Title level={4} className="text-center pt-4">
-					El expediente no ha sido encontrado
+					{currentExpedientTypeNameSingular} no existente
 				</Title>
 			) : (
 				<div className="d-flex justify-content-center">

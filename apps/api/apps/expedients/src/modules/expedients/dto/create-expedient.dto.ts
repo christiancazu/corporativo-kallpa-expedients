@@ -5,7 +5,6 @@ import {
 	IsEnum,
 	IsNotEmpty,
 	IsOptional,
-	IsString,
 	IsUUID,
 	MaxLength,
 	ValidateNested,

@@ -1,4 +1,4 @@
-import { FIELD, PART_TYPES } from '@expedients/shared'
+import { FIELD, ICreatePartDto, PART_TYPES } from '@expedients/shared'
 import {
 	IsEnum,
 	IsNotEmpty,
@@ -7,7 +7,7 @@ import {
 	MaxLength,
 } from 'class-validator'
 
-export class CreatePartDto {
+export class CreatePartDto implements ICreatePartDto {
 	@IsNotEmpty()
 	@MaxLength(FIELD.PART_NAME_MAX_LENGTH)
 	name: string
