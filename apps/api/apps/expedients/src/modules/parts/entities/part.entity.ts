@@ -1,5 +1,11 @@
 import { FIELD, IPart, PART_TYPES } from '@expedients/shared'
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import {
+	Column,
+	CreateDateColumn,
+	Entity,
+	ManyToOne,
+	PrimaryGeneratedColumn,
+} from 'typeorm'
 import { Expedient } from '../../expedients/entities/expedient.entity'
 
 @Entity('parts')
@@ -19,9 +25,19 @@ export class Part implements IPart {
 	})
 	type: PART_TYPES
 
+	@Column({
+		type: 'varchar',
+		length: FIELD.PART_TYPE_DESCRIPTION_MAX_LENGTH,
+		nullable: true,
+	})
+	typeDescription: string
+
 	@ManyToOne(
 		() => Expedient,
 		(expedient) => expedient.parts,
 	)
 	expedient: Expedient
+
+	@CreateDateColumn()
+	createdAt: Date
 }

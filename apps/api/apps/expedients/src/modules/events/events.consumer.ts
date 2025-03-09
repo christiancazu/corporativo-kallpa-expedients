@@ -1,4 +1,8 @@
-import { SETTINGS } from '@expedients/shared'
+import {
+	EXPEDIENT_TYPE_NAME_AS_FRONTEND_ENDPOINT,
+	SETTINGS,
+	TYPE_EXPEDIENT_TYPE_NAME_AS_FRONTEND_ENDPOINT,
+} from '@expedients/shared'
 import { Processor, WorkerHost } from '@nestjs/bullmq'
 import { BadRequestException, Inject, Logger } from '@nestjs/common'
 import type { ClientProxy } from '@nestjs/microservices'
@@ -51,7 +55,9 @@ export class EventsConsumer extends WorkerHost {
 						assignedAssistant: expedient.assignedAssistant,
 						expedientId: expedient.id,
 						eventMessage: event!.message,
-						expedientType: expedient.type,
+						expedientTypeRoute: EXPEDIENT_TYPE_NAME_AS_FRONTEND_ENDPOINT[
+							expedient.type
+						] as TYPE_EXPEDIENT_TYPE_NAME_AS_FRONTEND_ENDPOINT,
 					},
 				),
 			)
@@ -80,9 +86,11 @@ export class EventsConsumer extends WorkerHost {
 							auth: notification.auth,
 						},
 					},
-					title: 'Recordatorio',
+					title: 'Recordatorio de evento',
 					body: event!.message,
-					redirectUrl: `/${expedient.type.toLowerCase()}/${expedient.id}`,
+					redirectUrl: `/${
+						EXPEDIENT_TYPE_NAME_AS_FRONTEND_ENDPOINT[expedient.type]
+					}/${expedient.id}`,
 				})),
 			),
 		)

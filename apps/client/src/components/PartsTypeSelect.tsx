@@ -18,15 +18,7 @@ interface Props {
 const PartsTypeSelect: React.FC<Props & FormItemInputProps> = (props) => {
 	return (
 		<Form.Item {...props}>
-			<Select
-				allowClear
-				options={partTypesOptions}
-				placeholder="Tipo de parte"
-				style={{ width: '100%' }}
-				filterOption={(input, option) =>
-					(option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-				}
-			/>
+			<Select allowClear options={partTypesOptions} style={{ width: '100%' }} />
 		</Form.Item>
 	)
 }

@@ -54,7 +54,7 @@ export class MessengerEmailService {
 		assignedLawyer,
 		eventMessage,
 		expedientId,
-		expedientType,
+		expedientTypeRoute,
 	}: ScheduledEventPayload) {
 		const users = [assignedAssistant, assignedLawyer].filter((u) => !!u)
 
@@ -72,7 +72,7 @@ export class MessengerEmailService {
 							message: eventMessage,
 							url: [
 								this.app_domain,
-								`/${expedientType.toLowerCase()}/`,
+								`/${expedientTypeRoute}/`,
 								expedientId,
 							].join(''),
 						},

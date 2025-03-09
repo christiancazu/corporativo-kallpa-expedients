@@ -22,6 +22,7 @@ import { MatterType } from './modules/matter-types/entities/matter-types.entity'
 import { ProcessType } from './modules/process-types/entities/process-types.entity'
 
 // TODO: cuando se borra una review poner la ultima la mas reciente
+// solo creador de expedient podria modificar asignados o editar
 @Injectable()
 export class ExpedientsService {
 	constructor(
@@ -280,6 +281,8 @@ export class ExpedientsService {
 					id: true,
 					name: true,
 					type: true,
+					typeDescription: true,
+					createdAt: true,
 				},
 				assignedLawyer: {
 					id: true,
@@ -330,6 +333,9 @@ export class ExpedientsService {
 				},
 				documents: {
 					createdAt: 'DESC',
+				},
+				parts: {
+					createdAt: 'ASC',
 				},
 			},
 		})
