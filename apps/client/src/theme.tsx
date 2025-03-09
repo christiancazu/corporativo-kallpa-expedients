@@ -26,6 +26,7 @@ const ThemeProvider: React.FC<Props> = ({ children }) => {
 				cssVar: true,
 				algorithm: isDarkTheme ? theme.darkAlgorithm : theme.defaultAlgorithm,
 				token: {
+					colorPrimary: '#d5b169',
 					fontFamily: 'Assistant',
 					colorBgLayout: isDarkTheme ? colorBgLayoutDark : colorBgLayoutLight,
 					colorBgContainer: isDarkTheme

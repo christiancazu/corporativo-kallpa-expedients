@@ -11,7 +11,8 @@ import { useExpedientsState } from '../hooks/useExpedientsState'
 import { StyledHeader, StyledSider, StyledSiderDrawer } from './styled'
 
 import asesoriaIcon from '../assets/images/asesoria.png'
-import empresaIcon from '../assets/images/empresa.png'
+import procesosDeInvestigacion from '../assets/images/procesos-de-investigacion.png'
+import procesosJudicialesIcon from '../assets/images/procesos-judiciales.png'
 
 const { Content } = Layout
 const { useBreakpoint } = Grid
@@ -20,7 +21,7 @@ const MainLayout: React.FC = () => {
 	const navigate = useNavigate()
 	const matches = useMatches()
 	const screens = useBreakpoint()
-	const { currentExpedientType } = useExpedientsState()
+	const { currentExpedientTypeRoute } = useExpedientsState()
 
 	const { colorBgLayout } = theme.useToken().token
 
@@ -52,20 +53,38 @@ const MainLayout: React.FC = () => {
 
 	const menuItems: MenuProps['items'] = [
 		{
-			key: '/empresa',
-			icon: React.createElement(() => (
-				<img alt="empresa" src={empresaIcon} className="mr-2" />
-			)),
-			label: 'Empresa',
-			onClick: () => navigate('/empresa'),
-		},
-		{
 			key: '/asesoria',
 			icon: React.createElement(() => (
-				<img alt="asesoria" src={asesoriaIcon} className="mr-2" />
+				<img alt="asesoria" width={32} src={asesoriaIcon} className="mr-2" />
 			)),
 			label: 'Asesoría',
 			onClick: () => navigate('/asesoria'),
+		},
+		{
+			key: '/procesos-judiciales',
+			icon: React.createElement(() => (
+				<img
+					alt="empresa"
+					width={32}
+					src={procesosJudicialesIcon}
+					className="mr-2"
+				/>
+			)),
+			label: 'Procesos judiciales',
+			onClick: () => navigate('/procesos-judiciales'),
+		},
+		{
+			key: '/procesos-de-investigacion',
+			icon: React.createElement(() => (
+				<img
+					alt="empresa"
+					width={32}
+					src={procesosDeInvestigacion}
+					className="mr-2"
+				/>
+			)),
+			label: 'Procesos de investigación',
+			onClick: () => navigate('/procesos-de-investigacion'),
 		},
 	]
 
@@ -73,7 +92,7 @@ const MainLayout: React.FC = () => {
 		() =>
 			menuItems.find((i: any) => location.pathname.includes(i.key))
 				?.key as string,
-		[location.pathname, currentExpedientType],
+		[location.pathname, currentExpedientTypeRoute],
 	)
 
 	return (
@@ -85,8 +104,9 @@ const MainLayout: React.FC = () => {
 						collapsed={sidebarCollapsed}
 						collapsedWidth="0"
 						trigger={null}
+						width={230}
 					>
-						<Flex vertical justify="space-between" className="mt-16 px-4">
+						<Flex vertical justify="space-between" className="mt-16 px-2">
 							<div className="d-flex flex-column align-items-center justify-content-center my-5">
 								<StyledAvatar
 									size={160}
@@ -99,7 +119,6 @@ const MainLayout: React.FC = () => {
 								items={menuItems}
 								mode="inline"
 								style={{ backgroundColor: 'transparent' }}
-								theme="dark"
 							/>
 						</Flex>
 					</StyledSider>
@@ -137,7 +156,7 @@ const MainLayout: React.FC = () => {
 						marginLeft:
 							sidebarCollapsed || !screens.md || sidebarDrawerAvailabled
 								? 0
-								: 200,
+								: 230,
 						transition: 'all .2s ease-in-out, background-color 0s',
 					}}
 				>

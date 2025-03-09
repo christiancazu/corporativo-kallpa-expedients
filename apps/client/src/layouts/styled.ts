@@ -11,10 +11,19 @@ export const StyledSider = styled(Sider)`
   top: 0;
   z-index: 1;
   bottom: 0;
-  background-color: #112545;
+  background-color: var(--ant-color-primary);
   scrollbar-width: 'thin';
   scrollbar-gutter: 'stable';
   transition: min-width .2s ease-in-out, width .2s ease-in-out, max-width .2s ease-in-out;
+
+  & .ant-menu-item {
+    color: var(--ant-color-text-light-solid) !important;
+    padding: var(--ant-padding-xs) !important;
+
+    &-selected {
+      background-color: var(--color-bg-app) !important;
+    }
+  }
 `
 
 export const StyledHeader = styled(Header)<{ $colorBgLayout: string }>`
@@ -28,9 +37,23 @@ export const StyledHeader = styled(Header)<{ $colorBgLayout: string }>`
   padding: 0;
 `
 export const StyledSiderDrawer = styled(Drawer)`
-  background: #112545 !important;
+  background: var(--ant-color-primary) !important;
   
   & .ant-drawer-header-title {
     justify-content: end;
+  }
+
+  & .ant-drawer-close {
+    color: var(--ant-color-text-light-solid);
+    font-size: 1.5rem;
+  }
+
+  & .ant-menu-item {
+    color: var(--ant-color-text-light-solid) !important;
+    padding: var(--ant-padding-xs) !important;
+
+    &-selected {
+      background-color: var(--color-bg-app) !important;
+    }
   }
 `

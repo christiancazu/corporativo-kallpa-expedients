@@ -1,30 +1,40 @@
-import { EXPEDIENT_TYPE } from '@expedients/shared'
+import {
+	EXPEDIENT_TYPE,
+	EXPEDIENT_TYPE_CODE_NAME,
+	EXPEDIENT_TYPE_FRONTEND_TO_BACKEND_ENDPOINT,
+	EXPEDIENT_TYPE_NAME_SINGULAR,
+	FRONTEND_ROUTES_AS_EXPEDIENT_TYPE_NAME,
+	TYPE_EXPEDIENT_FRONTEND_ROUTES,
+} from '@expedients/shared'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useMemo } from 'react'
 import { useLocation, useMatches } from 'react-router'
 import { queryClient } from '../config/queryClient'
 
-const EXPEDIENT_ROUTES = ['/asesoria', '/empresa']
-
 export const useExpedientsState = () => {
 	const location = useLocation()
 	const matches = useMatches()
 
-	const getExpedientTypeByRoutePath = (): EXPEDIENT_TYPE => {
-		return matches
-			.find((match) => EXPEDIENT_ROUTES.includes(match.pathname))
-			?.pathname.substring(1) as EXPEDIENT_TYPE
-	}
+	const getExpedientTypeByRoutePath = (): TYPE_EXPEDIENT_FRONTEND_ROUTES =>
+		matches
+			.find((match) =>
+				Object.keys(FRONTEND_ROUTES_AS_EXPEDIENT_TYPE_NAME).includes(
+					match.pathname.substring(1),
+				),
+			)
+			?.pathname.substring(1) as TYPE_EXPEDIENT_FRONTEND_ROUTES
 
 	useEffect(() => {
-		setCurrentExpedientType(getExpedientTypeByRoutePath())
+		setcurrentExpedientTypeRoute(getExpedientTypeByRoutePath())
 	}, [location.pathname])
 
-	const setCurrentExpedientType = (type: EXPEDIENT_TYPE) => {
+	const setcurrentExpedientTypeRoute = (
+		type: TYPE_EXPEDIENT_FRONTEND_ROUTES,
+	) => {
 		return queryClient.setQueryData(['expedientType'], type)
 	}
 
-	const currentExpedientType = useQuery<EXPEDIENT_TYPE>({
+	const currentExpedientTypeRoute = useQuery<TYPE_EXPEDIENT_FRONTEND_ROUTES>({
 		queryKey: ['expedientType'],
 		enabled: false,
 		initialData: getExpedientTypeByRoutePath(),
@@ -32,12 +42,38 @@ export const useExpedientsState = () => {
 
 	const isExpedientEmpresa = useMemo(
 		() =>
-			currentExpedientType?.toUpperCase() === EXPEDIENT_TYPE.JUDICIAL_PROCESSES,
-		[currentExpedientType],
+			currentExpedientTypeRoute?.toUpperCase() ===
+			EXPEDIENT_TYPE.JUDICIAL_PROCESSES,
+		[currentExpedientTypeRoute],
+	)
+
+	const currentExpedientTypeName = useMemo(
+		() => FRONTEND_ROUTES_AS_EXPEDIENT_TYPE_NAME[currentExpedientTypeRoute],
+		[currentExpedientTypeRoute],
+	)
+
+	const currentExpedientTypeNameSingular = useMemo(
+		() => EXPEDIENT_TYPE_NAME_SINGULAR[currentExpedientTypeRoute],
+		[currentExpedientTypeRoute],
+	)
+
+	const currentExpedientTypeEndpoint = useMemo(
+		() =>
+			EXPEDIENT_TYPE_FRONTEND_TO_BACKEND_ENDPOINT[currentExpedientTypeRoute],
+		[currentExpedientTypeRoute],
+	)
+
+	const currentExpedientTypeCodeName = useMemo(
+		() => EXPEDIENT_TYPE_CODE_NAME[currentExpedientTypeRoute],
+		[currentExpedientTypeRoute],
 	)
 
 	return {
 		isExpedientEmpresa,
-		currentExpedientType,
+		currentExpedientTypeRoute,
+		currentExpedientTypeName,
+		currentExpedientTypeNameSingular,
+		currentExpedientTypeEndpoint,
+		currentExpedientTypeCodeName,
 	}
 }

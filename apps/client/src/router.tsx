@@ -8,6 +8,10 @@ import {
 	useSearchParams,
 } from 'react-router'
 
+import {
+	EXPEDIENT_TYPE_NAME_AS_FRONTEND_ENDPOINT,
+	FRONTEND_ROUTES_AS_EXPEDIENT_TYPE_NAME,
+} from '@expedients/shared'
 import { RouterProvider } from 'react-router/dom'
 import useUserState from './hooks/useUserState'
 
@@ -90,38 +94,10 @@ const router = createBrowserRouter(
 			children: [
 				{
 					index: true,
-					element: <Navigate replace to="/empresa" />,
+					element: <Navigate replace to="/procesos-judiciales" />,
 				},
 				{
-					path: 'empresa',
-					handle: 'empresa',
-					element: <Outlet />,
-					children: [
-						{
-							index: true,
-							path: '',
-							handle: 'Empresa',
-							element: <ExpedientsView />,
-						},
-						{
-							path: 'create',
-							handle: 'Crear expediente empresa',
-							element: <ExpedientsCreateView />,
-						},
-						{
-							path: ':id/edit',
-							handle: 'Editar expediente empresa',
-							element: <ExpedientsIdEditView />,
-						},
-						{
-							path: ':id',
-							handle: 'Detalle de expediente empresa',
-							element: <ExpedientView />,
-						},
-					],
-				},
-				{
-					path: 'asesoria',
+					path: EXPEDIENT_TYPE_NAME_AS_FRONTEND_ENDPOINT.Asesoría,
 					handle: 'asesoria',
 					element: <Outlet />,
 					children: [
@@ -132,18 +108,76 @@ const router = createBrowserRouter(
 							element: <ExpedientsView />,
 						},
 						{
-							path: 'create',
-							handle: 'Crear expediente asesoría',
+							path: 'crear',
+							handle: 'Crear asesoría',
 							element: <ExpedientsCreateView />,
 						},
 						{
-							path: ':id/edit',
-							handle: 'Editar expediente asesoría',
+							path: ':id/editar',
+							handle: 'Editar asesoría',
 							element: <ExpedientsIdEditView />,
 						},
 						{
 							path: ':id',
-							handle: 'Detalle de expediente asesoría',
+							handle: 'Detalle de asesoría',
+							element: <ExpedientView />,
+						},
+					],
+				},
+				{
+					path: EXPEDIENT_TYPE_NAME_AS_FRONTEND_ENDPOINT['Procesos judiciales'],
+					handle: 'procesos-judiciales',
+					element: <Outlet />,
+					children: [
+						{
+							index: true,
+							path: '',
+							handle: 'Procesos judiciales',
+							element: <ExpedientsView />,
+						},
+						{
+							path: 'crear',
+							handle: 'Crear proceso judicial',
+							element: <ExpedientsCreateView />,
+						},
+						{
+							path: ':id/editar',
+							handle: 'Editar proceso judicial',
+							element: <ExpedientsIdEditView />,
+						},
+						{
+							path: ':id',
+							handle: 'Detalle de proceso judicial',
+							element: <ExpedientView />,
+						},
+					],
+				},
+				{
+					path: EXPEDIENT_TYPE_NAME_AS_FRONTEND_ENDPOINT[
+						'Procesos de investigación'
+					],
+					handle: 'procesos-de-investigacion',
+					element: <Outlet />,
+					children: [
+						{
+							index: true,
+							path: '',
+							handle: 'Procesos de investigación',
+							element: <ExpedientsView />,
+						},
+						{
+							path: 'crear',
+							handle: 'Crear proceso judicial',
+							element: <ExpedientsCreateView />,
+						},
+						{
+							path: ':id/editar',
+							handle: 'Editar proceso judicial',
+							element: <ExpedientsIdEditView />,
+						},
+						{
+							path: ':id',
+							handle: 'Detalle de proceso judicial',
 							element: <ExpedientView />,
 						},
 					],

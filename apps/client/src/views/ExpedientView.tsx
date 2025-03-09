@@ -80,7 +80,7 @@ interface Expedient extends ExpedientType {
 }
 
 const ExpedientView: React.FC = () => {
-	const { isExpedientEmpresa, currentExpedientType } = useExpedientsState()
+	const { isExpedientEmpresa, currentExpedientTypeRoute } = useExpedientsState()
 	const { getExpedient, getExpedientEvents } = useExpedientsService()
 
 	const { id } = useParams<{ id: string }>()
@@ -222,7 +222,7 @@ const ExpedientView: React.FC = () => {
 	if (error?.status === HttpStatusCode.BadRequest) {
 		return (
 			<>
-				<NavigationBackBtn to={`/${currentExpedientType}`} />
+				<NavigationBackBtn to={`/${currentExpedientTypeRoute}`} />
 				<Title level={4} className="text-center pt-4">
 					El expediente no ha sido encontrado
 				</Title>
@@ -239,14 +239,16 @@ const ExpedientView: React.FC = () => {
 					<div style={sectionStyle}>
 						<Flex className="flex justify-between flex-wrap">
 							<Flex align="center">
-								<NavigationBackBtn to={`/${currentExpedientType}`} />
+								<NavigationBackBtn to={`/${currentExpedientTypeRoute}`} />
 								<Text className="ml-1 text-lg">{data.code}</Text>
 							</Flex>
 							<Space>
 								{isEditableByUser && (
 									<Button
 										onClick={() =>
-											navigate(`/${currentExpedientType}/${data.id}/edit`)
+											navigate(
+												`/${currentExpedientTypeRoute}/${data.id}/editar`,
+											)
 										}
 										variant="outlined"
 										icon={<EditOutlined />}
@@ -263,7 +265,7 @@ const ExpedientView: React.FC = () => {
 						<Row className="mt-5">
 							<Col md={16} xs={24}>
 								<p className="mb-3">
-									<strong>Materia:</strong> {data.subject}
+									<strong>Materia:</strong> {data.matterType?.description}
 								</p>
 
 								<p className="mb-3">
@@ -336,7 +338,7 @@ const ExpedientView: React.FC = () => {
 								xs={24}
 							>
 								<Tag className="mb-2 mr-0" color="warning">
-									{data.status}
+									{data.status?.description}
 								</Tag>
 								<em className="text-xs" style={{ color: colorTextSecondary }}>
 									{data.statusDescription}

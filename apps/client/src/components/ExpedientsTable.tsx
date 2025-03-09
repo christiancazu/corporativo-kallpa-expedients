@@ -36,16 +36,20 @@ const TableExpedients: React.FC<Props> = ({
 	loading,
 	onChangePagination,
 }) => {
-	const { currentExpedientType, isExpedientEmpresa } = useExpedientsState()
+	const {
+		currentExpedientTypeRoute,
+		isExpedientEmpresa,
+		currentExpedientTypeCodeName,
+	} = useExpedientsState()
 
 	const columns: TableColumnsType<DataType> = [
 		{
-			title: isExpedientEmpresa ? 'Empresa' : 'Asesoría',
+			title: currentExpedientTypeCodeName,
 			dataIndex: 'code',
 			key: 'code',
 			width: 150,
 			render: (text, expedient) => (
-				<Link to={`/${currentExpedientType}/${expedient.id}`}>
+				<Link to={`/${currentExpedientTypeRoute}/${expedient.id}`}>
 					<Tooltip title={text}>
 						<Button
 							className="text-left"
@@ -95,7 +99,7 @@ const TableExpedients: React.FC<Props> = ({
 			key: 'status',
 			width: 140,
 			align: 'center',
-			render: (status: EXPEDIENT_STATUS) => <>{status.replace('_', ' ')}</>,
+			render: (_, expedient) => <>{expedient.status?.description}</>,
 		},
 		{
 			title: 'Asignados',
@@ -153,7 +157,7 @@ const TableExpedients: React.FC<Props> = ({
 			fixed: 'right',
 			render: (_, expedient) => (
 				<Space>
-					<Link to={`/${currentExpedientType}/${expedient.id}/edit`}>
+					<Link to={`/${currentExpedientTypeRoute}/${expedient.id}/editar`}>
 						<Tooltip title="Editar expediente">
 							<Button
 								icon={<EditOutlined />}
@@ -163,7 +167,7 @@ const TableExpedients: React.FC<Props> = ({
 							/>
 						</Tooltip>
 					</Link>
-					<Link to={`/${currentExpedientType}/${expedient.id}`}>
+					<Link to={`/${currentExpedientTypeRoute}/${expedient.id}`}>
 						<Tooltip title="Ver expediente">
 							<Button icon={<SearchOutlined />} shape="circle" />
 						</Tooltip>

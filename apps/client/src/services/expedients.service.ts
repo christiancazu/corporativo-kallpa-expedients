@@ -4,13 +4,13 @@ import { httpClient } from '../config/httpClient'
 import { useExpedientsState } from '../hooks/useExpedientsState'
 
 export const useExpedientsService = () => {
-	const { currentExpedientType } = useExpedientsState()
+	const { currentExpedientTypeEndpoint } = useExpedientsState()
 
 	const getExpedients = useQuery({
-		queryKey: [currentExpedientType],
+		queryKey: [currentExpedientTypeEndpoint],
 		queryFn: async (): Promise<IExpedient[]> => {
 			return httpClient
-				.get(`${currentExpedientType}${window.location.search}`)
+				.get(`${currentExpedientTypeEndpoint}${window.location.search}`)
 				.then((res) => res.data)
 		},
 		enabled: false,
@@ -20,13 +20,13 @@ export const useExpedientsService = () => {
 
 	const getExpedient = (id: string): Promise<IExpedient> => {
 		return httpClient
-			.get(`${currentExpedientType}/${id}`)
+			.get(`${currentExpedientTypeEndpoint}/${id}`)
 			.then((res) => res.data)
 	}
 
 	const createExpedient = (expedient: IExpedient) => {
 		return httpClient
-			.post(currentExpedientType, expedient)
+			.post(currentExpedientTypeEndpoint, expedient)
 			.then((res) => res.data)
 	}
 
@@ -35,7 +35,7 @@ export const useExpedientsService = () => {
 		expedient,
 	}: { id: string; expedient: IExpedient }): Promise<any> => {
 		return httpClient
-			.patch(`${currentExpedientType}/${id}`, expedient)
+			.patch(`${currentExpedientTypeEndpoint}/${id}`, expedient)
 			.then((res) => res.data)
 	}
 
@@ -45,7 +45,7 @@ export const useExpedientsService = () => {
 
 	const getExpedientEvents = (expedientId: string): Promise<IExpedient> => {
 		return httpClient
-			.get(`${currentExpedientType}/${expedientId}/events`)
+			.get(`${currentExpedientTypeEndpoint}/${expedientId}/events`)
 			.then((res) => res.data)
 	}
 

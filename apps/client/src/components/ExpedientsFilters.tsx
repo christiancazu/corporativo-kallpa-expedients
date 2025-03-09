@@ -24,7 +24,7 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 		token: { colorBgContainer, borderRadiusLG, paddingMD, marginMD },
 	} = theme.useToken()
 
-	const { currentExpedientType, isExpedientEmpresa } = useExpedientsState()
+	const { currentExpedientTypeRoute, isExpedientEmpresa } = useExpedientsState()
 	const [searchParams] = useSearchParams()
 
 	useEffect(() => {
@@ -51,7 +51,7 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 		if (searchParams.size) {
 			setCanDeleteFilters(true)
 		}
-	}, [currentExpedientType])
+	}, [currentExpedientTypeRoute])
 
 	const [canDeleteFilter, setCanDeleteFilters] = useState(false)
 

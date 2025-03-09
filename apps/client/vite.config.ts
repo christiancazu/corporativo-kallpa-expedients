@@ -29,7 +29,7 @@ export default defineConfig(({ mode }) => {
 	return {
 		plugins: [react()],
 		optimizeDeps: {
-			include: ['@expedients/shared'],
+			include: ['esm-dep > cjs-dep', '@expedients/shared'],
 		},
 		build: {
 			commonjsOptions: {

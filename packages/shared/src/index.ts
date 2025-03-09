@@ -59,6 +59,39 @@ export enum EXPEDIENT_TYPE {
 	INVESTIGATION_PROCESSES = 'Procesos de investigación',
 }
 
+export const EXPEDIENT_TYPE_NAME_AS_FRONTEND_ENDPOINT = {
+	Asesoría: 'asesoria',
+	'Procesos judiciales': 'procesos-judiciales',
+	'Procesos de investigación': 'procesos-de-investigacion',
+}
+
+export const EXPEDIENT_TYPE_FRONTEND_TO_BACKEND_ENDPOINT = {
+	asesoria: 'consultancy',
+	'procesos-judiciales': 'judicial-processes',
+	'procesos-de-investigacion': 'investigation-processes',
+}
+
+export const FRONTEND_ROUTES_AS_EXPEDIENT_TYPE_NAME = {
+	asesoria: EXPEDIENT_TYPE.CONSULTANCY,
+	'procesos-judiciales': EXPEDIENT_TYPE.JUDICIAL_PROCESSES,
+	'procesos-de-investigacion': EXPEDIENT_TYPE.INVESTIGATION_PROCESSES,
+}
+
+export const EXPEDIENT_TYPE_CODE_NAME = {
+	asesoria: 'Empresa',
+	'procesos-judiciales': 'Carpeta Fiscal',
+	'procesos-de-investigacion': 'Expediente',
+}
+
+export const EXPEDIENT_TYPE_NAME_SINGULAR = {
+	asesoria: 'asesoría',
+	'procesos-judiciales': 'proceso judicial',
+	'procesos-de-investigacion': 'proceso de investigación',
+}
+
+export type TYPE_EXPEDIENT_FRONTEND_ROUTES =
+	keyof typeof FRONTEND_ROUTES_AS_EXPEDIENT_TYPE_NAME
+
 export enum PENAL_PART_TYPES {
 	DENUNCIANTE = 'DENUNCIANTE',
 	DENUNCIADO = 'DENUNCIADO',

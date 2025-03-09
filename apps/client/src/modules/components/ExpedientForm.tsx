@@ -23,7 +23,8 @@ export default function ExpedientForm({
 }: Props): React.ReactNode {
 	const screens = useBreakpoint()
 
-	const { currentExpedientType, isExpedientEmpresa } = useExpedientsState()
+	const { isExpedientEmpresa, currentExpedientTypeCodeName } =
+		useExpedientsState()
 
 	return (
 		<Form
@@ -35,7 +36,7 @@ export default function ExpedientForm({
 			onFinish={onFinish}
 		>
 			<Form.Item
-				label={currentExpedientType}
+				label={currentExpedientTypeCodeName}
 				name="code"
 				className="capitalize"
 				rules={[{ required: true, message: 'El campo es requerido' }]}

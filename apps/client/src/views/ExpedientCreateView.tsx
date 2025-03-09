@@ -24,7 +24,11 @@ const ExpedientsCreateView: React.FC = () => {
 		marginBottom: marginMD,
 	}
 
-	const { currentExpedientType } = useExpedientsState()
+	const {
+		currentExpedientTypeRoute,
+		currentExpedientTypeName,
+		currentExpedientTypeNameSingular,
+	} = useExpedientsState()
 
 	const navigate = useNavigate()
 	const [open, setOpen] = useState(false)
@@ -38,7 +42,9 @@ const ExpedientsCreateView: React.FC = () => {
 		mutationKey: ['expedient-create'],
 		mutationFn: createExpedient,
 		onSuccess: (res) => {
-			notify({ message: 'Expediente creado con éxito' })
+			notify({
+				message: `${currentExpedientTypeNameSingular} creado con éxito`,
+			})
 			setCreatedExpedient((prev) => ({ ...prev, ...res }))
 			setOpen(true)
 		},
@@ -50,7 +56,7 @@ const ExpedientsCreateView: React.FC = () => {
 
 	return (
 		<div style={sectionStyle}>
-			<NavigationBackBtn to={`/${currentExpedientType}`} />
+			<NavigationBackBtn to={`/${currentExpedientTypeRoute}`} />
 			<Divider className="my-3" />
 
 			<div className="d-flex justify-content-center">
@@ -74,16 +80,18 @@ const ExpedientsCreateView: React.FC = () => {
 						>
 							Quedarme aquí
 						</Button>
-						<Button onClick={() => navigate(`/${currentExpedientType}`)}>
-							Ver todos los expedientes
+						<Button onClick={() => navigate(`/${currentExpedientTypeRoute}`)}>
+							Volver al listado de {currentExpedientTypeName}
 						</Button>
 						<Button
 							type="primary"
 							onClick={() =>
-								navigate(`/${currentExpedientType}/${createdExpedient?.id}`)
+								navigate(
+									`/${currentExpedientTypeRoute}/${createdExpedient?.id}`,
+								)
 							}
 						>
-							Ver expediente
+							Ver {currentExpedientTypeNameSingular}
 						</Button>
 					</>
 				)}

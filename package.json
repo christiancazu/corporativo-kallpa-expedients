@@ -32,5 +32,10 @@
     "ant design",
     "aws",
     "s3"
-  ]
+  ],
+  "pnpm": {
+    "ignoredBuiltDependencies": [
+      "@parcel/watcher"
+    ]
+  }
 }

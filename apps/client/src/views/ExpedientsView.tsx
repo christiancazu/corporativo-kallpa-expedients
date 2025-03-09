@@ -24,7 +24,8 @@ let mentions: HTMLElement[] | Element[] = []
 
 const ExpedientsView: React.FC = () => {
 	const [_, setSearchParams] = useSearchParams()
-	const { currentExpedientType } = useExpedientsState()
+	const { currentExpedientTypeRoute, currentExpedientTypeNameSingular } =
+		useExpedientsState()
 
 	const navigate = useNavigate()
 	const [form] = Form.useForm<SearchParams>()
@@ -63,7 +64,7 @@ const ExpedientsView: React.FC = () => {
 
 	useEffect(() => {
 		refetch()
-	}, [currentExpedientType])
+	}, [currentExpedientTypeRoute])
 
 	const docEventListeners = (event: any) => {
 		if (!(event.target instanceof HTMLSpanElement)) {
@@ -107,9 +108,9 @@ const ExpedientsView: React.FC = () => {
 				primary
 				className="mb-4"
 				icon={<PlusOutlined />}
-				onClick={() => navigate(`/${currentExpedientType}/create`)}
+				onClick={() => navigate(`/${currentExpedientTypeRoute}/crear`)}
 			>
-				Crear {currentExpedientType}
+				Crear {currentExpedientTypeNameSingular}
 			</ButtonBase>
 
 			<FilterExpedients

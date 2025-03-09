@@ -16,7 +16,7 @@ import ExpedientForm from '../../components/ExpedientForm'
 export default function ExpedientsIdEditView(): React.ReactNode {
 	const { id } = useParams<{ id: string }>()
 
-	const { currentExpedientType } = useExpedientsState()
+	const { currentExpedientTypeRoute } = useExpedientsState()
 
 	const { getExpedient, updateExpedient } = useExpedientsService()
 
@@ -59,7 +59,7 @@ export default function ExpedientsIdEditView(): React.ReactNode {
 
 	return (
 		<div style={sectionStyle}>
-			<NavigationBackBtn to={`/${currentExpedientType}`} />
+			<NavigationBackBtn to={`/${currentExpedientTypeRoute}`} />
 
 			<Divider className="my-3" />
 
