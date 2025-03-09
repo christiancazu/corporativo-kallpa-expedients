@@ -1,7 +1,4 @@
-import {
-	EXPEDIENT_TYPE,
-	JUDICIAL_PROCESSES_INSTANCES,
-} from '@expedients/shared'
+import { EXPEDIENT_TYPE } from '@expedients/shared'
 import {
 	BadRequestException,
 	Inject,
@@ -272,6 +269,8 @@ export class ExpedientsService {
 				updatedByUser: true,
 				documents: true,
 				processType: true,
+				status: true,
+				matterType: true,
 				reviews: {
 					createdByUser: true,
 				},

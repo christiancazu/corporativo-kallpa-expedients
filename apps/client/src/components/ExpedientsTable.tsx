@@ -1,17 +1,19 @@
 import type React from 'react'
 
 import { EditOutlined, SearchOutlined } from '@ant-design/icons'
-import type {
-	EXPEDIENT_STATUS,
-	IExpedient,
-	IReview,
-	IUser,
+import {
+	EXPEDIENT_TYPE,
+	EXPEDIENT_TYPE_COURT_NAME,
+	type IExpedient,
+	type IReview,
+	type IUser,
 } from '@expedients/shared'
 import {
 	Button,
 	Space,
 	type TableColumnsType,
 	type TableProps,
+	Tag,
 	Tooltip,
 } from 'antd'
 import htmlReactParser from 'html-react-parser'
@@ -38,7 +40,7 @@ const TableExpedients: React.FC<Props> = ({
 }) => {
 	const {
 		currentExpedientTypeRoute,
-		isExpedientEmpresa,
+		currentExpedientTypeName,
 		currentExpedientTypeCodeName,
 	} = useExpedientsState()
 
@@ -62,6 +64,7 @@ const TableExpedients: React.FC<Props> = ({
 									whiteSpace: 'nowrap',
 									display: 'block',
 									textOverflow: 'ellipsis',
+									color: 'var(--ant-color-primary)',
 								}}
 							>
 								{text}
@@ -76,30 +79,52 @@ const TableExpedients: React.FC<Props> = ({
 			dataIndex: 'subject',
 			key: 'subject',
 			width: 140,
+			render: (_: any, expedient: IExpedient) =>
+				expedient.matterType ? (
+					<Tag color={expedient.matterType?.color}>
+						{expedient.matterType?.description}
+					</Tag>
+				) : null,
 		},
-		{
-			title: isExpedientEmpresa ? 'Proceso' : 'Entidad',
-			dataIndex: 'process',
-			key: 'process',
-			width: 140,
-			render: (_, expedient) =>
-				isExpedientEmpresa
-					? expedient.processType?.description
-					: expedient.entity,
-		},
-		{
-			title: isExpedientEmpresa ? 'Juzgado' : 'Trámite/Consulta',
-			dataIndex: 'court',
-			key: 'court',
-			width: 140,
-		},
+		...(currentExpedientTypeName !== EXPEDIENT_TYPE.CONSULTANCY
+			? [
+					{
+						title: 'Proceso',
+						dataIndex: 'processType',
+						key: 'processType',
+						width: 140,
+						render: (_: any, expedient: IExpedient) =>
+							expedient.processType?.description,
+					},
+					{
+						title: EXPEDIENT_TYPE_COURT_NAME[currentExpedientTypeRoute],
+						dataIndex: 'court',
+						key: 'court',
+						width: 140,
+					},
+				]
+			: [
+					{
+						title: 'Entidad',
+						dataIndex: 'entity',
+						key: 'entity',
+						width: 140,
+					},
+
+					{
+						title: 'Trámite/Consulta',
+						dataIndex: 'procedure',
+						key: 'procedure',
+						width: 140,
+					},
+				]),
 		{
 			title: 'Estado',
 			dataIndex: 'status',
 			key: 'status',
 			width: 140,
 			align: 'center',
-			render: (_, expedient) => <>{expedient.status?.description}</>,
+			render: (_, expedient) => <Tag>{expedient.status?.description}</Tag>,
 		},
 		{
 			title: 'Asignados',

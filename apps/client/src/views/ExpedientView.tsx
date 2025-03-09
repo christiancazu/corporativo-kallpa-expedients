@@ -33,10 +33,12 @@ import DocumentDetail from '../components/document/DocumentDetail'
 import TextEditor from '../components/text-editor/TextEditor'
 import { useConfirmModal } from '../hooks/useConfirmModal'
 
-import type {
-	IDocument as DocumentType,
-	IExpedient as ExpedientType,
-	IEvent,
+import {
+	type IDocument as DocumentType,
+	EXPEDIENT_TYPE,
+	EXPEDIENT_TYPE_COURT_NAME,
+	type IExpedient as ExpedientType,
+	type IEvent,
 } from '@expedients/shared'
 import Title from 'antd/es/typography/Title'
 import { AxiosError, HttpStatusCode } from 'axios'
@@ -80,7 +82,8 @@ interface Expedient extends ExpedientType {
 }
 
 const ExpedientView: React.FC = () => {
-	const { isExpedientEmpresa, currentExpedientTypeRoute } = useExpedientsState()
+	const { currentExpedientTypeRoute, currentExpedientTypeName } =
+		useExpedientsState()
 	const { getExpedient, getExpedientEvents } = useExpedientsService()
 
 	const { id } = useParams<{ id: string }>()
@@ -265,24 +268,34 @@ const ExpedientView: React.FC = () => {
 						<Row className="mt-5">
 							<Col md={16} xs={24}>
 								<p className="mb-3">
-									<strong>Materia:</strong> {data.matterType?.description}
+									<strong>Materia:</strong>{' '}
+									<Tag color={data.matterType.color}>
+										{data.matterType?.description}
+									</Tag>
 								</p>
 
-								<p className="mb-3">
-									{isExpedientEmpresa ? (
-										<>
+								{currentExpedientTypeName !== EXPEDIENT_TYPE.CONSULTANCY ? (
+									<>
+										<p className="mb-3">
 											<strong>Proceso:</strong> {data.processType?.description}
-										</>
-									) : (
-										<>
+										</p>
+										<p className="mb-3">
+											<strong>
+												{EXPEDIENT_TYPE_COURT_NAME[currentExpedientTypeRoute]}:
+											</strong>{' '}
+											{data.court}
+										</p>
+									</>
+								) : (
+									<>
+										<p className="mb-3">
 											<strong>Entidad:</strong> {data.entity}
-										</>
-									)}
-								</p>
-
-								<p className="mb-3">
-									<strong>Juzgado:</strong> {data.court}
-								</p>
+										</p>
+										<p className="mb-3">
+											<strong>Trámite/Consulta:</strong> {data.procedure}
+										</p>
+									</>
+								)}
 
 								<p className="mb-3">
 									<strong>Última actualización:</strong>
@@ -337,12 +350,13 @@ const ExpedientView: React.FC = () => {
 								md={8}
 								xs={24}
 							>
-								<Tag className="mb-2 mr-0" color="warning">
-									{data.status?.description}
-								</Tag>
-								<em className="text-xs" style={{ color: colorTextSecondary }}>
-									{data.statusDescription}
-								</em>
+								{data?.status.description !== 'Otros' ? (
+									<Tag className="mb-2 mr-0">{data.status?.description}</Tag>
+								) : (
+									<em className="text-xs" style={{ color: colorTextSecondary }}>
+										{data.statusDescription}
+									</em>
+								)}
 							</Col>
 						</Row>
 

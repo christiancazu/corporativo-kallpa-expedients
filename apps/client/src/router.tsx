@@ -8,10 +8,7 @@ import {
 	useSearchParams,
 } from 'react-router'
 
-import {
-	EXPEDIENT_TYPE_NAME_AS_FRONTEND_ENDPOINT,
-	FRONTEND_ROUTES_AS_EXPEDIENT_TYPE_NAME,
-} from '@expedients/shared'
+import { EXPEDIENT_TYPE_NAME_AS_FRONTEND_ENDPOINT } from '@expedients/shared'
 import { RouterProvider } from 'react-router/dom'
 import useUserState from './hooks/useUserState'
 

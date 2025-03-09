@@ -13,6 +13,12 @@ export class MatterType implements IMatterType {
 	})
 	description: string
 
+	@Column({
+		type: 'varchar',
+		length: FIELD.MATTER_TYPE_COLOR_MAX_LENGTH,
+	})
+	color: string
+
 	@OneToMany(
 		() => Expedient,
 		(expedient) => expedient.matterType,

@@ -15,6 +15,7 @@ export const FIELD = {
 	EXPEDIENT_STATUS_MAX_LENGTH: 50,
 	PROCESS_TYPE_MAX_LENGTH: 50,
 	MATTER_TYPE_MAX_LENGTH: 50,
+	MATTER_TYPE_COLOR_MAX_LENGTH: 10,
 
 	PART_NAME_MAX_LENGTH: 50,
 
@@ -28,7 +29,7 @@ export const FIELD = {
 }
 
 export const SETTINGS = {
-	FILE_SIZE_LIMIT: 10485760, // 10MB
+	FILE_SIZE_LIMIT: 52428800, // 50MB
 
 	UPLOAD_PRESIGNED_URL_EXPIRATION: 120, // 2 min
 	GET_PRESIGNED_URL_EXPIRATION: 300, // 5 min
@@ -37,20 +38,6 @@ export const SETTINGS = {
 	EVENT_MAIL_ACTIVATE_ACCOUNT: 'EVENT_MAIL_ACTIVATE_ACCOUNT',
 	EVENT_SCHEDULED: 'EVENT_SCHEDULED',
 	NOTIFICATION_SCHEDULED: 'NOTIFICATION_SCHEDULED',
-}
-
-export enum EXPEDIENT_STATUS {
-	DEMANDA = 'DEMANDA',
-	INADMISIBLE = 'INADMISIBLE',
-	AUTO_EMISARIO = 'AUTO EMISARIO',
-	CONTESTACION = 'CONTESTACIÓN DE DEMANDA',
-	SANEADO = 'SANEADO',
-	FIJACION_PUNTOS = 'FIJACIÓN PUNTOS CONTROVERTIDOS',
-	SANEAMIENTO = 'SANEAMIENTO PROBATORIO',
-	SENTENCIA = 'SENTENCIA',
-	APELACION = 'APELACIÓN',
-	CASACION = 'CASACIÓN',
-	EN_EJECUCION = 'EN EJECUCIÓN',
 }
 
 export enum EXPEDIENT_TYPE {
@@ -87,6 +74,12 @@ export const EXPEDIENT_TYPE_NAME_SINGULAR = {
 	asesoria: 'asesoría',
 	'procesos-judiciales': 'proceso judicial',
 	'procesos-de-investigacion': 'proceso de investigación',
+}
+
+export const EXPEDIENT_TYPE_COURT_NAME = {
+	asesoria: '',
+	'procesos-judiciales': 'Fiscalia',
+	'procesos-de-investigacion': 'Juzgado',
 }
 
 export type TYPE_EXPEDIENT_FRONTEND_ROUTES =
@@ -178,6 +171,7 @@ export interface IProcessType {
 export interface IMatterType {
 	id: string
 	description: string
+	color: string
 }
 
 export interface IPart {
@@ -220,8 +214,8 @@ export interface IEvent {
 }
 
 export interface IFindExpedientDto {
-	text?: string
-	updatedByUser?: string
-	matterType?: string
-	status?: string
+	text?: string | null
+	updatedByUser?: string | null
+	matterType?: string | null
+	status?: string | null
 }

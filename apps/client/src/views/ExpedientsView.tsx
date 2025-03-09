@@ -2,7 +2,7 @@ import type React from 'react'
 import { useEffect, useState } from 'react'
 
 import { PlusOutlined } from '@ant-design/icons'
-import type { EXPEDIENT_STATUS } from '@expedients/shared'
+import { IFindExpedientDto } from '@expedients/shared'
 import { Form } from 'antd'
 import { useNavigate, useSearchParams } from 'react-router'
 import FilterExpedients from '../components/ExpedientsFilters'
@@ -13,12 +13,6 @@ import { useExpedientsState } from '../hooks/useExpedientsState'
 import { useExpedientsService } from '../services/expedients.service'
 import type { DocumentFile } from './ExpedientView'
 
-export interface SearchParams {
-	text?: string | null
-	status?: EXPEDIENT_STATUS | null
-	updatedByUser?: string | null
-}
-
 const dom = document
 let mentions: HTMLElement[] | Element[] = []
 
@@ -28,7 +22,7 @@ const ExpedientsView: React.FC = () => {
 		useExpedientsState()
 
 	const navigate = useNavigate()
-	const [form] = Form.useForm<SearchParams>()
+	const [form] = Form.useForm<IFindExpedientDto>()
 	const [documentFile, setDocumentFile] = useState<DocumentFile>({
 		id: '',
 		showDetail: false,
@@ -41,11 +35,11 @@ const ExpedientsView: React.FC = () => {
 
 	const { data, isFetching, refetch } = getExpedients
 
-	const handleSearch = (search: SearchParams) => {
+	const handleSearch = (search: IFindExpedientDto) => {
 		const urlSearchParams = new URLSearchParams()
 
 		for (const key in search) {
-			const searchKey = key as keyof SearchParams
+			const searchKey = key as keyof IFindExpedientDto
 			if (search[searchKey]) {
 				if (Array.isArray(search[searchKey])) {
 					for (const value of search[searchKey] as string[]) {

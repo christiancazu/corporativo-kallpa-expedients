@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Form, Select, Tag } from 'antd'
 import type { SelectProps } from 'antd'
 import type React from 'react'
-import { getExpedientStatus } from '../services/api.service'
+import { getMatterTypes } from '../services/api.service'
 
 interface Props {
 	label?: string
@@ -12,20 +12,25 @@ interface Props {
 	fieldNames?: SelectProps['fieldNames']
 }
 
-const ExpedientStatusSelect: React.FC<Props> = ({
+const MatterTypeSelect: React.FC<Props> = ({
 	label,
 	fieldNames = { value: 'value', label: 'label' },
 	...props
 }) => {
 	const { data, isFetching } = useQuery({
-		queryKey: ['expedient-status'],
-		queryFn: () => getExpedientStatus(),
+		queryKey: ['matter-type'],
+		queryFn: () => getMatterTypes(),
 		select: (processTypes) =>
-			processTypes.map((processType) => ({
-				label: processType.description,
-				value: processType.id,
+			processTypes.map((matterType) => ({
+				...matterType,
+				label: matterType.description,
+				value: matterType.id,
 			})),
 	})
+
+	const getTagColorByLabel = (label: string): string => {
+		return data?.find((m) => m.label === label)?.color as string
+	}
 
 	return (
 		<Form.Item label={label} {...props}>
@@ -33,9 +38,16 @@ const ExpedientStatusSelect: React.FC<Props> = ({
 				allowClear
 				fieldNames={fieldNames}
 				loading={isFetching}
-				labelRender={(option) => <Tag>{option.label}</Tag>}
+				optionRender={(option) => (
+					<Tag color={option.data.color}>{option.label}</Tag>
+				)}
+				labelRender={(option) => (
+					<Tag color={getTagColorByLabel(option.label as unknown as string)}>
+						{option.label}
+					</Tag>
+				)}
 				options={data}
-				placeholder="Estado"
+				placeholder="Materia"
 				style={{ width: '100%' }}
 				onChange={props.onChange}
 			/>
@@ -43,4 +55,4 @@ const ExpedientStatusSelect: React.FC<Props> = ({
 	)
 }
 
-export default ExpedientStatusSelect
+export default MatterTypeSelect

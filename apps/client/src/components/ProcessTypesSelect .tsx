@@ -28,11 +28,11 @@ const ProcessTypesSelect: React.FC<Props & FormItemInputProps> = ({
 	return (
 		<Form.Item label={label} {...props}>
 			<Select
-				loading={isFetching}
 				allowClear
+				loading={isFetching}
 				options={data}
-				placeholder="Tipo de proceso"
 				style={{ width: '100%' }}
+				placeholder="Tipo de proceso"
 			/>
 		</Form.Item>
 	)
