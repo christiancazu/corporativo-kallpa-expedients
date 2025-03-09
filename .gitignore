@@ -4,3 +4,5 @@ build
 .env
 **/*.tsbuildinfo
 media
+
+dump.rdb

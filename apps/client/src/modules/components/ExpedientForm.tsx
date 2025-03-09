@@ -2,6 +2,7 @@ import { CloseOutlined, FolderAddOutlined } from '@ant-design/icons'
 import {
 	EXPEDIENT_TYPE,
 	EXPEDIENT_TYPE_COURT_NAME,
+	FIELD,
 	IExpedientStatus,
 } from '@expedients/shared'
 import { Button, Card, Col, Form, Grid, Input, Row } from 'antd'
@@ -61,7 +62,7 @@ export default function ExpedientForm({
 				label={currentExpedientTypeCodeName}
 				name="code"
 				className="capitalize"
-				rules={[{ required: true }]}
+				rules={[{ required: true, max: FIELD.EXPEDIENT_CODE_MAX_LENGTH }]}
 			>
 				<Input />
 			</Form.Item>
@@ -81,21 +82,27 @@ export default function ExpedientForm({
 					<Form.Item
 						label={EXPEDIENT_TYPE_COURT_NAME[currentExpedientTypeRoute]}
 						name="court"
-						rules={[{ required: true }]}
+						rules={[{ required: true, max: FIELD.EXPEDIENT_COURT_MAX_LENGTH }]}
 					>
 						<Input />
 					</Form.Item>
 				</>
 			) : (
 				<>
-					<Form.Item label="Entidad" name="entity" rules={[{ required: true }]}>
+					<Form.Item
+						label="Entidad"
+						name="entity"
+						rules={[{ required: true, max: FIELD.EXPEDIENT_ENTITY_MAX_LENGTH }]}
+					>
 						<Input />
 					</Form.Item>
 
 					<Form.Item
 						label="Trámite/Consulta"
 						name="procedure"
-						rules={[{ required: true }]}
+						rules={[
+							{ required: true, max: FIELD.EXPEDIENT_PROCEDURE_MAX_LENGTH },
+						]}
 					>
 						<Input />
 					</Form.Item>
@@ -120,7 +127,12 @@ export default function ExpedientForm({
 				<Form.Item
 					label="Descripción de estado"
 					name="statusDescription"
-					rules={[{ required: true }]}
+					rules={[
+						{
+							required: true,
+							max: FIELD.EXPEDIENT_STATUS_DESCRIPTION_MAX_LENGTH,
+						},
+					]}
 				>
 					<Input />
 				</Form.Item>
@@ -164,14 +176,16 @@ export default function ExpedientForm({
 											name={[field.name, 'name']}
 											labelCol={{ span: 3 }}
 											wrapperCol={{ span: 21 }}
-											rules={[{ required: true }]}
+											rules={[
+												{ required: true, max: FIELD.PART_NAME_MAX_LENGTH },
+											]}
 										>
 											<Input />
 										</Form.Item>
 									</Card>
 								))}
 
-								<Button type="dashed" onClick={() => add()}>
+								<Button type="dashed" onClick={add}>
 									+ Agregar parte
 								</Button>
 							</div>

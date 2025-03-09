@@ -23,7 +23,7 @@ export class ExpedientStatusValidator
 	) {}
 
 	async onApplicationBootstrap() {
-		this._expedientsStatus = await this._expedientStatusService.findAll()
+		this._expedientsStatus = await this._expedientStatusService.cacheFindAll()
 	}
 
 	validate(value: string, args: ValidationArguments): boolean {

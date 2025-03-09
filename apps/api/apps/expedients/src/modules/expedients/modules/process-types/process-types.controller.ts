@@ -7,6 +7,6 @@ export class ProcessTypesController {
 
 	@Get()
 	findAll() {
-		return this._service.findAll()
+		return this._service.cacheFindAll()
 	}
 }

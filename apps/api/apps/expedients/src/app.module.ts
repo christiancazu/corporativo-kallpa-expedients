@@ -1,11 +1,13 @@
 import { join } from 'node:path'
 import { BullModule } from '@nestjs/bullmq'
+import { CacheModule } from '@nestjs/cache-manager'
 import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { APP_GUARD } from '@nestjs/core'
 import { ScheduleModule } from '@nestjs/schedule'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { TypeOrmModule, type TypeOrmModuleOptions } from '@nestjs/typeorm'
+import { redisStore } from 'cache-manager-redis-store'
 import { AuthModule } from './modules/auth/auth.module'
 import { AuthGuard } from './modules/auth/guards/auth.guard'
 import { AppConfigModule } from './modules/config/app-config.module'
@@ -48,9 +50,23 @@ import { UsersModule } from './modules/users/users.module'
 			inject: [ConfigService],
 			useFactory: (configService: ConfigService) => ({
 				connection: {
-					host: configService.get('REDIS_HOST'),
-					port: configService.get('REDIS_PORT'),
+					host: configService.get<string>('REDIS_HOST'),
+					port: configService.get<number>('REDIS_PORT'),
 				},
+			}),
+		}),
+
+		CacheModule.registerAsync({
+			imports: [ConfigModule],
+			inject: [ConfigService],
+			isGlobal: true,
+			useFactory: async (configService: ConfigService) => ({
+				store: await redisStore({
+					socket: {
+						host: configService.get<string>('REDIS_HOST'),
+						port: configService.get<number>('REDIS_PORT')!,
+					},
+				}),
 			}),
 		}),
 

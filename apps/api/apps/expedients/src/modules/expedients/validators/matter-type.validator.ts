@@ -23,7 +23,7 @@ export class MatterTypeValidator
 	) {}
 
 	async onApplicationBootstrap() {
-		this._matterTypes = await this._matterTypeService.findAll()
+		this._matterTypes = await this._matterTypeService.cacheFindAll()
 	}
 
 	validate(value: string, args: ValidationArguments): boolean {

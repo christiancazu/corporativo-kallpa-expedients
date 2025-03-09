@@ -1,8 +1,4 @@
-import {
-	ClearOutlined,
-	FilterOutlined,
-	SearchOutlined,
-} from '@ant-design/icons'
+import { ClearOutlined, SearchOutlined } from '@ant-design/icons'
 import { IFindExpedientDto } from '@expedients/shared'
 import { Button, Col, Flex, Form, Input, Row, theme } from 'antd'
 import { FormInstance } from 'antd/lib'
@@ -95,10 +91,11 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 				initialValues={initialFormValues}
 				onFinish={onSearch}
 				layout="vertical"
+				validateTrigger="onSubmit"
 			>
 				<Row gutter={marginMD}>
 					<Col md={9} sm={24}>
-						<Form.Item name="text" label="Buscar por:">
+						<Form.Item name="text" label="Buscar por:" rules={[{ min: 3 }]}>
 							<Input
 								allowClear
 								placeholder={textPlaceHolder}

@@ -75,7 +75,7 @@ export class ExpedientsService {
 			createdExpedient.status = new ExpedientStatus(dto.statusId)
 
 			const expedientStatusOtros =
-				await this._expedientStatusService.getExpedientStatusOtros()
+				await this._expedientStatusService.cacheGetExpedientStatusOtros()
 
 			if (dto.statusId !== expedientStatusOtros?.id) {
 				createdExpedient.statusDescription = null
