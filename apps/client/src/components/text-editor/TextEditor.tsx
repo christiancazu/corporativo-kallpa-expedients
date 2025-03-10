@@ -74,7 +74,7 @@ const TextEditor: React.FC<{ expedientId: string }> = ({ expedientId }) => {
 					return [
 						'span',
 						{
-							class: 'mention',
+							class: 'doc-mention',
 							'data-id': node.attrs.id,
 						},
 
@@ -82,7 +82,7 @@ const TextEditor: React.FC<{ expedientId: string }> = ({ expedientId }) => {
 					]
 				},
 				HTMLAttributes: {
-					class: 'mention',
+					class: 'doc-mention',
 				},
 				suggestion: {
 					...suggestion,
@@ -206,7 +206,7 @@ const TextEditor: React.FC<{ expedientId: string }> = ({ expedientId }) => {
 				]}
 				onCancel={handleCloseModal}
 			>
-				<Typography.Text className="mr-2">Estableza la fecha</Typography.Text>
+				<Typography.Text className="mr-2">Establecer fecha</Typography.Text>
 				<DatePicker
 					allowClear={false}
 					className="mb-5"
@@ -223,6 +223,7 @@ const TextEditor: React.FC<{ expedientId: string }> = ({ expedientId }) => {
 				<div className="d-flex my-2">
 					<Alert
 						showIcon
+						banner
 						message="usar @ para referenciar un documento"
 						type="info"
 					/>

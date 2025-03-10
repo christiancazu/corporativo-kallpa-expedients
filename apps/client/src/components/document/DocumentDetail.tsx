@@ -111,7 +111,7 @@ export default function DocumentDetail({
 								display: 'inline-block',
 							}}
 						/>
-						<Title className="text-primary ml-2" level={3}>
+						<Title className="text-blue ml-2" level={3}>
 							{data?.name}
 						</Title>
 					</div>

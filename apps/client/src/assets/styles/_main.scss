@@ -28,16 +28,12 @@ p {
   padding: 0;
 }
 
-.text-center {
-  text-align: center;
-}
-
-.text-primary {
-  color: #007bff !important;
+.text-blue {
+  color: var(--ant-blue) !important;
 }
 
 .text-link {
-  @extend .text-primary;
+  @extend .text-blue;
   padding: 8px 4px;
   border-radius: 8px;
   margin-bottom: 8px;
@@ -53,14 +49,15 @@ p {
   }
 }
 
-.w-100 {
-  width: 100%;
-}
-
-.cursor-pointer {
-  cursor: pointer;
-}
-
 .ant-picker-panel-container {
   transform: translateX(1.5rem);
+}
+
+.doc-mention {
+  background-color: #bae7ff;
+  border-radius: 0.4rem;
+  box-decoration-break: clone;
+  color: #096dd9;
+  padding: 0.1rem 0.3rem;
+  cursor: pointer;
 }

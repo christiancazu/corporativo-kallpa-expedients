@@ -77,7 +77,7 @@ const ExpedientsView: React.FC = () => {
 		}
 
 		setTimeout(() => {
-			mentions = Array.from(dom.getElementsByClassName('mention'))
+			mentions = Array.from(dom.getElementsByClassName('doc-mention'))
 			for (const element of mentions) {
 				element.addEventListener('click', docEventListeners)
 			}

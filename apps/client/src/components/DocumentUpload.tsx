@@ -193,7 +193,7 @@ const DocumentUpload: React.FC<Props> = ({ documentFile, setDocumentFile }) => {
 								display: 'inline-block',
 							}}
 						/>
-						<Title className="text-primary ml-2" level={3}>
+						<Title className="text-blue ml-2" level={3}>
 							{documentFile?.name}
 						</Title>
 					</div>

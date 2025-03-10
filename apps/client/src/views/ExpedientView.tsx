@@ -183,7 +183,7 @@ const ExpedientView: React.FC = () => {
 	)
 
 	useEffect(() => {
-		mentions = Array.from(dom.getElementsByClassName('mention'))
+		mentions = Array.from(dom.getElementsByClassName('doc-mention'))
 		mentions.forEach((element) => {
 			element.addEventListener('click', docEventListeners)
 
@@ -444,7 +444,7 @@ const ExpedientView: React.FC = () => {
 						>
 							<Flex vertical wrap align="start">
 								{data.documents.map((document) => (
-									<div className="text-link w-100" key={document.id}>
+									<div className="text-link w-full" key={document.id}>
 										<div className="d-flex justify-content-between align-items-center">
 											<div
 												className="mr-4"
@@ -542,7 +542,7 @@ const ExpedientView: React.FC = () => {
 											</Flex>
 											<Flex
 												vertical
-												className="ml-3 w-100"
+												className="ml-3 w-full"
 												justify="space-between"
 											>
 												<Flex justify="space-between">

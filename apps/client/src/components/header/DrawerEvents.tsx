@@ -70,7 +70,7 @@ export default function DrawerEvents({
 										}}
 									/>
 								</Flex>
-								<Flex vertical className="ml-3 w-100" justify="space-between">
+								<Flex vertical className="ml-3 w-full" justify="space-between">
 									<StyledCardNotificationText>
 										{event.message}
 									</StyledCardNotificationText>
