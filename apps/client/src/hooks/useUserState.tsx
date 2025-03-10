@@ -6,11 +6,12 @@ import { queryClient } from '../config/queryClient'
 import persisterUtil from '../utils/persister.util'
 
 const useUserState = (user?: IUser) => {
-	const setUser = (value: Partial<IUser> | null) => {
+	const setUser = (newUser: Partial<IUser> | null) => {
 		queryClient.setQueryData(['user'], (prevState: IUser) => ({
 			...prevState,
-			...value,
+			...newUser,
 		}))
+		persisterUtil.setUser(newUser as IUser)
 	}
 
 	const isUserNotificationEnabled = useQuery({

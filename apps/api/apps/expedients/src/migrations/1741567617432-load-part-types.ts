@@ -4,14 +4,14 @@ import { MigrationInterface, QueryRunner } from 'typeorm'
 export class LoadPartTypes1741567617432 implements MigrationInterface {
 	public async up(queryRunner: QueryRunner): Promise<void> {
 		const initialPartTypes = {
-			AGRAVIADO: [
+			Agraviado: [
 				EXPEDIENT_TYPE.INVESTIGATION_PROCESSES,
 				EXPEDIENT_TYPE.JUDICIAL_PROCESSES,
 			],
-			INVESTIGADO: [EXPEDIENT_TYPE.INVESTIGATION_PROCESSES],
-			IMPUTADO: [EXPEDIENT_TYPE.JUDICIAL_PROCESSES],
-			DEMANDANTE: [EXPEDIENT_TYPE.JUDICIAL_PROCESSES],
-			DEMANDADO: [EXPEDIENT_TYPE.JUDICIAL_PROCESSES],
+			Investigado: [EXPEDIENT_TYPE.INVESTIGATION_PROCESSES],
+			Imputado: [EXPEDIENT_TYPE.JUDICIAL_PROCESSES],
+			Demandante: [EXPEDIENT_TYPE.JUDICIAL_PROCESSES],
+			Demandado: [EXPEDIENT_TYPE.JUDICIAL_PROCESSES],
 		}
 
 		for await (const record of Object.keys(initialPartTypes)) {
