@@ -319,7 +319,9 @@ const ExpedientView: React.FC = () => {
 								<div className="mb-3">
 									{data.parts.map((part) => (
 										<p className="mb-2" key={part.id}>
-											{part.type}
+											{currentExpedientTypeName !== EXPEDIENT_TYPE.CONSULTANCY
+												? part.type?.description
+												: part.typeDescription}
 											{': '}
 											{part.name}
 										</p>

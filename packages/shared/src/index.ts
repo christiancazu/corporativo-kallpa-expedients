@@ -175,7 +175,7 @@ export interface IPart {
 	id: string
 	name: string
 	type: IPartType
-	expedient: IExpedient
+	typeDescription: string | null
 }
 
 export interface IPartType {
