@@ -10,7 +10,7 @@ export class CreatePartDto implements ICreatePartDto {
 	@IsUUID()
 	typeId: string
 
-	@ValidateIf((o) => !o.type)
+	@ValidateIf((o) => !o.typeId)
 	@MaxLength(FIELD.PART_TYPE_DESCRIPTION_MAX_LENGTH)
 	typeDescription: string
 }

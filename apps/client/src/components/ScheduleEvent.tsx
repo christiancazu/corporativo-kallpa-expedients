@@ -7,6 +7,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat'
 import type { SetStateAction } from 'react'
 
 import { ScheduleOutlined } from '@ant-design/icons'
+import { useExpedientsState } from '../hooks/useExpedientsState'
 import useNotify from '../hooks/useNotification'
 import { createEvent } from '../services/api.service'
 import type { CreateEvent } from '../types'
@@ -33,6 +34,7 @@ export default function ScheduleEvent({
 }: Props): React.ReactNode {
 	const notify = useNotify()
 	const queryClient = useQueryClient()
+	const { currentExpedientTypeNameSingular } = useExpedientsState()
 
 	const { mutate, isPending } = useMutation({
 		mutationKey: ['create-event'],
@@ -66,7 +68,7 @@ export default function ScheduleEvent({
 			closable={!isPending}
 			maskClosable={!isPending}
 			open={event.show}
-			title="Programar evento para el expediente"
+			title={`Programar evento para ${currentExpedientTypeNameSingular}`}
 			footer={[
 				<Button
 					key="back"

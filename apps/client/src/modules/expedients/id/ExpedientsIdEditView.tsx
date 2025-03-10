@@ -48,13 +48,21 @@ export default function ExpedientsIdEditView(): React.ReactNode {
 			processTypeId: data?.processType?.id,
 			statusId: data?.status?.id,
 			matterTypeId: data?.matterType?.id,
+			parts: data?.parts?.map((part) => {
+				return {
+					id: part.id,
+					name: part.name,
+					typeId: part.type.id,
+					typeDescription: part.type.description,
+				}
+			}),
 		} as ICreateExpedientDto)
 	}, [data, isSuccess])
 
 	const { mutate, isPending } = useMutation({
 		mutationKey: ['expedient-update'],
-		mutationFn: () =>
-			updateExpedient({ id: id!, expedient: form.getFieldsValue() }),
+		mutationFn: (expedient: ICreateExpedientDto) =>
+			updateExpedient({ id: id!, expedient }),
 		onSuccess: () => {
 			notify({
 				message: `${currentExpedientTypeNameSingular} actualizado con éxito`,

@@ -1,6 +1,7 @@
 import {
 	IExpedientStatus,
 	IMatterType,
+	IPartType,
 	IProcessType,
 	IUser,
 } from '@expedients/shared'
@@ -108,4 +109,8 @@ export async function getExpedientStatus(): Promise<IExpedientStatus[]> {
 
 export async function getMatterTypes(): Promise<IMatterType[]> {
 	return httpClient.get('/matter-types').then((res) => res.data)
+}
+
+export async function getPartTypes(): Promise<IPartType[]> {
+	return httpClient.get('/parts-types').then((res) => res.data)
 }

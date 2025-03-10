@@ -82,8 +82,11 @@ interface Expedient extends ExpedientType {
 }
 
 const ExpedientView: React.FC = () => {
-	const { currentExpedientTypeRoute, currentExpedientTypeName } =
-		useExpedientsState()
+	const {
+		currentExpedientTypeRoute,
+		currentExpedientTypeName,
+		currentExpedientTypeNameSingular,
+	} = useExpedientsState()
 	const { getExpedient, getExpedientEvents } = useExpedientsService()
 
 	const { id } = useParams<{ id: string }>()
@@ -227,7 +230,7 @@ const ExpedientView: React.FC = () => {
 			<>
 				<NavigationBackBtn to={`/${currentExpedientTypeRoute}`} />
 				<Title level={4} className="text-center pt-4">
-					El expediente no ha sido encontrado
+					{currentExpedientTypeNameSingular} no existente
 				</Title>
 			</>
 		)

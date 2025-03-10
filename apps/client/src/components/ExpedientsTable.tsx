@@ -188,7 +188,7 @@ const TableExpedients: React.FC<Props> = ({
 			render: (_, expedient) => (
 				<Space>
 					<Link to={`/${currentExpedientTypeRoute}/${expedient.id}/editar`}>
-						<Tooltip title="Editar expediente">
+						<Tooltip title="Editar">
 							<Button
 								icon={<EditOutlined />}
 								shape="circle"
@@ -198,7 +198,7 @@ const TableExpedients: React.FC<Props> = ({
 						</Tooltip>
 					</Link>
 					<Link to={`/${currentExpedientTypeRoute}/${expedient.id}`}>
-						<Tooltip title="Ver expediente">
+						<Tooltip title="Ver detalle">
 							<Button icon={<SearchOutlined />} shape="circle" />
 						</Tooltip>
 					</Link>

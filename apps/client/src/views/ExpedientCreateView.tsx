@@ -50,21 +50,13 @@ const ExpedientsCreateView: React.FC = () => {
 		},
 	})
 
-	const handleCreate = () => {
-		mutate(form.getFieldsValue())
-	}
-
 	return (
 		<div style={sectionStyle}>
 			<NavigationBackBtn to={`/${currentExpedientTypeRoute}`} />
 			<Divider className="my-3" />
 
 			<div className="d-flex justify-content-center">
-				<ExpedientForm
-					form={form}
-					isPending={isPending}
-					onFinish={handleCreate}
-				/>
+				<ExpedientForm form={form} isPending={isPending} onFinish={mutate} />
 			</div>
 
 			<Modal

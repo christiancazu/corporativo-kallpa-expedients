@@ -70,7 +70,7 @@ export const FRONTEND_ROUTES_AS_EXPEDIENT_TYPE_NAME = {
 
 export const EXPEDIENT_TYPE_CODE_NAME = {
 	asesoria: 'Empresa',
-	'procesos-judiciales': 'Carpeta Fiscal',
+	'procesos-judiciales': 'Carpeta fiscal',
 	'procesos-de-investigacion': 'Expediente',
 }
 
@@ -95,14 +95,6 @@ export enum PENAL_PART_TYPES {
 }
 
 export enum CIVIL_PART_TYPES {
-	DEMANDANTE = 'DEMANDANTE',
-	DEMANDADO = 'DEMANDADO',
-}
-
-export enum PART_TYPES {
-	AGRAVIADO = 'AGRAVIADO',
-	INVESTIGADO = 'INVESTIGADO',
-	IMPUTADO = 'IMPUTADO',
 	DEMANDANTE = 'DEMANDANTE',
 	DEMANDADO = 'DEMANDADO',
 }
@@ -243,7 +235,7 @@ export interface ICreateExpedientDto {
 	instance?: JUDICIAL_PROCESSES_INSTANCES
 	assignedLawyerId?: string
 	assignedAssistantId?: string
-	parts?: ICreatePartDto[]
+	parts?: IUpdatePartDto[]
 }
 
 export interface ICreatePartDto {
@@ -253,5 +245,5 @@ export interface ICreatePartDto {
 }
 
 export interface IUpdatePartDto extends ICreatePartDto {
-	id: string
+	id?: string
 }

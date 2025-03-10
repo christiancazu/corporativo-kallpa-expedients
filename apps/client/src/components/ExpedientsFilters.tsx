@@ -18,7 +18,7 @@ interface Props {
 
 const expedientTypeTextPlaceHolder = {
 	asesoria: 'empresa, materia, entidad o trámite/consulta...',
-	'procesos-judiciales': 'expediente, materia, proceso o fiscalia...',
+	'procesos-judiciales': 'carpeta fiscal, materia, proceso o fiscalia...',
 	'procesos-de-investigacion': 'expediente, materia, proceso o juzgado...',
 }
 

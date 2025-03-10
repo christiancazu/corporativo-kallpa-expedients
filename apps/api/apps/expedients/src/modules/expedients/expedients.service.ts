@@ -124,6 +124,7 @@ export class ExpedientsService {
 			.leftJoinAndSelect('expedients.status', 'status')
 			.leftJoin('expedients.updatedByUser', 'updatedByUser')
 			.leftJoinAndSelect('expedients.parts', 'parts')
+			.leftJoinAndSelect('parts.type', 'partType')
 			.addSelect([
 				'updatedByUser.firstName',
 				'updatedByUser.surname',
@@ -334,6 +335,7 @@ export class ExpedientsService {
 				},
 				parts: {
 					createdAt: 'ASC',
+					id: 'ASC',
 				},
 			},
 		})
