@@ -100,8 +100,9 @@ export enum CIVIL_PART_TYPES {
 }
 
 export enum PART_TYPES {
-	DENUNCIANTE = 'DENUNCIANTE',
-	DENUNCIADO = 'DENUNCIADO',
+	AGRAVIADO = 'AGRAVIADO',
+	INVESTIGADO = 'INVESTIGADO',
+	IMPUTADO = 'IMPUTADO',
 	DEMANDANTE = 'DEMANDANTE',
 	DEMANDADO = 'DEMANDADO',
 }
@@ -181,8 +182,14 @@ export interface IMatterType {
 export interface IPart {
 	id: string
 	name: string
-	type: PART_TYPES
+	type: IPartType
 	expedient: IExpedient
+}
+
+export interface IPartType {
+	id: string
+	description: string
+	expedientType: EXPEDIENT_TYPE[]
 }
 
 export interface IReview {
@@ -241,6 +248,10 @@ export interface ICreateExpedientDto {
 
 export interface ICreatePartDto {
 	name: string
-	type: PART_TYPES
+	typeDescription: string
+	typeId: string
+}
+
+export interface IUpdatePartDto extends ICreatePartDto {
 	id: string
 }

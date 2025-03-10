@@ -9,6 +9,7 @@ import { REQUEST } from '@nestjs/core'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Brackets, type Repository } from 'typeorm'
 import { Part } from '../parts/entities/part.entity'
+import { PartType } from '../parts/modules/part-types/entities/part-types.entity'
 import { Review } from '../reviews/entities/review.entity'
 import { User } from '../users/entities/user.entity'
 import type { CreateExpedientDto } from './dto/create-expedient.dto'
@@ -83,19 +84,6 @@ export class ExpedientsService {
 			}
 		}
 
-		let deletedParts: Part[] = []
-
-		if (expedient) {
-			deletedParts = expedient?.parts.reduce<Part[]>((acc, part) => {
-				const existsPart = parts!.find((p) => p.id === part.id)
-
-				if (!existsPart) {
-					acc.push(part)
-				}
-				return acc
-			}, [])
-		}
-
 		try {
 			createdExpedient.type = this.getExpedientType()
 
@@ -104,14 +92,18 @@ export class ExpedientsService {
 
 			if (parts?.length) {
 				const createdParts = this._partsRepository.create(
-					parts.map((part) => ({ ...part, expedient: savedExpedient })),
+					parts.map((part) => {
+						const newPart = new Part()
+						Object.assign(newPart, part)
+						if (part.typeId) {
+							newPart.type = new PartType(part.typeId)
+							newPart.typeDescription = null
+						}
+						return { ...newPart, expedient: savedExpedient }
+					}),
 				)
 
 				await this._partsRepository.save(createdParts)
-			}
-
-			if (deletedParts.length) {
-				await this._partsRepository.remove(deletedParts)
 			}
 			return savedExpedient
 		} catch (error) {
@@ -263,7 +255,9 @@ export class ExpedientsService {
 		const expedient = await this._expedientRepository.findOne({
 			where: { id, type: this.getExpedientType() },
 			relations: {
-				parts: true,
+				parts: {
+					type: true,
+				},
 				assignedLawyer: true,
 				assignedAssistant: true,
 				createdByUser: true,
@@ -280,7 +274,11 @@ export class ExpedientsService {
 				parts: {
 					id: true,
 					name: true,
-					type: true,
+					type: {
+						id: true,
+						description: true,
+						expedientType: true,
+					},
 					typeDescription: true,
 					createdAt: true,
 				},
@@ -416,7 +414,9 @@ export class ExpedientsService {
 			relations: {
 				assignedAssistant: true,
 				assignedLawyer: true,
-				parts: true,
+				parts: {
+					type: true,
+				},
 			},
 			select: {
 				assignedAssistant: {
@@ -428,7 +428,11 @@ export class ExpedientsService {
 				parts: {
 					id: true,
 					name: true,
-					type: true,
+					type: {
+						id: true,
+						description: true,
+						expedientType: true,
+					},
 				},
 			},
 		})
@@ -450,7 +454,32 @@ export class ExpedientsService {
 			dto.assignedLawyerId = undefined
 		}
 
-		return this.create(user, dto as CreateExpedientDto, expedient)
+		const createdExpedient = await this.create(
+			user,
+			dto as CreateExpedientDto,
+			expedient,
+		)
+
+		if (!createdExpedient) {
+			throw new UnprocessableEntityException('Error updating expedient')
+		}
+
+		let deletedParts: Part[] = []
+
+		deletedParts = expedient.parts.reduce<Part[]>((acc, part) => {
+			const existsPart = dto.parts!.find((p) => p.id === part.id)
+
+			if (!existsPart) {
+				acc.push(part)
+			}
+			return acc
+		}, [])
+
+		if (deletedParts.length) {
+			await this._partsRepository.remove(deletedParts)
+		}
+
+		return createdExpedient
 	}
 
 	async updateDate(id: string, expedient: Partial<Expedient>) {

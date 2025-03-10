@@ -1,4 +1,4 @@
-import { FIELD, IPart, PART_TYPES } from '@expedients/shared'
+import { FIELD, IPart } from '@expedients/shared'
 import {
 	Column,
 	CreateDateColumn,
@@ -7,6 +7,7 @@ import {
 	PrimaryGeneratedColumn,
 } from 'typeorm'
 import { Expedient } from '../../expedients/entities/expedient.entity'
+import { PartType } from '../modules/part-types/entities/part-types.entity'
 
 @Entity('parts')
 export class Part implements IPart {
@@ -16,21 +17,21 @@ export class Part implements IPart {
 	@Column({ type: 'varchar', length: FIELD.PART_NAME_MAX_LENGTH })
 	name: string
 
-	@Column({
-		type: 'enum',
-		name: 'type',
-		enumName: 'part_type',
-		enum: PART_TYPES,
-		nullable: true,
-	})
-	type: PART_TYPES
+	@ManyToOne(
+		() => PartType,
+		(partType) => partType.parts,
+		{
+			nullable: true,
+		},
+	)
+	type: PartType
 
 	@Column({
 		type: 'varchar',
 		length: FIELD.PART_TYPE_DESCRIPTION_MAX_LENGTH,
 		nullable: true,
 	})
-	typeDescription: string
+	typeDescription: string | null
 
 	@ManyToOne(
 		() => Expedient,
