@@ -10,11 +10,14 @@ import {
 } from '@expedients/shared'
 import {
 	Button,
+	Divider,
+	Flex,
 	Space,
 	type TableColumnsType,
 	type TableProps,
 	Tag,
 	Tooltip,
+	Typography,
 } from 'antd'
 import htmlReactParser from 'html-react-parser'
 import { Link } from 'react-router'
@@ -23,6 +26,8 @@ import UserAvatarName from '../modules/shared/components/UserAvatarName'
 import { dateUtil } from '../utils'
 import { TableBase } from './base/TableBase'
 import { StyledTable } from './styled/table.styled'
+
+const { Text } = Typography
 
 type DataType = {
 	dataIndex?: string
@@ -132,6 +137,31 @@ const TableExpedients: React.FC<Props> = ({
 				),
 		},
 		{
+			title: 'Partes',
+			dataIndex: 'parts',
+			key: 'parts',
+			width: 180,
+			align: 'center',
+			render: (_, expedient) => (
+				<>
+					{expedient.parts?.map((part, i) => (
+						<Flex vertical key={part.id} className="text-left text-wrap">
+							<Text className="font-bold text-xs">
+								{currentExpedientTypeName !== EXPEDIENT_TYPE.CONSULTANCY
+									? part.type?.description
+									: part.typeDescription}
+							</Text>
+							<Text>{part.name}</Text>
+
+							{expedient.parts?.length - 1 !== i && (
+								<Divider className="my-1" variant="dashed" />
+							)}
+						</Flex>
+					))}
+				</>
+			),
+		},
+		{
 			title: 'Asignados',
 			key: 'assigned',
 			width: 180,
@@ -139,6 +169,9 @@ const TableExpedients: React.FC<Props> = ({
 				<>
 					{expedient.assignedLawyer && (
 						<UserAvatarName user={expedient.assignedLawyer} title="Abogado" />
+					)}
+					{expedient.assignedLawyer && expedient.assignedAssistant && (
+						<Divider className="my-1" variant="dashed" />
 					)}
 					{expedient.assignedAssistant && (
 						<UserAvatarName
