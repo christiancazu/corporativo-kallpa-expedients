@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { Divider, theme } from 'antd'
-import { useEffect } from 'react'
-import { useParams } from 'react-router'
+import { Button, Divider, Modal, theme } from 'antd'
+import { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router'
 
 import { ICreateExpedientDto, IExpedient } from '@expedients/shared'
 import { useForm } from 'antd/es/form/Form'
@@ -16,8 +16,13 @@ import ExpedientForm from '../../components/ExpedientForm'
 export default function ExpedientsIdEditView(): React.ReactNode {
 	const { id } = useParams<{ id: string }>()
 
-	const { currentExpedientTypeRoute, currentExpedientTypeNameSingular } =
-		useExpedientsState()
+	const {
+		currentExpedientTypeRoute,
+		currentExpedientTypeNameSingular,
+		currentExpedientTypeName,
+	} = useExpedientsState()
+	const navigate = useNavigate()
+	const [open, setOpen] = useState(false)
 
 	const { getExpedient, updateExpedient } = useExpedientsService()
 
@@ -52,8 +57,8 @@ export default function ExpedientsIdEditView(): React.ReactNode {
 				return {
 					id: part.id,
 					name: part.name,
-					typeId: part.type.id,
-					typeDescription: part.type.description,
+					typeId: part.type?.id,
+					typeDescription: part.typeDescription,
 				}
 			}),
 		} as ICreateExpedientDto)
@@ -67,6 +72,7 @@ export default function ExpedientsIdEditView(): React.ReactNode {
 			notify({
 				message: `${currentExpedientTypeNameSingular} actualizado con éxito`,
 			})
+			setOpen(true)
 		},
 	})
 
@@ -90,6 +96,36 @@ export default function ExpedientsIdEditView(): React.ReactNode {
 					/>
 				</div>
 			)}
+
+			<Modal
+				open={open}
+				title="Confirmar"
+				footer={() => (
+					<>
+						<Button
+							onClick={() => {
+								setOpen(false)
+							}}
+						>
+							Quedarme aquí
+						</Button>
+						<Button onClick={() => navigate(`/${currentExpedientTypeRoute}`)}>
+							Volver al listado de {currentExpedientTypeName}
+						</Button>
+						<Button
+							type="primary"
+							onClick={() => navigate(`/${currentExpedientTypeRoute}/${id}`)}
+						>
+							Ver {currentExpedientTypeNameSingular}
+						</Button>
+					</>
+				)}
+				onCancel={() => {
+					setOpen(false)
+				}}
+			>
+				Elija una opción
+			</Modal>
 		</div>
 	)
 }

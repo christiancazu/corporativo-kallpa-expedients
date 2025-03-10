@@ -22,12 +22,12 @@ const expedientTypeTextPlaceHolder = {
 	'procesos-de-investigacion': 'expediente, materia, proceso o juzgado...',
 }
 
-const initialFormValues: IFindExpedientDto = {
+const getInitialFormValues = (): IFindExpedientDto => ({
 	text: null,
 	status: null,
 	updatedByUser: null,
 	matterType: null,
-}
+})
 
 const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 	const {
@@ -38,6 +38,8 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 	const [searchParams] = useSearchParams()
 
 	useEffect(() => {
+		const initialFormValues = getInitialFormValues()
+
 		for (const searchKey in initialFormValues) {
 			let value: string | string[] | null = null
 
@@ -54,9 +56,7 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 
 		form.setFieldsValue(initialFormValues)
 
-		if (searchParams.size) {
-			setCanDeleteFilters(true)
-		}
+		setCanDeleteFilters(!!searchParams.size)
 	}, [currentExpedientTypeRoute])
 
 	const [canDeleteFilter, setCanDeleteFilters] = useState(false)
@@ -88,7 +88,7 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 				autoComplete="off"
 				form={form}
 				onChange={handleOnChange}
-				initialValues={initialFormValues}
+				initialValues={getInitialFormValues()}
 				onFinish={onSearch}
 				layout="vertical"
 				validateTrigger="onSubmit"

@@ -1,4 +1,3 @@
-import { EXPEDIENT_TYPE } from '@expedients/shared'
 import { useQuery } from '@tanstack/react-query'
 import { Form, Select } from 'antd'
 import { FormItemInputProps } from 'antd/es/form/FormItemInput'

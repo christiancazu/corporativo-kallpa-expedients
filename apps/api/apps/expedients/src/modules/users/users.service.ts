@@ -1,4 +1,5 @@
 import { unlink } from 'node:fs'
+import { USER_ROLES } from '@expedients/shared'
 import {
 	BadRequestException,
 	Injectable,
@@ -6,7 +7,7 @@ import {
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { InjectRepository } from '@nestjs/typeorm'
-import type { Repository } from 'typeorm'
+import { Not, type Repository } from 'typeorm'
 import type { CreateUserDto } from './dto/create-user.dto'
 import { User } from './entities/user.entity'
 
@@ -50,6 +51,7 @@ export class UsersService {
 
 	async findAll() {
 		const users = await this._userRepository.find({
+			where: { role: Not(USER_ROLES.ADMIN) },
 			select: ['id', 'firstName', 'surname', 'avatar'],
 		})
 

@@ -27,7 +27,9 @@ import { UsersService } from './users.service'
 export class UsersController {
 	constructor(
 		private readonly _usersService: UsersService,
+
 		private readonly _authService: AuthService,
+
 		@Inject(SETTINGS.MESSENGER_SERVICE)
 		private readonly _clientProxy: ClientProxy,
 	) {}
