@@ -1,0 +1,63 @@
+@forward './_tailwind';
+@forward './_flex';
+@forward './_login-view';
+
+@import 'antd/dist/reset.css';
+
+@import url("https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&display=swap");
+
+:root {
+  --color-bg-layout: #{$colorBgLayoutLight};
+  --color-bg-container: #{$colorBgContainerLight};
+  --color-bg-app: #{$colorBgApp};
+
+  &.dark {
+    --color-bg-layout: #{$colorBgLayoutDark};
+    --color-bg-container: #{$colorBgContainerDark};
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+  padding: 0;
+}
+
+.text-blue {
+  color: var(--ant-blue) !important;
+}
+
+.text-link {
+  @extend .text-blue;
+  padding: 8px 4px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+
+  & p {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  &:hover {
+    background-color: var(--color-bg-layout) !important;
+  }
+}
+
+.ant-picker-panel-container {
+  transform: translateX(1.5rem);
+}
+
+.doc-mention {
+  background-color: #bae7ff;
+  border-radius: 0.4rem;
+  box-decoration-break: clone;
+  color: #096dd9;
+  padding: 0.1rem 0.3rem;
+  cursor: pointer;
+}

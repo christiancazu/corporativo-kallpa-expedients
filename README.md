@@ -1,7 +1,9 @@
-## FULL STACK MONOREPO
+## FULL STACK MICROSERVICES MONOREPO
 - pnpm
 - monorepo
 - Nest.js
+- Microservices
+- Nodemailer
 - postgres
 - React
 - Ant Design
@@ -11,12 +13,23 @@
 - use `node` major to 20
 - use `pnpm` as global(install it with `npm i -g pnpm`)
 
-## SETUP API
-- run API in dev mode
+## INIT
+- install dependencies
+```
+pnpm install
+```
+- build shared package
+```
+pnpm shared build
+```
+
+## SETUP API & MICROSERVICES
+- run in dev mode
 ```
 pnpm api start:dev
 ```
-- run API in prod mode
+
+- run in prod mode
 ```
 pnpm api build
 ```

@@ -1,131 +1,132 @@
-import React, { useEffect, useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import TableExpedients from '../components/ExpedientsTable'
-import { Expedient, EXPEDIENT_STATUS } from '@expedients/shared'
-import FilterExpedients from '../components/ExpedientsFilters'
-import Title from 'antd/es/typography/Title'
-import { getExpedients } from '../services/api.service'
-import useNotify from '../composables/useNotification'
-import { Button } from 'antd'
-import { PlusOutlined } from '@ant-design/icons'
-import { useNavigate } from 'react-router-dom'
-import { DocumentFile } from './ExpedientView'
-import DocumentDetail from '../components/DocumentDetail'
+import type React from 'react'
+import { useEffect, useState } from 'react'
 
-interface SearchParams {
-  byText?: string[];
-  text?: string | null;
-  status?: EXPEDIENT_STATUS | null;
-  updatedByUser?: string | null;
-}
+import { PlusOutlined } from '@ant-design/icons'
+import { IFindExpedientDto } from '@expedients/shared'
+import { Form } from 'antd'
+import { useNavigate, useSearchParams } from 'react-router'
+import FilterExpedients from '../components/ExpedientsFilters'
+import TableExpedients from '../components/ExpedientsTable'
+import ButtonBase from '../components/base/ButtonBase'
+import DocumentDetail from '../components/document/DocumentDetail'
+import { useExpedientsState } from '../hooks/useExpedientsState'
+import { useExpedientsService } from '../services/expedients.service'
+import type { DocumentFile } from './ExpedientView'
 
 const dom = document
 let mentions: HTMLElement[] | Element[] = []
 
 const ExpedientsView: React.FC = () => {
-  const [params, setParams] = useState<SearchParams>({
-    byText: [],
-    text: null,
-    status: null,
-    updatedByUser: null
-  })
-  const navigate = useNavigate()
-  const notify = useNotify()
-  const [documentFile, setDocumentFile] = useState<DocumentFile>({
-    id: '',
-    showDetail: false,
-    showUpload: false,
-    isLoading: false,
-    action: 'create'
-  })
+	const [_, setSearchParams] = useSearchParams()
+	const { currentExpedientTypeRoute, currentExpedientTypeNameSingular } =
+		useExpedientsState()
 
-  const { data, isFetching, isFetched } = useQuery({
-    queryKey: ['expedients', params],
-    queryFn: (): Promise<Expedient[]> => getExpedients(params),
-    refetchOnMount: true,
-    select: (expedients) => expedients.map(expedient => ({ ...expedient, key: expedient.id }))
-  })
+	const navigate = useNavigate()
+	const [form] = Form.useForm<IFindExpedientDto>()
+	const [documentFile, setDocumentFile] = useState<DocumentFile>({
+		id: '',
+		showDetail: false,
+		showUpload: false,
+		isLoading: false,
+		action: 'create',
+	})
 
-  const handleSearch = (search: SearchParams) => {
-    setParams(prev => ({ prev, ...search }))
-  }
+	const { getExpedients } = useExpedientsService()
 
-  useEffect(() => {
-    if (isFetched && data?.length === 0) {
-      notify({ message: 'La busqueda no produjo resultados', type: 'info' })
-    }
-  })
+	const { data, isFetching, refetch } = getExpedients
 
-  const docEventListeners = (event: any) => {
-    if (!(event.target instanceof HTMLSpanElement)) {
-      return
-    }
-    setDocumentFile(prev => ({ ...prev, showDetail: true, id: event.target.dataset['id'] }))
-  }
+	const handleSearch = (search: IFindExpedientDto) => {
+		const urlSearchParams = new URLSearchParams()
 
-  const setupMentionListeners = () => {
-    mentions.forEach((element) => {
-      element.removeEventListener('click', docEventListeners)
-    })
+		for (const key in search) {
+			const searchKey = key as keyof IFindExpedientDto
+			if (search[searchKey]) {
+				if (Array.isArray(search[searchKey])) {
+					for (const value of search[searchKey] as string[]) {
+						urlSearchParams.append(key, value)
+					}
+				} else {
+					urlSearchParams.append(key, search[searchKey] as string)
+				}
+			}
+		}
 
-    setTimeout(() => {
-      mentions = Array.from(dom.getElementsByClassName('mention'))
-      mentions.forEach((element) => {
-        element.addEventListener('click', docEventListeners)
-      })
-    }, 1)
-  }
+		setSearchParams(urlSearchParams)
 
-  useEffect(() => {
-    if (data?.length) {
-      setupMentionListeners()
-    }
+		refetch()
+	}
 
-    return () => {
-      mentions.forEach((element) => {
-        element.removeEventListener('click', docEventListeners)
-      })
-    }
-  }, [data])
+	useEffect(() => {
+		refetch()
+	}, [currentExpedientTypeRoute])
 
-  return (
-    <>
-      <div className='d-flex justify-content-between'>
-        <Title
-          className='mb-20'
-          level={ 4 }
-        >
-          Expedientes
-        </Title>
+	const docEventListeners = (event: any) => {
+		if (!(event.target instanceof HTMLSpanElement)) {
+			return
+		}
+		setDocumentFile((prev) => ({
+			...prev,
+			showDetail: true,
+			id: event.target.dataset.id,
+		}))
+	}
 
-        <Button
-          icon={ <PlusOutlined /> }
-          type='primary'
-          onClick={ () => navigate('/expedients/create') }
-        >
-          Crear expediente
-        </Button>
-      </div>
-      <FilterExpedients
-        loading={ isFetching }
-        onSearch={ handleSearch }
-      />
+	const setupMentionListeners = () => {
+		for (const element of mentions) {
+			element.removeEventListener('click', docEventListeners)
+		}
 
-      <TableExpedients
-        expedients={ data! }
-        loading={ isFetching }
-        onChangePagination={ setupMentionListeners }
-      />
+		setTimeout(() => {
+			mentions = Array.from(dom.getElementsByClassName('doc-mention'))
+			for (const element of mentions) {
+				element.addEventListener('click', docEventListeners)
+			}
+		}, 1)
+	}
 
-      {
-        documentFile.showDetail &&
-          <DocumentDetail
-            documentFile={ documentFile }
-            setDocumentFile={ setDocumentFile }
-          />
-      }
-    </>
-  )
+	useEffect(() => {
+		if (data?.length) {
+			setupMentionListeners()
+		}
+
+		return () => {
+			for (const element of mentions) {
+				element.removeEventListener('click', docEventListeners)
+			}
+		}
+	}, [data])
+
+	return (
+		<>
+			<ButtonBase
+				primary
+				className="mb-4"
+				icon={<PlusOutlined />}
+				onClick={() => navigate(`/${currentExpedientTypeRoute}/crear`)}
+			>
+				Crear {currentExpedientTypeNameSingular}
+			</ButtonBase>
+
+			<FilterExpedients
+				loading={isFetching}
+				form={form}
+				onSearch={handleSearch}
+			/>
+
+			<TableExpedients
+				expedients={data!}
+				loading={isFetching}
+				onChangePagination={setupMentionListeners}
+			/>
+
+			{documentFile.showDetail && (
+				<DocumentDetail
+					documentFile={documentFile}
+					setDocumentFile={setDocumentFile}
+				/>
+			)}
+		</>
+	)
 }
 
 export default ExpedientsView

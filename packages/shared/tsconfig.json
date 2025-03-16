@@ -1,13 +1,35 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "CommonJS",
+    "module": "commonjs",
     "rootDir": "./src",
-    "moduleResolution": "Node",
     "outDir": "./dist",
+    "sourceMap": true,
+    "removeComments": true,
+    "downlevelIteration": true,
+    "allowSyntheticDefaultImports": true,
+    "importHelpers": true,
     "declaration": true,
+    "noUnusedParameters": true,
+    "skipLibCheck": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strictPropertyInitialization": false,
+    "strictNullChecks": false,
+    "noImplicitReturns": false,
+    "noImplicitAny": false,
+    "noUnusedLocals": true,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false,
   },
   "include": [
     "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test",
+    "**/*spec.ts"
   ]
 }

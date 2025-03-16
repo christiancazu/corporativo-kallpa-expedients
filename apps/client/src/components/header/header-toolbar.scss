@@ -1,0 +1,31 @@
+.header-user-info {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  height: 32px;
+  width: 160px;
+  border-radius: 32px;
+  background-color: var(--ant-color-bg-container);
+  line-height: normal;
+
+  &__block {
+    &__avatar {
+      width: 32px;
+    }
+
+    &__name {
+      padding-inline: 4px 8px;
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      align-items: center;
+
+      &>span:first-child {
+        width: 96px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+  }
+}

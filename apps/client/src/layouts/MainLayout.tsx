@@ -1,104 +1,210 @@
-import React from 'react'
-import { FolderOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons'
-import type { MenuProps } from 'antd'
+import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons'
+import { Button, Flex, Grid, Layout, Menu, type MenuProps, theme } from 'antd'
+import React, { useEffect, useMemo, useState } from 'react'
+import { Outlet, useMatches, useNavigate } from 'react-router'
 
-import { Avatar, Button, Flex, Layout, Menu, theme } from 'antd'
-import { Outlet, useNavigate } from 'react-router-dom'
-import useUserState from '../composables/useUserState'
-import useNotify from '../composables/useNotification'
+import Text from 'antd/es/typography/Text'
+import NotificationModal from '../components/NotificationModal'
+import HeaderToolbar from '../components/header/HeaderToolbar'
+import { StyledAvatar } from '../components/styled/avatar.styled'
+import { useExpedientsState } from '../hooks/useExpedientsState'
+import { StyledHeader, StyledSider, StyledSiderDrawer } from './styled'
 
-const { Content, Sider } = Layout
+import asesoriaIcon from '../assets/images/asesoria.png'
+import procesosDeInvestigacion from '../assets/images/procesos-de-investigacion.png'
+import procesosJudicialesIcon from '../assets/images/procesos-judiciales.png'
 
-const siderStyle: React.CSSProperties = {
-  overflow: 'auto',
-  height: '100vh',
-  position: 'fixed',
-  insetInlineStart: 0,
-  top: 0,
-  bottom: 0,
-  scrollbarWidth: 'thin',
-  scrollbarGutter: 'stable'
-}
+const { Content } = Layout
+const { useBreakpoint } = Grid
 
 const MainLayout: React.FC = () => {
-  const { token: { borderRadiusLG } } = theme.useToken()
-  const { user, purgeUserSession } = useUserState()
+	const navigate = useNavigate()
+	const matches = useMatches()
+	const screens = useBreakpoint()
+	const { currentExpedientTypeRoute } = useExpedientsState()
 
-  const navigate = useNavigate()
-  const notify = useNotify()
+	const { colorBgLayout } = theme.useToken().token
 
-  const items: MenuProps['items'] = [
-    FolderOutlined
-  ].map((icon, index) => ({
-    key: String(index + 1),
-    icon: React.createElement(icon),
-    label: `Expedientes`,
-    onClick: () => navigate('/expedients')
-  }))
+	const [sidebarCollapsed, setSidebarCollapsed] = useState(true)
+	const [sidebarDrawerAvailabled, setSidebarDrawerAvailabled] = useState(false)
+	const [sidebarDrawerOpen, setSidebarDrawerOpen] = useState(false)
 
-  return (
-    <Layout
-      hasSider
-      style={ { minHeight: '100vh' } }
-    >
-      <Sider
-        style={ siderStyle }
-      >
-        <Flex
-          vertical
-          justify="space-between"
-          style={ { height: '100%' } }
-        >
-          <div>
-            <div className='d-flex flex-column align-items-center justify-content-center my-20'>
-              <Avatar
-                icon={ <UserOutlined /> }
-                size={ 64 }
-                style={ { backgroundColor: 'whitesmoke' } }
-              />
+	const [viewTitle, setViewTitle] = useState('')
 
-              <div
-                className='my-20'
-                style={ { color: 'white' } }
-              >
-                {user?.firstName}
-                {' '}
-                {` ${user?.lastName}`}
-              </div>
-            </div>
+	useEffect(() => {
+		const handle = matches[matches.length - 1]?.handle || ''
+		setViewTitle(handle as string)
+	}, [matches])
 
-            <Menu
-              defaultSelectedKeys={ ['1'] }
-              items={ items }
-              mode="inline"
-              theme="dark"
-            />
-          </div>
-          <div className='mb-20 d-flex justify-content-center'>
-            <Button
-              color='default'
-              icon={ <LogoutOutlined /> }
-              style={ { color: '#f5f5f5' } }
-              type='text'
-              onClick={ ()=>(purgeUserSession(), notify({ message: 'La sesión ha sido finalizada', type: 'info' })) }
-            >
-              Cerrar sesión
-            </Button>
-          </div>
-        </Flex>
-      </Sider>
-      <Layout style={ { marginInlineStart: 200 } }>
-        <Content
-          style={ {
-            margin: '16px',
-            borderRadius: borderRadiusLG
-          } }
-        >
-          <Outlet />
-        </Content>
-      </Layout>
-    </Layout>
-  )
+	useEffect(() => {
+		if (screens.md === false) {
+			setSidebarCollapsed(true)
+			setSidebarDrawerAvailabled(true)
+		} else {
+			setSidebarDrawerAvailabled(false)
+		}
+	}, [screens.md])
+
+	useEffect(() => {
+		if (!screens.md) {
+			setSidebarCollapsed(false)
+		}
+	}, [])
+
+	const menuItems: MenuProps['items'] = [
+		{
+			key: '/asesoria',
+			icon: React.createElement(() => (
+				<img alt="asesoria" width={32} src={asesoriaIcon} className="mr-2" />
+			)),
+			label: 'Asesoría',
+			onClick: () => navigate('/asesoria'),
+		},
+		{
+			key: '/procesos-judiciales',
+			icon: React.createElement(() => (
+				<img
+					alt="empresa"
+					width={32}
+					src={procesosJudicialesIcon}
+					className="mr-2"
+				/>
+			)),
+			label: 'Procesos judiciales',
+			onClick: () => navigate('/procesos-judiciales'),
+		},
+		{
+			key: '/procesos-de-investigacion',
+			icon: React.createElement(() => (
+				<img
+					alt="empresa"
+					width={32}
+					src={procesosDeInvestigacion}
+					className="mr-2"
+				/>
+			)),
+			label: 'Procesos de investigación',
+			onClick: () => navigate('/procesos-de-investigacion'),
+		},
+	]
+
+	const defaultActiveKey = useMemo(
+		() =>
+			menuItems.find((i: any) => location.pathname.includes(i.key))
+				?.key as string,
+		[location.pathname, currentExpedientTypeRoute],
+	)
+
+	return (
+		<>
+			<Layout className="min-h-screen">
+				{!sidebarDrawerAvailabled ? (
+					<StyledSider
+						collapsible
+						collapsed={sidebarCollapsed}
+						collapsedWidth="0"
+						trigger={null}
+						width={230}
+					>
+						<Flex vertical justify="space-between" className="mt-16 px-2">
+							<div
+								onClick={() => navigate('/')}
+								className="d-flex flex-column align-items-center justify-content-center my-5 cursor-pointer"
+							>
+								<StyledAvatar
+									size={160}
+									src="https://corporativokallpa.com/images/logo.png"
+								/>
+							</div>
+
+							<Menu
+								selectedKeys={[defaultActiveKey]}
+								items={menuItems}
+								mode="inline"
+								style={{ backgroundColor: 'transparent' }}
+							/>
+						</Flex>
+					</StyledSider>
+				) : (
+					<StyledSiderDrawer
+						closeIcon={<MenuFoldOutlined />}
+						open={sidebarDrawerOpen}
+						placement="left"
+						width={288}
+						onClose={() => setSidebarDrawerOpen(false)}
+					>
+						<Flex vertical justify="space-between">
+							<div>
+								<div
+									onClick={() => navigate('/')}
+									className="d-flex flex-column align-items-center justify-content-center my-5 cursor-pointer"
+								>
+									<StyledAvatar
+										size={160}
+										src="https://corporativokallpa.com/images/logo.png"
+									/>
+								</div>
+
+								<Menu
+									selectedKeys={[defaultActiveKey]}
+									items={menuItems}
+									mode="inline"
+									style={{ backgroundColor: 'transparent' }}
+									theme="dark"
+									onClick={() => setSidebarDrawerOpen(false)}
+								/>
+							</div>
+						</Flex>
+					</StyledSiderDrawer>
+				)}
+				<Layout
+					style={{
+						marginLeft:
+							sidebarCollapsed || !screens.md || sidebarDrawerAvailabled
+								? 0
+								: 230,
+						transition: 'all .2s ease-in-out, background-color 0s',
+					}}
+				>
+					<StyledHeader $colorBgLayout={colorBgLayout}>
+						<Flex align="center" className="w-full" justify="space-between">
+							<Flex align="center">
+								<Button
+									size="large"
+									icon={
+										sidebarCollapsed ? (
+											<MenuUnfoldOutlined />
+										) : (
+											<MenuFoldOutlined />
+										)
+									}
+									type="text"
+									className="mx-1"
+									onClick={() => {
+										if (sidebarDrawerAvailabled) {
+											setSidebarCollapsed(false)
+											setSidebarDrawerOpen(true)
+										} else {
+											setSidebarCollapsed(!sidebarCollapsed)
+										}
+									}}
+								/>
+								<Text className={screens.md ? 'text-2xl' : 'text-base'}>
+									{viewTitle}
+								</Text>
+							</Flex>
+							<HeaderToolbar />
+						</Flex>
+					</StyledHeader>
+					<Content className="m-4">
+						<Outlet />
+					</Content>
+				</Layout>
+			</Layout>
+
+			<NotificationModal />
+		</>
+	)
 }
 
 export default MainLayout

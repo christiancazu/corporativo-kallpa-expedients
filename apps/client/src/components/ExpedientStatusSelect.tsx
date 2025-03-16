@@ -1,30 +1,45 @@
-import React from 'react'
-import { Form, Select } from 'antd'
-import { EXPEDIENT_STATUS } from '@expedients/shared'
-
-const expedientStatusOptions = Object.keys(EXPEDIENT_STATUS).map(status => ({ label: status.replace('_', ' '), value: status }))
+import { useQuery } from '@tanstack/react-query'
+import { Form, Select, Tag } from 'antd'
+import type { SelectProps } from 'antd'
+import type React from 'react'
+import { getExpedientStatus } from '../services/api.service'
 
 interface Props {
-  label?: string;
-  name: [number, string] | string;
-  rules?: [{ required: boolean; message: string }];
-  onChange?: () => void;
+	label?: string
+	name: [number, string] | string
+	rules?: [{ required: boolean; message?: string }]
+	onChange?: () => void
+	fieldNames?: SelectProps['fieldNames']
 }
 
-const ExpedientStatusSelect: React.FC<Props> = (props) => {
-  return (
-    <Form.Item { ...props }>
-      <Select
-        allowClear
-        options={ expedientStatusOptions }
-        placeholder="Estado"
-        style={ { width: '100%' } }
-        filterOption={ (input, option) =>
-          (option?.label ?? '').toLowerCase().includes(input.toLowerCase()) }
-        onChange={ props.onChange }
-      />
-    </Form.Item>
-  )
+const ExpedientStatusSelect: React.FC<Props> = ({
+	label,
+	fieldNames = { value: 'value', label: 'label' },
+	...props
+}) => {
+	const { data, isFetching } = useQuery({
+		queryKey: ['expedient-status'],
+		queryFn: () => getExpedientStatus(),
+		select: (processTypes) =>
+			processTypes.map((processType) => ({
+				label: processType.description,
+				value: processType.id,
+			})),
+	})
+
+	return (
+		<Form.Item label={label} {...props}>
+			<Select
+				allowClear
+				fieldNames={fieldNames}
+				loading={isFetching}
+				labelRender={(option) => <Tag>{option.label}</Tag>}
+				options={data}
+				style={{ width: '100%' }}
+				onChange={props.onChange}
+			/>
+		</Form.Item>
+	)
 }
 
 export default ExpedientStatusSelect

@@ -1,52 +1,44 @@
-import { ReactNode } from 'react'
-import { Button, ConfigProvider, Modal, theme } from 'antd'
-import { useConfirmModal } from './composables/useConfirmModal'
+import { ConfigProvider, theme } from 'antd'
+import esEs from 'antd/locale/es_ES'
+import type { ReactNode } from 'react'
+import ConfirmModal from './components/ConfirmModal'
+import useToogleTheme from './hooks/useToogleTheme'
 
+import variables from './assets/styles/_export.module.scss'
+
+const {
+	colorBgContainerDark,
+	colorBgContainerLight,
+	colorBgLayoutDark,
+	colorBgLayoutLight,
+} = variables
 interface Props {
-  children: ReactNode;
+	children: ReactNode
 }
 
 const ThemeProvider: React.FC<Props> = ({ children }) => {
-  const { isConfirmModalOpen, isLoading, closeConfirmModal, execCbConfirmModal }
-   = useConfirmModal()
+	const { isDarkTheme } = useToogleTheme()
 
-  return <ConfigProvider
-    theme={ {
-      algorithm: theme.darkAlgorithm,
-      token: {
-        fontFamily: 'Assistant'
-      }
-    } }
-  >
-    {children}
-
-    <Modal
-      maskClosable={ !isLoading }
-      open={ isConfirmModalOpen }
-      title="Confirmación"
-      footer={ [
-        <Button
-          disabled={ isLoading }
-          key="back"
-          onClick={ closeConfirmModal }
-        >
-          Cancelar
-        </Button>,
-        <Button
-          key="submit"
-          loading={ isLoading }
-          type="primary"
-          onClick={ execCbConfirmModal }
-        >
-          Confirmar
-        </Button>
-      ] }
-    >
-      <p>
-        ¿Está seguro de realización esta acción?
-      </p>
-    </Modal>
-  </ConfigProvider>
+	return (
+		<ConfigProvider
+			locale={esEs}
+			theme={{
+				cssVar: true,
+				algorithm: isDarkTheme ? theme.darkAlgorithm : theme.defaultAlgorithm,
+				token: {
+					colorPrimary: '#d5b169',
+					fontFamily: 'Assistant',
+					colorBgLayout: isDarkTheme ? colorBgLayoutDark : colorBgLayoutLight,
+					colorBgContainer: isDarkTheme
+						? colorBgContainerDark
+						: colorBgContainerLight,
+				},
+			}}
+		>
+			{children}
+			<ConfirmModal />
+		</ConfigProvider>
+	)
 }
 
 export default ThemeProvider

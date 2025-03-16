@@ -1,0 +1,16 @@
+{
+  "apps": [
+    {
+      "name": "expedients-dev",
+      "script": "pnpm",
+      "args": "api start:prod",
+      "interpreter": "/bin/bash"
+    },
+    {
+      "name": "expedients",
+      "script": "pnpm",
+      "args": "api start:prod",
+      "interpreter": "/bin/bash"
+    }
+  ]
+}
