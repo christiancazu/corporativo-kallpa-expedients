@@ -2,31 +2,34 @@ name: Deploy to VPS
 
 on:
   push:
-    branches: ["develop"]
+    branches: 
+      - main
+      - develop
 
   workflow_dispatch:
 
 env:
-  NODE_OPTIONS: "--max-old-space-size=4096"
+  NODE_MAX_OLD_SPACE_SIZE: "--max-old-space-size=4096"
+  PROJECT_NAME: ${{ github.head_ref || github.ref_name == 'main' && 'expedients' || 'expedients-dev' }}
   WORKING_DIR: ${{ secrets.WORKING_DIR }}
 
 jobs:
   deploy:
     name: Deploy
     runs-on: self-hosted
-    environment: develop
+    environment: production
     defaults:
       run:
-        working-directory: ${{ env.WORKING_DIR }}
+        working-directory: ${{ env.WORKING_DIR }}/${{ env.PROJECT_NAME }}
 
     steps:
       - name: Stop pm2
-        run: pm2 stop expedients
+        run: pm2 stop ${{ env.PROJECT_NAME }}
 
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: develop
+          ref: ${{ github.head_ref || github.ref }}
 
       - name: Pull latest changes
         run: git pull
@@ -39,13 +42,13 @@ jobs:
 
       - name: Build apps/api
         run: |
-          export NODE_OPTIONS="--max-old-space-size=4096"
+          export NODE_OPTIONS=${{ env.NODE_MAX_OLD_SPACE_SIZE }}
           pnpm api build
 
       - name: Build apps/client
         run: |
-          export NODE_OPTIONS="--max-old-space-size=4096"
+          export NODE_OPTIONS=${{ env.NODE_MAX_OLD_SPACE_SIZE }}
           pnpm client build:remote
 
       - name: Start pm2
-        run: pm2 start expedients
+        run: pm2 start ${{ env.PROJECT_NAME }}

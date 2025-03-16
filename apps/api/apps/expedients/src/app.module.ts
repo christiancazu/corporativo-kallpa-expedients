@@ -53,6 +53,7 @@ import { UsersModule } from './modules/users/users.module'
 					host: configService.get<string>('REDIS_HOST'),
 					port: configService.get<number>('REDIS_PORT'),
 				},
+				prefix: configService.get<string>('POSTGRES_DATABASE'),
 			}),
 		}),
 

@@ -5,6 +5,7 @@ export default {
 		extend: {
 			colors: {
 				'layout-body': 'var(--ant-layout-body-bg)',
+				primary: '#d5b169',
 			},
 		},
 	},

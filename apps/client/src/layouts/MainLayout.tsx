@@ -107,7 +107,10 @@ const MainLayout: React.FC = () => {
 						width={230}
 					>
 						<Flex vertical justify="space-between" className="mt-16 px-2">
-							<div className="d-flex flex-column align-items-center justify-content-center my-5">
+							<div
+								onClick={() => navigate('/')}
+								className="d-flex flex-column align-items-center justify-content-center my-5 cursor-pointer"
+							>
 								<StyledAvatar
 									size={160}
 									src="https://corporativokallpa.com/images/logo.png"
@@ -132,7 +135,10 @@ const MainLayout: React.FC = () => {
 					>
 						<Flex vertical justify="space-between">
 							<div>
-								<div className="d-flex flex-column align-items-center justify-content-center my-5">
+								<div
+									onClick={() => navigate('/')}
+									className="d-flex flex-column align-items-center justify-content-center my-5 cursor-pointer"
+								>
 									<StyledAvatar
 										size={160}
 										src="https://corporativokallpa.com/images/logo.png"

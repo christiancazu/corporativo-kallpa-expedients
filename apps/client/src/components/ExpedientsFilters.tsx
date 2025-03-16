@@ -94,7 +94,7 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 				validateTrigger="onSubmit"
 			>
 				<Row gutter={marginMD}>
-					<Col md={9} sm={24}>
+					<Col md={9} xs={24}>
 						<Form.Item name="text" label="Buscar por:" rules={[{ min: 3 }]}>
 							<Input
 								allowClear
@@ -105,7 +105,7 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 						</Form.Item>
 					</Col>
 
-					<Col md={4} sm={24}>
+					<Col md={4} xs={24}>
 						<MatterTypesSelect
 							label="Materia:"
 							fieldNames={{ label: 'label', value: 'label' }}
@@ -114,7 +114,7 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 						/>
 					</Col>
 
-					<Col md={4} sm={24}>
+					<Col md={4} xs={24}>
 						<ExpedientStatusSelect
 							label="Estado:"
 							fieldNames={{ label: 'label', value: 'label' }}
@@ -123,7 +123,7 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 						/>
 					</Col>
 
-					<Col md={4} sm={24}>
+					<Col md={4} xs={24}>
 						<UsersSelect
 							label="Actualizado por:"
 							name={'updatedByUser'}
@@ -136,7 +136,7 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 
 					<Col
 						md={3}
-						sm={24}
+						xs={24}
 						className={
 							canDeleteFilter
 								? 'flex flex-col justify-between'

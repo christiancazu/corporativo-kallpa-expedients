@@ -15,7 +15,7 @@ import useUserState from './hooks/useUserState'
 const VerifyAccount = lazy(() => import('./views/VerifyAccount'))
 const AuthLayout = lazy(() => import('./layouts/AuthLayout'))
 
-// const HomeView = lazy(() => import('./views/HomeView'))
+const HomeView = lazy(() => import('./views/HomeView'))
 
 const ProfileView = lazy(() => import('./modules/users/views/ProfileView'))
 
@@ -91,7 +91,8 @@ const router = createBrowserRouter(
 			children: [
 				{
 					index: true,
-					element: <Navigate replace to="/procesos-judiciales" />,
+					handle: 'Inicio',
+					element: <HomeView />,
 				},
 				{
 					path: EXPEDIENT_TYPE_NAME_AS_FRONTEND_ENDPOINT.Asesoría,
