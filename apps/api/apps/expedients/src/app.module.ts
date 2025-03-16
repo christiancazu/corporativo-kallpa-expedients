@@ -27,15 +27,13 @@ import { UsersModule } from './modules/users/users.module'
 		ServeStaticModule.forRootAsync({
 			inject: [ConfigService],
 			useFactory: async (configService: ConfigService) => [
-				configService.get('NODE_ENV') === 'development'
-					? {
-							rootPath: join(
-								configService.get('path').root,
-								'apps/client/dist',
-							),
-							exclude: ['/api*', '/media*'],
-						}
-					: {},
+				{
+					rootPath: join(
+						configService.get('path').root,
+						'apps/client/dist',
+					),
+					exclude: ['/api*', '/media*'],
+				}
 			],
 		}),
 
