@@ -7,6 +7,10 @@ import type { NestExpressApplication } from '@nestjs/platform-express'
 import { MessengerModule } from 'apps/messenger/src/messenger.module'
 import { useContainer } from 'class-validator'
 import { AppModule } from './app.module'
+import { AlsService } from './modules/global/als/als.service'
+import { LogRequestInterceptor } from './modules/logs/interceptors/log-request.interceptor'
+import { LogResponseInterceptor } from './modules/logs/interceptors/log-response.interceptor'
+import { LogsService } from './modules/logs/logs.service'
 
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule)
@@ -30,6 +34,13 @@ async function bootstrap() {
 		prefix: path.media,
 		index: false,
 	})
+
+	app.useGlobalInterceptors(
+		new LogRequestInterceptor(app.get(LogsService), app.get(AlsService)),
+	)
+	app.useGlobalInterceptors(
+		new LogResponseInterceptor(app.get(LogsService), app.get(AlsService)),
+	)
 
 	const port = app.get(ConfigService).get('APP_PORT')
 

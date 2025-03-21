@@ -6,6 +6,7 @@ import { Expedient } from '../expedients/entities/expedient.entity'
 import { ExpedientStatus } from '../expedients/modules/expedient-status/entities/expedient-status.entity'
 import { MatterType } from '../expedients/modules/matter-types/entities/matter-types.entity'
 import { ProcessType } from '../expedients/modules/process-types/entities/process-types.entity'
+import { Log } from '../logs/entitities/log.entity'
 import { Notification } from '../notifications/entities/notification.entity'
 import { Part } from '../parts/entities/part.entity'
 import { PartType } from '../parts/modules/part-types/entities/part-types.entity'
@@ -33,6 +34,7 @@ const config: DataSourceOptions = {
 		ProcessType,
 		MatterType,
 		ExpedientStatus,
+		Log,
 	],
 	migrations: [`${__dirname}../../../migrations/*{.ts,.js}`],
 	synchronize: process.env.POSTGRES_SYNC === 'true',

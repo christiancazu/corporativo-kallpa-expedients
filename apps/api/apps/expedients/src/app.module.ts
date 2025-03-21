@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { APP_GUARD } from '@nestjs/core'
 import { ScheduleModule } from '@nestjs/schedule'
 import { ServeStaticModule } from '@nestjs/serve-static'
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
 import { TypeOrmModule, type TypeOrmModuleOptions } from '@nestjs/typeorm'
 import { redisStore } from 'cache-manager-redis-store'
 import { AuthModule } from './modules/auth/auth.module'
@@ -15,6 +16,7 @@ import { DocumentsModule } from './modules/documents/documents.module'
 import { EventsModule } from './modules/events/events.module'
 import { ExpedientsModule } from './modules/expedients/expedients.module'
 import { AlsModule } from './modules/global/als/als.module'
+import { LogsModule } from './modules/logs/logs.module'
 import { NotificationsModule } from './modules/notifications/notifications.module'
 import { PartsModule } from './modules/parts/parts.module'
 import { ReviewsModule } from './modules/reviews/reviews.module'
@@ -28,12 +30,9 @@ import { UsersModule } from './modules/users/users.module'
 			inject: [ConfigService],
 			useFactory: async (configService: ConfigService) => [
 				{
-					rootPath: join(
-						configService.get('path').root,
-						'apps/client/dist',
-					),
+					rootPath: join(configService.get('path').root, 'apps/client/dist'),
 					exclude: ['/api*', '/media*'],
-				}
+				},
 			],
 		}),
 
@@ -69,6 +68,15 @@ import { UsersModule } from './modules/users/users.module'
 			}),
 		}),
 
+		ThrottlerModule.forRoot({
+			throttlers: [
+				{
+					ttl: 10 * 1000,
+					limit: 10,
+				},
+			],
+		}),
+
 		ScheduleModule.forRoot(),
 
 		AuthModule,
@@ -88,11 +96,17 @@ import { UsersModule } from './modules/users/users.module'
 		NotificationsModule,
 
 		AlsModule,
+
+		LogsModule,
 	],
 	providers: [
 		{
 			provide: APP_GUARD,
 			useClass: AuthGuard,
+		},
+		{
+			provide: APP_GUARD,
+			useClass: ThrottlerGuard,
 		},
 	],
 })
