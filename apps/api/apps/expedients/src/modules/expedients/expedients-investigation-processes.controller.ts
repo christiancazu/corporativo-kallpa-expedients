@@ -2,63 +2,53 @@ import { EXPEDIENT_TYPE } from '@expedients/shared'
 import {
 	Body,
 	Controller,
-	Get,
 	HttpCode,
+	HttpStatus,
 	Param,
 	ParseUUIDPipe,
 	Patch,
 	Post,
-	Query,
 } from '@nestjs/common'
 import { User } from '../users/entities/user.entity'
 import { UserRequest } from '../users/user-request.decorator'
-import { CreateExpedientDto } from './dto/create-expedient.dto'
-import { FindExpedientDto } from './dto/find-expedient.dto'
-import { UpdateExpedientDto } from './dto/update-expedient.dto'
+import { SetExpedientType } from './decorators/set-expedient-type.decorator'
+import { CreateExpedientInvestigationProcessesDto } from './dto/create-expedient.dto'
+import { UpdateExpedientInvestigationProcessesDto } from './dto/update-expedient.dto'
+import {
+	ExpedientTypeBaseController,
+	IExpedientTypeBaseController,
+} from './expedients.controller'
 import { ExpedientsService } from './expedients.service'
-import { SetExpedientType } from './guards/expedient-type.guard'
 
 @Controller('investigation-processes')
 @SetExpedientType(EXPEDIENT_TYPE.INVESTIGATION_PROCESSES)
-export class ExpedientsInvestigationProcessesController {
-	constructor(private readonly expedientsService: ExpedientsService) {}
+export class ExpedientsInvestigationProcessesController
+	extends ExpedientTypeBaseController
+	implements
+		IExpedientTypeBaseController<
+			CreateExpedientInvestigationProcessesDto,
+			UpdateExpedientInvestigationProcessesDto
+		>
+{
+	constructor(readonly expedientsService: ExpedientsService) {
+		super(expedientsService)
+	}
 
 	@Post()
-	@HttpCode(201)
-	create(@Body() dto: CreateExpedientDto, @UserRequest() user: User) {
-		const { entity, procedure, instance, ...availableFieldsDto } = dto
-
-		return this.expedientsService.create(user, availableFieldsDto)
-	}
-
-	@Get()
-	findAll(@Query() query: FindExpedientDto) {
-		return this.expedientsService.findAll(query)
-	}
-
-	@Get('events')
-	findEvents(@UserRequest() user: User) {
-		return this.expedientsService.findEvents(user)
-	}
-
-	@Get(':id/events')
-	findByIdEvents(@Param('id', new ParseUUIDPipe()) id: string) {
-		return this.expedientsService.findByIdEvents(id)
-	}
-
-	@Get(':id')
-	findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-		return this.expedientsService.findOne(id)
+	@HttpCode(HttpStatus.CREATED)
+	async create(
+		@Body() dto: CreateExpedientInvestigationProcessesDto,
+		@UserRequest() user: User,
+	) {
+		return this.expedientsService.create(user, dto as any)
 	}
 
 	@Patch(':id')
 	update(
 		@Param('id', new ParseUUIDPipe()) id: string,
-		@Body() dto: UpdateExpedientDto,
+		@Body() dto: UpdateExpedientInvestigationProcessesDto,
 		@UserRequest() user: User,
 	) {
-		const { entity, procedure, instance, ...availableFieldsDto } = dto
-
-		return this.expedientsService.update(user, availableFieldsDto, id)
+		return this.expedientsService.update(user, dto as any, id)
 	}
 }

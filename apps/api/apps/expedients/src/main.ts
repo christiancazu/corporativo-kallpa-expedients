@@ -37,8 +37,6 @@ async function bootstrap() {
 
 	app.useGlobalInterceptors(
 		new LogRequestInterceptor(app.get(LogsService), app.get(AlsService)),
-	)
-	app.useGlobalInterceptors(
 		new LogResponseInterceptor(app.get(LogsService), app.get(AlsService)),
 	)
 

@@ -95,7 +95,7 @@ export class Expedient implements IExpedient {
 		enum: JUDICIAL_PROCESSES_INSTANCES,
 		nullable: true,
 	})
-	instance: JUDICIAL_PROCESSES_INSTANCES
+	instance: JUDICIAL_PROCESSES_INSTANCES // [PROCESOS JUDICIALES]
 
 	@ManyToOne(
 		() => User,

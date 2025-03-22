@@ -9,39 +9,35 @@ import { Log } from './entitities/log.entity'
 export class LogsService {
 	constructor(
 		@InjectRepository(Log)
-		private readonly _partRepository: Repository<Log>,
+		private readonly _logsRepository: Repository<Log>,
 
 		private readonly _alsService: AlsService,
 	) {}
 
 	async create(dto: CreateLogDto) {
 		try {
-			const { id } = await this._partRepository!.save({
+			const { id } = await this._logsRepository!.save({
 				...dto,
 				user: { id: dto.userId },
 			})
 
 			this._alsService.set('log:currentRequestLogId', id)
-			return Promise.resolve()
+			return id
 		} catch (error) {
-			Logger.error({
-				type: 'log:create',
-				...error,
-			})
+			Logger.error(error)
 		}
 	}
 
 	async update(dto: UpdateLogDto) {
+		console.warn({ dto })
 		const { id, ...restDto } = dto
 		try {
-			return await this._partRepository!.update(id, {
+			return await this._logsRepository!.update(id, {
 				...restDto,
 			})
 		} catch (error) {
-			Logger.error({
-				type: 'log:update',
-				...error,
-			})
+			console.warn(error)
+			Logger.error(error)
 		}
 	}
 }

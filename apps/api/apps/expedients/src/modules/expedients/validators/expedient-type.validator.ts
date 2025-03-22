@@ -10,35 +10,42 @@ import {
 	ValidationOptions,
 	ValidatorConstraint,
 	ValidatorConstraintInterface,
+	isNotEmpty,
 	registerDecorator,
 } from 'class-validator'
 import { Observable } from 'rxjs'
 import { AlsService } from '../../global/als/als.service'
+import { REQUEST_EXPEDIENT_TYPE } from '../decorators/set-expedient-type.decorator'
 import { CreateExpedientDto } from '../dto/create-expedient.dto'
-import { REQUEST_EXPEDIENT_TYPE } from '../guards/expedient-type.guard'
 
 @ValidatorConstraint({ name: 'ExpedientTypeValidator', async: true })
 @Injectable()
 export class ExpedientTypeValidator
 	implements ValidatorConstraintInterface, NestInterceptor
 {
-	constructor(private readonly als: AlsService) {}
+	constructor(private readonly _alsService: AlsService) {}
 
 	validate(_value: any, args: ValidationArguments): boolean {
 		const { entity, procedure, processTypeId, court, instance } =
 			args.object as CreateExpedientDto
 
-		if (this.als.get(REQUEST_EXPEDIENT_TYPE) === EXPEDIENT_TYPE.CONSULTANCY) {
-			return !!(entity && procedure)
+		const currentExpedientType = this._alsService.get(REQUEST_EXPEDIENT_TYPE)
+
+		if (currentExpedientType === EXPEDIENT_TYPE.CONSULTANCY) {
+			return isNotEmpty(procedure) && isNotEmpty(entity)
 		}
 
-		if (
-			this.als.get(REQUEST_EXPEDIENT_TYPE) === EXPEDIENT_TYPE.JUDICIAL_PROCESSES
-		) {
-			return !!(processTypeId && court && instance)
+		if (currentExpedientType === EXPEDIENT_TYPE.JUDICIAL_PROCESSES) {
+			return (
+				isNotEmpty(processTypeId) && isNotEmpty(court) && isNotEmpty(instance)
+			)
 		}
 
-		return !!(processTypeId && court)
+		if (currentExpedientType === EXPEDIENT_TYPE.INVESTIGATION_PROCESSES) {
+			return isNotEmpty(processTypeId) && isNotEmpty(court)
+		}
+
+		return true
 	}
 
 	intercept(
@@ -49,18 +56,16 @@ export class ExpedientTypeValidator
 
 		store.set(
 			REQUEST_EXPEDIENT_TYPE,
-			context.switchToHttp().getRequest().headers[REQUEST_EXPEDIENT_TYPE],
+			Reflect.getMetadata(REQUEST_EXPEDIENT_TYPE, context.getClass()),
 		)
 
 		return new Observable((subscriber) => {
-			this.als.run(() => {
-				return next.handle().subscribe(subscriber)
-			}, store)
+			this._alsService.run(() => next.handle().subscribe(subscriber), store)
 		})
 	}
 
 	defaultMessage(_args: ValidationArguments): string {
-		return `fields for ${this.als.get(REQUEST_EXPEDIENT_TYPE)} are required`
+		return `fields for ${this._alsService.get(REQUEST_EXPEDIENT_TYPE)} are required`
 	}
 }
 

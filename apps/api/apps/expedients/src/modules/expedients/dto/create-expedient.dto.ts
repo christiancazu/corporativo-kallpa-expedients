@@ -1,6 +1,8 @@
 import { FIELD, JUDICIAL_PROCESSES_INSTANCES } from '@expedients/shared'
+import { OmitType } from '@nestjs/mapped-types'
 import { Type } from 'class-transformer'
 import {
+	Allow,
 	IsArray,
 	IsEnum,
 	IsNotEmpty,
@@ -13,6 +15,7 @@ import { CreatePartDto } from '../../parts/dto/create-part.dto'
 import { ValidateExpedientStatus } from '../validators/expedient-status.validator'
 import { ValidateExpedientType } from '../validators/expedient-type.validator'
 import { ValidateMatterType } from '../validators/matter-type.validator'
+import { ValidateProcessType } from '../validators/process-type.validator'
 
 export class CreateExpedientDto {
 	@IsNotEmpty()
@@ -25,17 +28,14 @@ export class CreateExpedientDto {
 
 	@IsOptional()
 	@MaxLength(FIELD.EXPEDIENT_ENTITY_MAX_LENGTH)
-	@ValidateExpedientType()
 	entity?: string
 
 	@IsOptional()
-	@ValidateExpedientType()
 	@MaxLength(FIELD.EXPEDIENT_COURT_MAX_LENGTH)
 	court: string
 
 	@IsOptional()
-	@IsUUID()
-	@ValidateExpedientType()
+	@ValidateProcessType()
 	processTypeId?: string
 
 	@IsUUID()
@@ -51,7 +51,6 @@ export class CreateExpedientDto {
 	statusDescription?: string
 
 	@IsOptional()
-	@ValidateExpedientType()
 	@IsEnum(JUDICIAL_PROCESSES_INSTANCES)
 	instance?: JUDICIAL_PROCESSES_INSTANCES
 
@@ -68,4 +67,23 @@ export class CreateExpedientDto {
 	@ValidateNested({ each: true })
 	@Type(() => CreatePartDto)
 	parts: CreatePartDto[]
+
+	@Allow()
+	@ValidateExpedientType()
+	dummyToValidate: any
 }
+
+export class CreateExpedientConsultancyDto extends OmitType(
+	CreateExpedientDto,
+	['processTypeId', 'court', 'instance'],
+) {}
+
+export class CreateExpedientJudicialProcessesDto extends OmitType(
+	CreateExpedientDto,
+	['entity', 'procedure'],
+) {}
+
+export class CreateExpedientInvestigationProcessesDto extends OmitType(
+	CreateExpedientDto,
+	['entity', 'instance', 'procedure'],
+) {}

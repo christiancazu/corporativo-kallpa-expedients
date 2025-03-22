@@ -1,7 +1,6 @@
 import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common'
 import { tap } from 'rxjs/operators'
 import { AlsService } from '../../global/als/als.service'
-import { LOG_ACTION } from '../enums'
 import { LogsService } from '../logs.service'
 
 export class LogRequestInterceptor implements NestInterceptor {
@@ -21,7 +20,7 @@ export class LogRequestInterceptor implements NestInterceptor {
 					url,
 				},
 				userId: user.id,
-				action: LOG_ACTION.POST,
+				action: method,
 			})
 		}
 

@@ -5,7 +5,6 @@ import { Cache } from 'cache-manager'
 import { type Repository } from 'typeorm'
 import { ProcessType } from './entities/process-types.entity'
 
-// TODO: CACHE
 @Injectable()
 export class ProcessTypesService implements OnModuleInit {
 	constructor(
@@ -29,6 +28,8 @@ export class ProcessTypesService implements OnModuleInit {
 	}
 
 	cacheFindAll() {
-		return this._cacheManager.get<ProcessType[]>('process-type:find-all')
+		return this._cacheManager.get<ProcessType[]>(
+			'process-type:find-all',
+		) as Promise<ProcessType[]>
 	}
 }
