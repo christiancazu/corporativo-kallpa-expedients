@@ -9,16 +9,19 @@ interface ConfirmModal {
 	args: any
 }
 
+const initialData = {
+	isOpen: false,
+	isLoading: false,
+	cb: () => ({}),
+	args: null,
+}
+
 export function useConfirmModal(isProcessing = false) {
 	const modal = useQuery<ConfirmModal>({
 		queryKey: ['confirm-modal'],
 		enabled: false,
-		initialData: {
-			isOpen: false,
-			isLoading: false,
-			cb: () => ({}),
-			args: null,
-		},
+		queryFn: () => Promise.resolve(initialData),
+		initialData,
 	}).data
 
 	useEffect(() => {

@@ -29,14 +29,12 @@ export class LogsService {
 	}
 
 	async update(dto: UpdateLogDto) {
-		console.warn({ dto })
 		const { id, ...restDto } = dto
 		try {
 			return await this._logsRepository!.update(id, {
 				...restDto,
 			})
 		} catch (error) {
-			console.warn(error)
 			Logger.error(error)
 		}
 	}

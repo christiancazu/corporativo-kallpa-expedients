@@ -36,6 +36,7 @@ export const useExpedientsState = () => {
 	const currentExpedientTypeRoute = useQuery<TYPE_EXPEDIENT_FRONTEND_ROUTES>({
 		queryKey: ['expedientType'],
 		enabled: false,
+		queryFn: () => Promise.resolve(getExpedientTypeByRoutePath()),
 		initialData: getExpedientTypeByRoutePath(),
 	}).data
 

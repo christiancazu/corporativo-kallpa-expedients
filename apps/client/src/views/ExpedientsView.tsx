@@ -57,7 +57,7 @@ const ExpedientsView: React.FC = () => {
 	}
 
 	useEffect(() => {
-		refetch()
+		if (currentExpedientTypeRoute) refetch()
 	}, [currentExpedientTypeRoute])
 
 	const docEventListeners = (event: any) => {

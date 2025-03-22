@@ -31,7 +31,7 @@ import { UsersModule } from './modules/users/users.module'
 			useFactory: async (configService: ConfigService) => [
 				{
 					rootPath: join(configService.get('path').root, 'apps/client/dist'),
-					exclude: ['/api*', '/media*'],
+					exclude: ['/api/*splat', '/media/*splat'],
 				},
 			],
 		}),

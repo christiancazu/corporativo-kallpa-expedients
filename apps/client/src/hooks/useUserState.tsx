@@ -16,8 +16,10 @@ const useUserState = (user?: IUser) => {
 
 	const isUserNotificationEnabled = useQuery({
 		queryKey: ['notifications-enabled'],
-		initialData:
-			'Notification' in window && Notification.permission === 'granted',
+		queryFn: () =>
+			Promise.resolve(
+				'Notification' in window && Notification.permission === 'granted',
+			),
 	}).data
 
 	const setUserNotificationEnabled = (value: boolean) => {
@@ -28,7 +30,7 @@ const useUserState = (user?: IUser) => {
 		user: useQuery<IUser | null>({
 			queryKey: ['user'],
 			enabled: false,
-			initialData: user,
+			queryFn: () => Promise.resolve(user!),
 		}).data,
 		setUser,
 		setUserSession(data: { user: IUser; token: string; vapidKey: string }) {

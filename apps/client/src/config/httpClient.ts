@@ -1,8 +1,11 @@
 import { message } from 'antd'
 import axios from 'axios'
+import debounce from 'debounce'
 import persisterUtil from '../utils/persister.util'
 
 const sessionToken = localStorage.getItem('token') as string
+
+const messageError = debounce((msg) => message.error(msg, 5), 500)
 
 export const httpClient = axios.create({
 	baseURL: `${import.meta.env.VITE_DOMAIN_URL ?? ''}/api`,
@@ -14,17 +17,17 @@ httpClient.interceptors.response.use(
 	},
 	(error) => {
 		if (error?.code === 'ERR_NETWORK') {
-			message.error('No hay conexión con el servidor')
+			messageError('No hay conexión con el servidor')
 		}
 
 		if (error.status === 401) {
 			persisterUtil.purgeSession()
-			message.error('La sessión ha finalizado, ingrese nuevamente')
+			messageError('La sessión ha finalizado, ingrese nuevamente')
 			window.location.href = '/auth/sign-in'
 		}
 
 		if ([422, 400].some((status) => status === error.status)) {
-			message.error(
+			messageError(
 				error?.response?.data?.message ??
 					'Ha ocurrido un error al procesar la solicitud',
 			)

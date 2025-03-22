@@ -82,144 +82,133 @@ const AuthRoutes: React.FC = () => {
 	)
 }
 
-const router = createBrowserRouter(
-	[
-		{
-			path: '/',
-			element: <SessionRoutes />,
-			errorElement: <NotFoundView />,
-			children: [
-				{
-					index: true,
-					handle: 'Inicio',
-					element: <HomeView />,
-				},
-				{
-					path: EXPEDIENT_TYPE_NAME_AS_FRONTEND_ENDPOINT.Asesoría,
-					handle: 'asesoria',
-					element: <Outlet />,
-					children: [
-						{
-							index: true,
-							path: '',
-							handle: 'Asesoria',
-							element: <ExpedientsView />,
-						},
-						{
-							path: 'crear',
-							handle: 'Crear asesoría',
-							element: <ExpedientsCreateView />,
-						},
-						{
-							path: ':id/editar',
-							handle: 'Editar asesoría',
-							element: <ExpedientsIdEditView />,
-						},
-						{
-							path: ':id',
-							handle: 'Detalle de asesoría',
-							element: <ExpedientView />,
-						},
-					],
-				},
-				{
-					path: EXPEDIENT_TYPE_NAME_AS_FRONTEND_ENDPOINT['Procesos judiciales'],
-					handle: 'procesos-judiciales',
-					element: <Outlet />,
-					children: [
-						{
-							index: true,
-							path: '',
-							handle: 'Procesos judiciales',
-							element: <ExpedientsView />,
-						},
-						{
-							path: 'crear',
-							handle: 'Crear proceso judicial',
-							element: <ExpedientsCreateView />,
-						},
-						{
-							path: ':id/editar',
-							handle: 'Editar proceso judicial',
-							element: <ExpedientsIdEditView />,
-						},
-						{
-							path: ':id',
-							handle: 'Detalle de proceso judicial',
-							element: <ExpedientView />,
-						},
-					],
-				},
-				{
-					path: EXPEDIENT_TYPE_NAME_AS_FRONTEND_ENDPOINT[
-						'Procesos de investigación'
-					],
-					handle: 'procesos-de-investigacion',
-					element: <Outlet />,
-					children: [
-						{
-							index: true,
-							path: '',
-							handle: 'Procesos de investigación',
-							element: <ExpedientsView />,
-						},
-						{
-							path: 'crear',
-							handle: 'Crear proceso de investigación',
-							element: <ExpedientsCreateView />,
-						},
-						{
-							path: ':id/editar',
-							handle: 'Editar proceso de investigación',
-							element: <ExpedientsIdEditView />,
-						},
-						{
-							path: ':id',
-							handle: 'Detalle de proceso de investigación',
-							element: <ExpedientView />,
-						},
-					],
-				},
-				{
-					path: 'users/profile',
-					handle: 'Perfil',
-					element: <ProfileView />,
-				},
-			],
-		},
-		{
-			path: '/auth',
-			element: <AuthRoutes />,
-			children: [
-				{
-					index: true,
-					element: <Navigate replace to="/auth/sign-in" />,
-				},
-				{
-					path: 'sign-in',
-					element: <SignInView />,
-				},
-				{
-					path: 'verify-account',
-					element: <VerifyAccount />,
-				},
-			],
-		},
-		{
-			path: '*',
-			element: <NotFoundView />,
-		},
-	],
+const router = createBrowserRouter([
 	{
-		future: {
-			v7_fetcherPersist: true,
-			v7_normalizeFormMethod: true,
-			v7_partialHydration: true,
-			v7_relativeSplatPath: true,
-			v7_skipActionErrorRevalidation: true,
-		},
+		path: '/',
+		element: <SessionRoutes />,
+		errorElement: <NotFoundView />,
+		children: [
+			{
+				index: true,
+				handle: 'Inicio',
+				element: <HomeView />,
+			},
+			{
+				path: EXPEDIENT_TYPE_NAME_AS_FRONTEND_ENDPOINT.Asesoría,
+				handle: 'asesoria',
+				element: <Outlet />,
+				children: [
+					{
+						index: true,
+						path: '',
+						handle: 'Asesoria',
+						element: <ExpedientsView />,
+					},
+					{
+						path: 'crear',
+						handle: 'Crear asesoría',
+						element: <ExpedientsCreateView />,
+					},
+					{
+						path: ':id/editar',
+						handle: 'Editar asesoría',
+						element: <ExpedientsIdEditView />,
+					},
+					{
+						path: ':id',
+						handle: 'Detalle de asesoría',
+						element: <ExpedientView />,
+					},
+				],
+			},
+			{
+				path: EXPEDIENT_TYPE_NAME_AS_FRONTEND_ENDPOINT['Procesos judiciales'],
+				handle: 'procesos-judiciales',
+				element: <Outlet />,
+				children: [
+					{
+						index: true,
+						path: '',
+						handle: 'Procesos judiciales',
+						element: <ExpedientsView />,
+					},
+					{
+						path: 'crear',
+						handle: 'Crear proceso judicial',
+						element: <ExpedientsCreateView />,
+					},
+					{
+						path: ':id/editar',
+						handle: 'Editar proceso judicial',
+						element: <ExpedientsIdEditView />,
+					},
+					{
+						path: ':id',
+						handle: 'Detalle de proceso judicial',
+						element: <ExpedientView />,
+					},
+				],
+			},
+			{
+				path: EXPEDIENT_TYPE_NAME_AS_FRONTEND_ENDPOINT[
+					'Procesos de investigación'
+				],
+				handle: 'procesos-de-investigacion',
+				element: <Outlet />,
+				children: [
+					{
+						index: true,
+						path: '',
+						handle: 'Procesos de investigación',
+						element: <ExpedientsView />,
+					},
+					{
+						path: 'crear',
+						handle: 'Crear proceso de investigación',
+						element: <ExpedientsCreateView />,
+					},
+					{
+						path: ':id/editar',
+						handle: 'Editar proceso de investigación',
+						element: <ExpedientsIdEditView />,
+					},
+					{
+						path: ':id',
+						handle: 'Detalle de proceso de investigación',
+						element: <ExpedientView />,
+					},
+				],
+			},
+			{
+				path: 'users/profile',
+				handle: 'Perfil',
+				element: <ProfileView />,
+			},
+		],
 	},
-)
+	{
+		path: '/auth',
+		element: <AuthRoutes />,
+		children: [
+			{
+				index: true,
+				element: <Navigate replace to="/auth/sign-in" />,
+			},
+			{
+				path: 'sign-in',
+				element: <SignInView />,
+			},
+			{
+				path: 'verify-account',
+				element: <VerifyAccount />,
+			},
+		],
+	},
+	{
+		path: '*',
+		element: <NotFoundView />,
+	},
+])
 
 const RouterProviderComponent: React.FC<{
 	children?: React.ReactNode
