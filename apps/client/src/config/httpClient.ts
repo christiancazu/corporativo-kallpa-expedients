@@ -25,12 +25,8 @@ httpClient.interceptors.response.use(
 			messageError('La sessión ha finalizado, ingrese nuevamente')
 			window.location.href = '/auth/sign-in'
 		}
-
-		if ([422, 400].some((status) => status === error.status)) {
-			messageError(
-				error?.response?.data?.message ??
-					'Ha ocurrido un error al procesar la solicitud',
-			)
+		if ([422, 400, 500].some((status) => status === error.status)) {
+			messageError('Ha ocurrido un error al procesar la solicitud')
 		}
 
 		return Promise.reject(error)

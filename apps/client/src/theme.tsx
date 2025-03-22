@@ -1,7 +1,6 @@
 import { ConfigProvider, theme } from 'antd'
 import esEs from 'antd/locale/es_ES'
 import type { ReactNode } from 'react'
-import ConfirmModal from './components/ConfirmModal'
 import useToogleTheme from './hooks/useToogleTheme'
 
 import variables from './assets/styles/_export.module.scss'
@@ -36,7 +35,6 @@ const ThemeProvider: React.FC<Props> = ({ children }) => {
 			}}
 		>
 			{children}
-			<ConfirmModal />
 		</ConfigProvider>
 	)
 }

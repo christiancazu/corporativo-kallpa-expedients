@@ -181,7 +181,7 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@cyntler/react-doc-viewer':
-        specifier: christiancazu/react-doc-viewer
+        specifier: github:christiancazu/react-doc-viewer
         version: https://codeload.github.com/christiancazu/react-doc-viewer/tar.gz/89177a9ce7590132c5972ba849cb89269521b242(@types/react@18.3.19)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.16(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@expedients/shared':
         specifier: workspace:*
@@ -199,7 +199,7 @@ importers:
         specifier: ^2.11.5
         version: 2.11.5
       antd:
-        specifier: ^5.22.4
+        specifier: ^5.24.4
         version: 5.24.4(luxon@3.5.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       axios:
         specifier: ^1.8.4
@@ -233,10 +233,10 @@ importers:
         version: 6.3.7
     devDependencies:
       '@types/react':
-        specifier: ^18.3.10
+        specifier: ^18.3.19
         version: 18.3.19
       '@types/react-dom':
-        specifier: ^18.3.0
+        specifier: ^18.3.5
         version: 18.3.5(@types/react@18.3.19)
       '@vitejs/plugin-react-swc':
         specifier: ^3.8.1
@@ -254,7 +254,7 @@ importers:
         specifier: ^6.1.16
         version: 6.1.16(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       tailwindcss:
-        specifier: ^3.4.16
+        specifier: ^3.4.17
         version: 3.4.17(ts-node@10.9.2(@swc/core@1.11.11)(@types/node@22.13.11)(typescript@5.8.2))
 
   packages/shared:

@@ -31,7 +31,6 @@ import DocumentUpload from '../components/DocumentUpload'
 import NavigationBackBtn from '../components/NavigationBackBtn'
 import DocumentDetail from '../components/document/DocumentDetail'
 import TextEditor from '../components/text-editor/TextEditor'
-import { useConfirmModal } from '../hooks/useConfirmModal'
 
 import {
 	type IDocument as DocumentType,
@@ -154,7 +153,7 @@ const ExpedientView: React.FC = () => {
 		},
 	})
 
-	const { mutate, isPending } = useMutation({
+	const { mutate: mutateDeleteReview } = useMutation({
 		mutationFn: deleteExpedientReview,
 		onSuccess: (_, reviewId) => {
 			notify({ message: 'La revisión ha sido eliminada con éxito' })
@@ -167,8 +166,6 @@ const ExpedientView: React.FC = () => {
 			})
 		},
 	})
-
-	const { openConfirmModal } = useConfirmModal(isPending)
 
 	const isWritableByUser = useMemo(
 		() =>
@@ -394,15 +391,17 @@ const ExpedientView: React.FC = () => {
 										<div>
 											<em>{` ${review.createdAt}`}</em>
 											{review.createdByUser?.id === user?.id && (
-												<Tooltip title="Eliminar">
+												<PopconfirmDelete
+													onConfirm={() => mutateDeleteReview(review.id)}
+												>
 													<Button
 														danger
 														className="ml-2"
 														icon={<DeleteOutlined />}
 														shape="circle"
-														onClick={() => openConfirmModal(mutate, review.id)}
+														size="small"
 													/>
-												</Tooltip>
+												</PopconfirmDelete>
 											)}
 										</div>
 									</div>
