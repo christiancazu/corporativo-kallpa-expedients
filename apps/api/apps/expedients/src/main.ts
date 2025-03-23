@@ -7,11 +7,11 @@ import type { NestExpressApplication } from '@nestjs/platform-express'
 import { MessengerModule } from 'apps/messenger/src/messenger.module'
 import { useContainer } from 'class-validator'
 import { AppModule } from './app.module'
-import { AlsService } from './modules/global/als/als.service'
 import { LogRequestInterceptor } from './modules/logs/interceptors/log-request.interceptor'
 import { LogsService } from './modules/logs/logs.service'
+import { AlsService } from './modules/shared/als/als.service'
 
-async function bootstrap() {
+async function bootstrapApp() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule)
 
 	useContainer(app.select(AppModule), { fallbackOnErrors: true })
@@ -24,6 +24,7 @@ async function bootstrap() {
 	app.useGlobalPipes(
 		new ValidationPipe({
 			whitelist: true,
+			transform: true,
 		}),
 	)
 
@@ -59,6 +60,6 @@ async function bootstrapMessenger() {
 	await app.init()
 }
 ;(async () => {
-	bootstrap()
+	bootstrapApp()
 	bootstrapMessenger()
 })()

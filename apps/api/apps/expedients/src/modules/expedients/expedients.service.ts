@@ -6,11 +6,15 @@ import {
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Brackets, type Repository } from 'typeorm'
-import { AlsService } from '../global/als/als.service'
 import { UpdatePartDto } from '../parts/dto/update-part.dto'
 import { Part } from '../parts/entities/part.entity'
 import { PartType } from '../parts/modules/part-types/entities/part-types.entity'
 import { Review } from '../reviews/entities/review.entity'
+import { AlsService } from '../shared/als/als.service'
+import {
+	Pagination,
+	PaginationDto,
+} from '../shared/pagination/dto/pagination.dto'
 import { User } from '../users/entities/user.entity'
 import { REQUEST_EXPEDIENT_TYPE } from './decorators/set-expedient-type.decorator'
 import type { CreateExpedientDto } from './dto/create-expedient.dto'
@@ -26,7 +30,6 @@ import { ExpedientStatusService } from './modules/expedient-status/expedient-sta
 import { MatterType } from './modules/matter-types/entities/matter-types.entity'
 import { ProcessType } from './modules/process-types/entities/process-types.entity'
 
-// TODO: cuando se borra una review poner la ultima la mas reciente
 // solo creador de expedient podria modificar asignados o editar
 @Injectable()
 export class ExpedientsService {
@@ -112,8 +115,17 @@ export class ExpedientsService {
 		}
 	}
 
-	async findAll(dto: FindExpedientDto): Promise<Expedient[]> {
-		const { text, updatedByUser, status, matterType } = dto
+	async findAll(dto: FindExpedientDto): Promise<PaginationDto<Expedient>> {
+		const {
+			text,
+			updatedByUser,
+			matterType,
+			status,
+			skip,
+			order,
+			page,
+			perPage,
+		} = dto
 
 		const qb = this._expedientRepository
 			.createQueryBuilder('expedients')
@@ -208,9 +220,16 @@ export class ExpedientsService {
       )
     `)
 
-		qb.orderBy('expedients.updatedAt', 'DESC')
+		qb.orderBy('expedients.updatedAt', order).skip(skip).take(perPage)
 
-		return await qb.getMany()
+		const [expedients, totalCount] = await qb.getManyAndCount()
+
+		const pageMetaDto = new Pagination({
+			totalCount,
+			pageOptionsDto: { skip, order, page, perPage },
+		})
+
+		return new PaginationDto(expedients, pageMetaDto)
 	}
 
 	private defaultFieldsFilterablesByText(): string[] {

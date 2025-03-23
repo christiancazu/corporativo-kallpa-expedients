@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import type { Repository } from 'typeorm'
-import { AlsService } from '../global/als/als.service'
+import { AlsService } from '../shared/als/als.service'
 import { CreateLogDto, UpdateLogDto } from './dto/log.dto'
 import { Log } from './entitities/log.entity'
 

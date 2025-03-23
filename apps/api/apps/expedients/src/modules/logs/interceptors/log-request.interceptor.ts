@@ -1,12 +1,6 @@
-import {
-	CallHandler,
-	ExecutionContext,
-	HttpException,
-	NestInterceptor,
-} from '@nestjs/common'
-import { throwError } from 'rxjs'
-import { catchError, tap } from 'rxjs/operators'
-import { AlsService } from '../../global/als/als.service'
+import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common'
+import { tap } from 'rxjs'
+import { AlsService } from '../../shared/als/als.service'
 import { LogsService } from '../logs.service'
 
 export class LogRequestInterceptor implements NestInterceptor {
@@ -16,11 +10,13 @@ export class LogRequestInterceptor implements NestInterceptor {
 	) {}
 
 	async intercept(context: ExecutionContext, next: CallHandler) {
-		const { body, url, user, method } = context.getArgs()[0]
+		const { body, url, user, method, route, ...res } = context
+			.switchToHttp()
+			.getRequest().res.req
 
-		const isRoutePublic = Reflect.getMetadata('isPublic', context.getClass())
+		const isPublicRoute = Reflect.getMetadata('isPublic', context.getClass())
 
-		if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method) && !isRoutePublic) {
+		if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method) && !isPublicRoute) {
 			await this._logsService.create({
 				log: {
 					body,

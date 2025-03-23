@@ -1,4 +1,8 @@
-import { ICreateExpedientDto, IExpedient } from '@expedients/shared'
+import {
+	ICreateExpedientDto,
+	IExpedient,
+	IPaginationDto,
+} from '@expedients/shared'
 import { useQuery } from '@tanstack/react-query'
 import { httpClient } from '../config/httpClient'
 import { useExpedientsState } from '../hooks/useExpedientsState'
@@ -8,29 +12,28 @@ export const useExpedientsService = () => {
 
 	const getExpedients = useQuery({
 		queryKey: [currentExpedientTypeEndpoint],
-		queryFn: async (): Promise<IExpedient[]> => {
+		queryFn: async (): Promise<IPaginationDto<IExpedient>> => {
 			return httpClient
 				.get(`${currentExpedientTypeEndpoint}${window.location.search}`)
 				.then((res) => res.data)
 		},
+		initialData: { data: [] },
 		enabled: false,
-		select: (expedients) =>
-			expedients.map((expedient) => ({ ...expedient, key: expedient.id })),
 	})
 
-	const getExpedient = (id: string): Promise<IExpedient> => {
+	const getExpedient = async (id: string): Promise<IExpedient> => {
 		return httpClient
 			.get(`${currentExpedientTypeEndpoint}/${id}`)
 			.then((res) => res.data)
 	}
 
-	const createExpedient = (expedient: ICreateExpedientDto) => {
+	const createExpedient = async (expedient: ICreateExpedientDto) => {
 		return httpClient
 			.post(currentExpedientTypeEndpoint, expedient)
 			.then((res) => res.data)
 	}
 
-	const updateExpedient = ({
+	const updateExpedient = async ({
 		id,
 		expedient,
 	}: { id: string; expedient: ICreateExpedientDto }): Promise<any> => {
@@ -39,11 +42,13 @@ export const useExpedientsService = () => {
 			.then((res) => res.data)
 	}
 
-	const getExpedientsEvents = (): Promise<IExpedient[]> => {
+	const getExpedientsEvents = async (): Promise<IExpedient[]> => {
 		return httpClient.get('expedients/events').then((res) => res.data)
 	}
 
-	const getExpedientEvents = (expedientId: string): Promise<IExpedient> => {
+	const getExpedientEvents = async (
+		expedientId: string,
+	): Promise<IExpedient> => {
 		return httpClient
 			.get(`${currentExpedientTypeEndpoint}/${expedientId}/events`)
 			.then((res) => res.data)

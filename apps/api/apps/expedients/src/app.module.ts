@@ -15,11 +15,11 @@ import { AppConfigModule } from './modules/config/app-config.module'
 import { DocumentsModule } from './modules/documents/documents.module'
 import { EventsModule } from './modules/events/events.module'
 import { ExpedientsModule } from './modules/expedients/expedients.module'
-import { AlsModule } from './modules/global/als/als.module'
 import { LogsModule } from './modules/logs/logs.module'
 import { NotificationsModule } from './modules/notifications/notifications.module'
 import { PartsModule } from './modules/parts/parts.module'
 import { ReviewsModule } from './modules/reviews/reviews.module'
+import { AlsModule } from './modules/shared/als/als.module'
 import { UsersModule } from './modules/users/users.module'
 
 @Module({

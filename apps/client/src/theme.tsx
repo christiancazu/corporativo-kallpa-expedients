@@ -32,6 +32,12 @@ const ThemeProvider: React.FC<Props> = ({ children }) => {
 						? colorBgContainerDark
 						: colorBgContainerLight,
 				},
+				components: {
+					Table: {
+						cellPaddingInline: 16,
+						cellPaddingBlock: 8,
+					},
+				},
 			}}
 		>
 			{children}

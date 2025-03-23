@@ -239,3 +239,23 @@ export interface ICreatePartDto {
 export interface IUpdatePartDto extends ICreatePartDto {
 	id?: string
 }
+
+export interface IPagination {
+	page: number
+
+	perPage: number
+
+	totalCount: number
+
+	pageCount: number
+
+	hasPreviousPage: boolean
+
+	hasNextPage: boolean
+}
+
+export interface IPaginationDto<T> {
+	data: T[]
+
+	pagination?: IPagination
+}

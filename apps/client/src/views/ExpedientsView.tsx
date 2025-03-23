@@ -5,7 +5,7 @@ import { PlusOutlined } from '@ant-design/icons'
 import { IFindExpedientDto } from '@expedients/shared'
 import { Form } from 'antd'
 import { useNavigate, useSearchParams } from 'react-router'
-import FilterExpedients from '../components/ExpedientsFilters'
+import FilterExpedients, {} from '../components/ExpedientsFilters'
 import TableExpedients from '../components/ExpedientsTable'
 import ButtonBase from '../components/base/ButtonBase'
 import DocumentDetail from '../components/document/DocumentDetail'
@@ -16,8 +16,15 @@ import type { DocumentFile } from './ExpedientView'
 const dom = document
 let mentions: HTMLElement[] | Element[] = []
 
+export const getInitialFormValues = () => ({
+	text: null,
+	status: null,
+	updatedByUser: null,
+	matterType: null,
+})
+
 const ExpedientsView: React.FC = () => {
-	const [_, setSearchParams] = useSearchParams()
+	const [searchParams, setSearchParams] = useSearchParams()
 	const { currentExpedientTypeRoute, currentExpedientTypeNameSingular } =
 		useExpedientsState()
 
@@ -35,29 +42,58 @@ const ExpedientsView: React.FC = () => {
 
 	const { data, isFetching, refetch } = getExpedients
 
-	const handleSearch = (search: IFindExpedientDto) => {
-		const urlSearchParams = new URLSearchParams()
+	const handleSearch = () => {
+		setSearchParams((prev) => {
+			for (const key in form.getFieldsValue()) {
+				const formKey = key as keyof IFindExpedientDto
+				const formParam = form.getFieldValue(formKey)
 
-		for (const key in search) {
-			const searchKey = key as keyof IFindExpedientDto
-			if (search[searchKey]) {
-				if (Array.isArray(search[searchKey])) {
-					for (const value of search[searchKey] as string[]) {
-						urlSearchParams.append(key, value)
+				if (formParam) {
+					if (Array.isArray(formParam)) {
+						for (const formParamValue of formParam as string[]) {
+							prev.append(key, formParamValue)
+						}
+					} else {
+						prev.set(key, form.getFieldValue(formKey)!)
 					}
 				} else {
-					urlSearchParams.append(key, search[searchKey] as string)
+					prev.delete(key)
 				}
 			}
-		}
 
-		setSearchParams(urlSearchParams)
+			return prev
+		})
 
 		refetch()
 	}
 
+	const handleClearFilters = () => {
+		form.resetFields()
+		setSearchParams()
+	}
+
 	useEffect(() => {
-		if (currentExpedientTypeRoute) refetch()
+		if (currentExpedientTypeRoute) {
+			const initialFormValues = getInitialFormValues()
+			for (const searchKey in initialFormValues) {
+				let value: string | string[] | null = null
+
+				if (
+					Array.isArray(initialFormValues[searchKey as keyof IFindExpedientDto])
+				) {
+					value = searchParams.getAll(searchKey)
+				} else {
+					value = searchParams.get(searchKey)
+				}
+
+				initialFormValues[searchKey as keyof IFindExpedientDto] =
+					value as unknown as any
+			}
+
+			form.setFieldsValue(initialFormValues)
+
+			refetch()
+		}
 	}, [currentExpedientTypeRoute])
 
 	const docEventListeners = (event: any) => {
@@ -85,7 +121,7 @@ const ExpedientsView: React.FC = () => {
 	}
 
 	useEffect(() => {
-		if (data?.length) {
+		if (data.data?.length) {
 			setupMentionListeners()
 		}
 
@@ -111,12 +147,19 @@ const ExpedientsView: React.FC = () => {
 				loading={isFetching}
 				form={form}
 				onSearch={handleSearch}
+				onClearFilters={handleClearFilters}
 			/>
 
 			<TableExpedients
-				expedients={data!}
+				data={data!}
 				loading={isFetching}
-				onChangePagination={setupMentionListeners}
+				onChangePagination={(page) => {
+					setSearchParams((prev) => {
+						prev.set('page', page.toString())
+						return prev
+					})
+					handleSearch()
+				}}
 			/>
 
 			{documentFile.showDetail && (

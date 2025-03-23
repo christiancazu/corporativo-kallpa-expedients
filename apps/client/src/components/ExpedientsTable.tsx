@@ -5,6 +5,7 @@ import {
 	EXPEDIENT_TYPE,
 	EXPEDIENT_TYPE_COURT_NAME,
 	type IExpedient,
+	IPaginationDto,
 	type IReview,
 	type IUser,
 } from '@expedients/shared'
@@ -24,7 +25,6 @@ import { Link } from 'react-router'
 import { useExpedientsState } from '../hooks/useExpedientsState'
 import UserAvatarName from '../modules/shared/components/UserAvatarName'
 import { dateUtil } from '../utils'
-import { TableBase } from './base/TableBase'
 import { StyledTable } from './styled/table.styled'
 
 const { Text } = Typography
@@ -34,12 +34,12 @@ type DataType = {
 } & IExpedient
 
 type Props = {
-	expedients: DataType[]
-	onChangePagination: () => void
+	data: IPaginationDto<IExpedient>
+	onChangePagination: (page: number) => void
 } & TableProps
 
 const TableExpedients: React.FC<Props> = ({
-	expedients,
+	data,
 	loading,
 	onChangePagination,
 }) => {
@@ -241,20 +241,21 @@ const TableExpedients: React.FC<Props> = ({
 	]
 
 	return (
-		<TableBase>
-			<StyledTable<DataType>
-				columns={columns}
-				dataSource={expedients}
-				loading={loading}
-				pagination={{
-					position: ['topRight'],
-					hideOnSinglePage: true,
-					onChange: onChangePagination,
-				}}
-				rowKey={(expedient) => expedient.id}
-				scroll={{ x: 1200 }}
-			/>
-		</TableBase>
+		<StyledTable<DataType>
+			columns={columns}
+			dataSource={data.data}
+			loading={loading}
+			pagination={{
+				defaultCurrent: 1,
+				current: data.pagination?.page ?? 1,
+				total: data.pagination?.totalCount ?? 0,
+				position: ['topRight'],
+				hideOnSinglePage: true,
+				onChange: onChangePagination,
+			}}
+			rowKey={(expedient) => expedient.id}
+			scroll={{ x: 1200 }}
+		/>
 	)
 }
 

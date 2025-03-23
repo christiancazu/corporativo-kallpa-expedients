@@ -14,7 +14,7 @@ import {
 	registerDecorator,
 } from 'class-validator'
 import { Observable } from 'rxjs'
-import { AlsService } from '../../global/als/als.service'
+import { AlsService } from '../../shared/als/als.service'
 import { REQUEST_EXPEDIENT_TYPE } from '../decorators/set-expedient-type.decorator'
 import { CreateExpedientDto } from '../dto/create-expedient.dto'
 

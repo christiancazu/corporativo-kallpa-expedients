@@ -4,6 +4,7 @@ import { UserRequest } from '../users/user-request.decorator'
 import { FindExpedientDto } from './dto/find-expedient.dto'
 import { Expedient } from './entities/expedient.entity'
 import { ExpedientsService } from './expedients.service'
+import { SendQueryInvalidFeedback } from './interceptors/query-no-valid.interceptor'
 
 @Controller('expedients')
 export class ExpedientsController {
@@ -19,6 +20,7 @@ export class ExpedientTypeBaseController {
 	constructor(readonly expedientsService: ExpedientsService) {}
 
 	@Get()
+	@SendQueryInvalidFeedback()
 	findAll(@Query() query: FindExpedientDto) {
 		return this.expedientsService.findAll(query)
 	}
