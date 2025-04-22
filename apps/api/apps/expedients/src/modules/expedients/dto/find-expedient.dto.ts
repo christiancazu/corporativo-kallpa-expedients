@@ -1,8 +1,12 @@
 import { IFindExpedientDto } from '@expedients/shared'
 import { IsOptional } from 'class-validator'
+import { PaginationOptionsDto } from '../../shared/pagination/dto/pagination.dto'
 import { ValidateExpedientStatus } from '../validators/expedient-status.validator'
 
-export class FindExpedientDto implements IFindExpedientDto {
+export class FindExpedientDto
+	extends PaginationOptionsDto
+	implements IFindExpedientDto
+{
 	@IsOptional()
 	text?: string
 

@@ -1,28 +1,35 @@
 import { EXPEDIENT_TYPE } from '@expedients/shared'
 import {
 	BadRequestException,
-	Inject,
 	Injectable,
 	UnprocessableEntityException,
 } from '@nestjs/common'
-import { REQUEST } from '@nestjs/core'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Brackets, type Repository } from 'typeorm'
+import { UpdatePartDto } from '../parts/dto/update-part.dto'
 import { Part } from '../parts/entities/part.entity'
 import { PartType } from '../parts/modules/part-types/entities/part-types.entity'
 import { Review } from '../reviews/entities/review.entity'
+import { AlsService } from '../shared/als/als.service'
+import {
+	Pagination,
+	PaginationDto,
+} from '../shared/pagination/dto/pagination.dto'
 import { User } from '../users/entities/user.entity'
+import { REQUEST_EXPEDIENT_TYPE } from './decorators/set-expedient-type.decorator'
 import type { CreateExpedientDto } from './dto/create-expedient.dto'
 import type { FindExpedientDto } from './dto/find-expedient.dto'
-import type { UpdateExpedientDto } from './dto/update-expedient.dto'
+import {
+	UpdateExpedientConsultancyDto,
+	UpdateExpedientInvestigationProcessesDto,
+	UpdateExpedientJudicialProcessesDto,
+} from './dto/update-expedient.dto'
 import { Expedient } from './entities/expedient.entity'
-import { REQUEST_EXPEDIENT_TYPE } from './guards/expedient-type.guard'
 import { ExpedientStatus } from './modules/expedient-status/entities/expedient-status.entity'
 import { ExpedientStatusService } from './modules/expedient-status/expedient-status.service'
 import { MatterType } from './modules/matter-types/entities/matter-types.entity'
 import { ProcessType } from './modules/process-types/entities/process-types.entity'
 
-// TODO: cuando se borra una review poner la ultima la mas reciente
 // solo creador de expedient podria modificar asignados o editar
 @Injectable()
 export class ExpedientsService {
@@ -33,17 +40,12 @@ export class ExpedientsService {
 		@InjectRepository(Part)
 		private readonly _partsRepository: Repository<Part>,
 
-		@Inject(REQUEST)
-		private readonly _request: any,
+		private readonly _alsService: AlsService,
 
 		private readonly _expedientStatusService: ExpedientStatusService,
 	) {}
 
-	async create(
-		user: User,
-		dto: Partial<CreateExpedientDto>,
-		expedient?: Expedient,
-	) {
+	async create(user: User, dto: CreateExpedientDto, expedient?: Expedient) {
 		const { parts, ...restExpedient } = dto
 
 		const createdExpedient = this._expedientRepository.create({
@@ -113,8 +115,17 @@ export class ExpedientsService {
 		}
 	}
 
-	async findAll(dto: FindExpedientDto): Promise<Expedient[]> {
-		const { text, updatedByUser, status, matterType } = dto
+	async findAll(dto: FindExpedientDto): Promise<PaginationDto<Expedient>> {
+		const {
+			text,
+			updatedByUser,
+			matterType,
+			status,
+			skip,
+			order,
+			page,
+			perPage,
+		} = dto
 
 		const qb = this._expedientRepository
 			.createQueryBuilder('expedients')
@@ -209,9 +220,16 @@ export class ExpedientsService {
       )
     `)
 
-		qb.orderBy('expedients.updatedAt', 'DESC')
+		qb.orderBy('expedients.updatedAt', order).skip(skip).take(perPage)
 
-		return await qb.getMany()
+		const [expedients, totalCount] = await qb.getManyAndCount()
+
+		const pageMetaDto = new Pagination({
+			totalCount,
+			pageOptionsDto: { skip, order, page, perPage },
+		})
+
+		return new PaginationDto(expedients, pageMetaDto)
 	}
 
 	private defaultFieldsFilterablesByText(): string[] {
@@ -410,7 +428,14 @@ export class ExpedientsService {
 		})
 	}
 
-	async update(user: User, dto: UpdateExpedientDto, id: string) {
+	async update(
+		user: User,
+		dto:
+			| UpdateExpedientConsultancyDto
+			| UpdateExpedientJudicialProcessesDto
+			| UpdateExpedientInvestigationProcessesDto,
+		id: string,
+	) {
 		const expedient = await this._expedientRepository.findOne({
 			where: { id },
 			relations: {
@@ -456,11 +481,7 @@ export class ExpedientsService {
 			dto.assignedLawyerId = undefined
 		}
 
-		const createdExpedient = await this.create(
-			user,
-			dto as CreateExpedientDto,
-			expedient,
-		)
+		const createdExpedient = await this.create(user, dto as any, expedient)
 
 		if (!createdExpedient) {
 			throw new UnprocessableEntityException('Error updating expedient')
@@ -469,7 +490,7 @@ export class ExpedientsService {
 		let deletedParts: Part[] = []
 
 		deletedParts = expedient.parts.reduce<Part[]>((acc, part) => {
-			const existsPart = dto.parts!.find((p) => p.id === part.id)
+			const existsPart = dto.parts?.find((p: UpdatePartDto) => p.id === part.id)
 
 			if (!existsPart) {
 				acc.push(part)
@@ -493,6 +514,8 @@ export class ExpedientsService {
 	}
 
 	private getExpedientType(): EXPEDIENT_TYPE {
-		return this._request.headers[REQUEST_EXPEDIENT_TYPE]
+		return this._alsService.get<EXPEDIENT_TYPE>(
+			REQUEST_EXPEDIENT_TYPE,
+		) as EXPEDIENT_TYPE
 	}
 }

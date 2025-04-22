@@ -1,7 +1,10 @@
-import { Controller, Get } from '@nestjs/common'
+import { Controller, Get, Param, ParseUUIDPipe, Query } from '@nestjs/common'
 import { User } from '../users/entities/user.entity'
 import { UserRequest } from '../users/user-request.decorator'
+import { FindExpedientDto } from './dto/find-expedient.dto'
+import { Expedient } from './entities/expedient.entity'
 import { ExpedientsService } from './expedients.service'
+import { SendQueryInvalidFeedback } from './interceptors/query-no-valid.interceptor'
 
 @Controller('expedients')
 export class ExpedientsController {
@@ -11,4 +14,35 @@ export class ExpedientsController {
 	findEvents(@UserRequest() user: User) {
 		return this.expedientsService.findEvents(user)
 	}
+}
+
+export class ExpedientTypeBaseController {
+	constructor(readonly expedientsService: ExpedientsService) {}
+
+	@Get()
+	@SendQueryInvalidFeedback()
+	findAll(@Query() query: FindExpedientDto) {
+		return this.expedientsService.findAll(query)
+	}
+
+	@Get('events')
+	findEvents(@UserRequest() user: User) {
+		return this.expedientsService.findEvents(user)
+	}
+
+	@Get(':id/events')
+	findByIdEvents(@Param('id', new ParseUUIDPipe()) id: string) {
+		return this.expedientsService.findByIdEvents(id)
+	}
+
+	@Get(':id')
+	findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+		return this.expedientsService.findOne(id)
+	}
+}
+
+export interface IExpedientTypeBaseController<C, U> {
+	create(dto: C, user: User): Promise<Expedient>
+
+	update(id: string, dto: U, user: User): Promise<Expedient>
 }

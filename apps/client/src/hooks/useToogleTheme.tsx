@@ -15,6 +15,7 @@ if (storedCurrentTheme === 'dark') {
 export default function useToogleTheme() {
 	const currentTheme = useQuery<{ theme: Theme }>({
 		queryKey: ['theme'],
+		queryFn: () => Promise.resolve({ theme: storedCurrentTheme }),
 		initialData: {
 			theme: storedCurrentTheme,
 		},

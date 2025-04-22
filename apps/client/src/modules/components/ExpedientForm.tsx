@@ -128,7 +128,7 @@ export default function ExpedientForm({
 				</>
 			)}
 
-			{currentExpedientTypeName === EXPEDIENT_TYPE.JUDICIAL_PROCESSES && (
+			{currentExpedientTypeName === EXPEDIENT_TYPE.INVESTIGATION_PROCESSES && (
 				<InstanceTypesSelect
 					label="Instancia"
 					name="instance"

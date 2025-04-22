@@ -1,0 +1,7 @@
+export enum LOG_ACTION {
+	POST = 'POST',
+	PUT = 'PUT',
+	DELETE = 'DELETE',
+	PATCH = 'PATCH',
+	NOTIFICATION = 'NOTIFICATION',
+}

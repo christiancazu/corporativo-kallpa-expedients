@@ -6,30 +6,30 @@ import type React from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { useExpedientsState } from '../hooks/useExpedientsState'
+import { getInitialFormValues } from '../views/ExpedientsView'
 import ExpedientStatusSelect from './ExpedientStatusSelect'
 import MatterTypesSelect from './MatterTypeSelect'
 import UsersSelect from './UsersSelect'
 
 interface Props {
-	onSearch: (values: any) => void
+	onSearch: () => void
+	onClearFilters: () => void
 	loading: boolean
 	form: FormInstance
 }
 
 const expedientTypeTextPlaceHolder = {
 	asesoria: 'empresa, materia, entidad o trámite/consulta...',
-	'procesos-judiciales': 'carpeta fiscal, materia, proceso o fiscalia...',
-	'procesos-de-investigacion': 'expediente, materia, proceso o juzgado...',
+	'procesos-judiciales': 'expediente, materia, proceso o juzgado...',
+	'procesos-de-investigacion': 'carpeta fiscal, materia, proceso o fiscalia...',
 }
 
-const getInitialFormValues = (): IFindExpedientDto => ({
-	text: null,
-	status: null,
-	updatedByUser: null,
-	matterType: null,
-})
-
-const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
+const FilterExpedients: React.FC<Props> = ({
+	onSearch,
+	loading,
+	form,
+	onClearFilters,
+}) => {
 	const {
 		token: { colorBgContainer, borderRadiusLG, paddingMD, marginMD },
 	} = theme.useToken()
@@ -39,7 +39,6 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 
 	useEffect(() => {
 		const initialFormValues = getInitialFormValues()
-
 		for (const searchKey in initialFormValues) {
 			let value: string | string[] | null = null
 
@@ -153,8 +152,8 @@ const FilterExpedients: React.FC<Props> = ({ onSearch, loading, form }) => {
 										style={{ transform: 'translateY(-8px)' }}
 										type="link"
 										onClick={() => {
-											form.resetFields()
 											setCanDeleteFilters(false)
+											onClearFilters()
 										}}
 									>
 										Quitar filtros

@@ -11,6 +11,7 @@ import {
 import { Document } from '../../documents/entities/document.entity'
 import { Event } from '../../events/entities/event.entity'
 import { Expedient } from '../../expedients/entities/expedient.entity'
+import { Log } from '../../logs/entitities/log.entity'
 import { Notification } from '../../notifications/entities/notification.entity'
 import { Review } from '../../reviews/entities/review.entity'
 
@@ -104,6 +105,12 @@ export class User implements IUser {
 		(notification) => notification.registerFor,
 	)
 	notifications: Notification[]
+
+	@OneToMany(
+		() => Log,
+		({ user }) => user,
+	)
+	logs: Log[]
 
 	@Column({ type: 'timestamptz', nullable: true })
 	verifiedAt: Date

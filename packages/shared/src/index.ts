@@ -27,6 +27,8 @@ export const FIELD = {
 	NOTIFICATION_ENDPOINT_MAX_LENGTH: 255,
 	NOTIFICATION_AUTH_MAX_LENGTH: 32,
 	NOTIFICATION_P256DH_MAX_LENGTH: 120,
+
+	UUID_MAX_LENGTH: 36,
 }
 
 export const SETTINGS = {
@@ -70,8 +72,8 @@ export const FRONTEND_ROUTES_AS_EXPEDIENT_TYPE_NAME = {
 
 export const EXPEDIENT_TYPE_CODE_NAME = {
 	asesoria: 'Empresa',
-	'procesos-judiciales': 'Carpeta fiscal',
-	'procesos-de-investigacion': 'Expediente',
+	'procesos-judiciales': 'Expediente',
+	'procesos-de-investigacion': 'Carpeta fiscal',
 }
 
 export const EXPEDIENT_TYPE_NAME_SINGULAR = {
@@ -82,8 +84,8 @@ export const EXPEDIENT_TYPE_NAME_SINGULAR = {
 
 export const EXPEDIENT_TYPE_COURT_NAME = {
 	asesoria: '',
-	'procesos-judiciales': 'Fiscalia',
-	'procesos-de-investigacion': 'Juzgado',
+	'procesos-judiciales': 'Juzgado',
+	'procesos-de-investigacion': 'Fiscalia',
 }
 
 export type TYPE_EXPEDIENT_FRONTEND_ROUTES =
@@ -98,7 +100,7 @@ export enum USER_ROLES {
 export enum JUDICIAL_PROCESSES_INSTANCES {
 	FIRST_INSTANCE = 'Primera Instancia',
 	SECOND_INSTANCE = 'Segunda Instancia',
-	RATING = 'Tasación',
+	CASSATION = 'Casación',
 }
 
 export interface IUser {
@@ -236,4 +238,24 @@ export interface ICreatePartDto {
 
 export interface IUpdatePartDto extends ICreatePartDto {
 	id?: string
+}
+
+export interface IPagination {
+	page: number
+
+	perPage: number
+
+	totalCount: number
+
+	pageCount: number
+
+	hasPreviousPage: boolean
+
+	hasNextPage: boolean
+}
+
+export interface IPaginationDto<T> {
+	data: T[]
+
+	pagination?: IPagination
 }
