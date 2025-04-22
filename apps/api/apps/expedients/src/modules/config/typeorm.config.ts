@@ -37,7 +37,7 @@ const config: DataSourceOptions = {
 		Log,
 	],
 	migrations: [`${__dirname}../../../migrations/*{.ts,.js}`],
-	synchronize: process.env.POSTGRES_SYNC === 'true',
+	synchronize: false,
 	migrationsTableName: 'migrations',
 }
 

@@ -29,19 +29,21 @@ export class ExpedientTypeValidator
 		const { entity, procedure, processTypeId, court, instance } =
 			args.object as CreateExpedientDto
 
-		const currentExpedientType = this._alsService.get(REQUEST_EXPEDIENT_TYPE)
+		const currentExpedientType = this._alsService.get<EXPEDIENT_TYPE>(
+			REQUEST_EXPEDIENT_TYPE,
+		)
 
 		if (currentExpedientType === EXPEDIENT_TYPE.CONSULTANCY) {
 			return isNotEmpty(procedure) && isNotEmpty(entity)
 		}
 
-		if (currentExpedientType === EXPEDIENT_TYPE.JUDICIAL_PROCESSES) {
+		if (currentExpedientType === EXPEDIENT_TYPE.INVESTIGATION_PROCESSES) {
 			return (
 				isNotEmpty(processTypeId) && isNotEmpty(court) && isNotEmpty(instance)
 			)
 		}
 
-		if (currentExpedientType === EXPEDIENT_TYPE.INVESTIGATION_PROCESSES) {
+		if (currentExpedientType === EXPEDIENT_TYPE.JUDICIAL_PROCESSES) {
 			return isNotEmpty(processTypeId) && isNotEmpty(court)
 		}
 

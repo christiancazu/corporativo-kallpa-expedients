@@ -303,7 +303,7 @@ const ExpedientView: React.FC = () => {
 								</p>
 
 								{currentExpedientTypeName ===
-									EXPEDIENT_TYPE.JUDICIAL_PROCESSES && (
+									EXPEDIENT_TYPE.INVESTIGATION_PROCESSES && (
 									<p className="mb-3">
 										<strong>Instancia:</strong>
 										{` ${data.instance}`}

@@ -20,8 +20,8 @@ interface Props {
 
 const expedientTypeTextPlaceHolder = {
 	asesoria: 'empresa, materia, entidad o trámite/consulta...',
-	'procesos-judiciales': 'carpeta fiscal, materia, proceso o fiscalia...',
-	'procesos-de-investigacion': 'expediente, materia, proceso o juzgado...',
+	'procesos-judiciales': 'expediente, materia, proceso o juzgado...',
+	'procesos-de-investigacion': 'carpeta fiscal, materia, proceso o fiscalia...',
 }
 
 const FilterExpedients: React.FC<Props> = ({

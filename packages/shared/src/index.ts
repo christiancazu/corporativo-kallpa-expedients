@@ -72,8 +72,8 @@ export const FRONTEND_ROUTES_AS_EXPEDIENT_TYPE_NAME = {
 
 export const EXPEDIENT_TYPE_CODE_NAME = {
 	asesoria: 'Empresa',
-	'procesos-judiciales': 'Carpeta fiscal',
-	'procesos-de-investigacion': 'Expediente',
+	'procesos-judiciales': 'Expediente',
+	'procesos-de-investigacion': 'Carpeta fiscal',
 }
 
 export const EXPEDIENT_TYPE_NAME_SINGULAR = {
@@ -84,8 +84,8 @@ export const EXPEDIENT_TYPE_NAME_SINGULAR = {
 
 export const EXPEDIENT_TYPE_COURT_NAME = {
 	asesoria: '',
-	'procesos-judiciales': 'Fiscalia',
-	'procesos-de-investigacion': 'Juzgado',
+	'procesos-judiciales': 'Juzgado',
+	'procesos-de-investigacion': 'Fiscalia',
 }
 
 export type TYPE_EXPEDIENT_FRONTEND_ROUTES =
@@ -100,7 +100,7 @@ export enum USER_ROLES {
 export enum JUDICIAL_PROCESSES_INSTANCES {
 	FIRST_INSTANCE = 'Primera Instancia',
 	SECOND_INSTANCE = 'Segunda Instancia',
-	RATING = 'Tasación',
+	CASSATION = 'Casación',
 }
 
 export interface IUser {

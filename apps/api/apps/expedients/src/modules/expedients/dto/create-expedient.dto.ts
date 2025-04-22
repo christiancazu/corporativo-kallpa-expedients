@@ -80,10 +80,10 @@ export class CreateExpedientConsultancyDto extends OmitType(
 
 export class CreateExpedientJudicialProcessesDto extends OmitType(
 	CreateExpedientDto,
-	['entity', 'procedure'],
+	['entity', 'instance', 'procedure'],
 ) {}
 
 export class CreateExpedientInvestigationProcessesDto extends OmitType(
 	CreateExpedientDto,
-	['entity', 'instance', 'procedure'],
+	['entity', 'procedure'],
 ) {}
