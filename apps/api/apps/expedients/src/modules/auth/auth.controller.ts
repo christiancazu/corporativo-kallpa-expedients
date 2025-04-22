@@ -1,4 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common'
+import { NotLoggeable } from '../logs/decoratos/is-not-Loggeable.decorator'
 import { CreateUserDto } from '../users/dto/create-user.dto'
 import { AuthService } from './auth.service'
 import { Public } from './decorators/is-public.decorator'
@@ -6,6 +7,7 @@ import { SignInDto } from './dto/sign-in-auth.dto'
 import { verifyAccountDto } from './dto/verify-create-account.dto'
 
 @Public()
+@NotLoggeable()
 @Controller('auth')
 export class AuthController {
 	constructor(private readonly authService: AuthService) {}

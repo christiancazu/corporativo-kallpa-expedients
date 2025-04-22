@@ -1,9 +1,11 @@
 import { Body, Controller, Post } from '@nestjs/common'
+import { NotLoggeable } from '../logs/decoratos/is-not-Loggeable.decorator'
 import { User } from '../users/entities/user.entity'
 import { UserRequest } from '../users/user-request.decorator'
 import { SubscriptionNotificationDto } from './dto/subscription-notification.dto'
 import { NotificationsService } from './notifications.service'
 
+@NotLoggeable()
 @Controller('notifications')
 export class NotificationsController {
 	constructor(private readonly notificationsService: NotificationsService) {}

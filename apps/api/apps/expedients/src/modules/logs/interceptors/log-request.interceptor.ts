@@ -14,9 +14,15 @@ export class LogRequestInterceptor implements NestInterceptor {
 			.switchToHttp()
 			.getRequest().res.req
 
-		const isPublicRoute = Reflect.getMetadata('isPublic', context.getClass())
+		const isNotLoggeable = Reflect.getMetadata(
+			'isNotLoggeable',
+			context.getClass(),
+		)
 
-		if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method) && !isPublicRoute) {
+		if (
+			['POST', 'PUT', 'PATCH', 'DELETE'].includes(method) &&
+			!isNotLoggeable
+		) {
 			await this._logsService.create({
 				log: {
 					body,
