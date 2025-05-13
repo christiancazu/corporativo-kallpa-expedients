@@ -64,6 +64,16 @@ export class UsersService {
 		return this.sanitizeUser(_user!)
 	}
 
+	async findByEmail(email: string) {
+		const user = await this._userRepository.findOne({
+			where: { email },
+		})
+
+		if (!user) throw new UnprocessableEntityException('El usuario no existe')
+
+		return user
+	}
+
 	async findByEmailAndPassword({ email, password }: Partial<User>) {
 		const user = await this._userRepository.findOne({ where: { email } })
 

@@ -70,6 +70,29 @@ export class UsersController {
 		}
 	}
 
+	@Post('resend-activation')
+	@HttpCode(HttpStatus.CREATED)
+	async resendActivation(@Body() payload: any, @UserRequest() user: User) {
+		if (user.role !== USER_ROLES.ADMIN)
+			throw new BadRequestException('user not authorized')
+
+		const userFound = await this._usersService.findByEmail(payload.email)
+		const token = await this._authService.signToken(userFound)
+
+		try {
+			await firstValueFrom(
+				this._clientProxy.send<any, MailActivateAccountPayload>(
+					SETTINGS.EVENT_MAIL_ACTIVATE_ACCOUNT,
+					{ user: userFound, token },
+				),
+			)
+
+			return 'invitation send successfully'
+		} catch {
+			throw new BadRequestException('error sending email')
+		}
+	}
+
 	@Put('avatar')
 	@FileUploadInterceptor('avatars')
 	uploadAvatar(
