@@ -12,54 +12,54 @@ import { LogsService } from './modules/logs/logs.service'
 import { AlsService } from './modules/shared/als/als.service'
 
 async function bootstrapApp() {
-	const app = await NestFactory.create<NestExpressApplication>(AppModule)
+  const app = await NestFactory.create<NestExpressApplication>(AppModule)
 
-	useContainer(app.select(AppModule), { fallbackOnErrors: true })
+  useContainer(app.select(AppModule), { fallbackOnErrors: true })
 
-	if (process.env.NODE_ENV === 'development') {
-		app.enableCors()
-	}
-	app.setGlobalPrefix('api')
+  if (process.env.NODE_ENV === 'development') {
+    app.enableCors()
+  }
+  app.setGlobalPrefix('api')
 
-	app.useGlobalPipes(
-		new ValidationPipe({
-			whitelist: true,
-			transform: true,
-		}),
-	)
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+    }),
+  )
 
-	const path = app.get(ConfigService).get('path')
+  const path = app.get(ConfigService).get('path')
 
-	app.useStaticAssets(join(path.root, path.media), {
-		prefix: path.media,
-		index: false,
-	})
+  app.useStaticAssets(join(path.root, path.media), {
+    prefix: path.media,
+    index: false,
+  })
 
-	app.useGlobalInterceptors(
-		new LogRequestInterceptor(app.get(LogsService), app.get(AlsService)),
-	)
+  app.useGlobalInterceptors(
+    new LogRequestInterceptor(app.get(LogsService), app.get(AlsService)),
+  )
 
-	const port = app.get(ConfigService).get('APP_PORT')
+  const port = app.get(ConfigService).get('APP_PORT')
 
-	await app.listen(port, () => console.log(`server on PORT: ${port}`))
+  await app.listen(port, () => console.log(`server on PORT: ${port}`))
 }
 
 async function bootstrapMessenger() {
-	const app = await NestFactory.create(MessengerModule)
+  const app = await NestFactory.create(MessengerModule)
 
-	const port = app.get(ConfigService).get('MESSENGER_PORT')
+  const port = app.get(ConfigService).get('MESSENGER_PORT')
 
-	app.connectMicroservice<MicroserviceOptions>({
-		transport: Transport.TCP,
-		options: {
-			port,
-		},
-	})
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.TCP,
+    options: {
+      port,
+    },
+  })
 
-	await app.startAllMicroservices()
-	await app.init()
+  await app.startAllMicroservices()
+  await app.init()
 }
 ;(async () => {
-	bootstrapApp()
-	bootstrapMessenger()
+  bootstrapApp()
+  bootstrapMessenger()
 })()

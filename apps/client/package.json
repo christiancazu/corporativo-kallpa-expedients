@@ -1,6 +1,6 @@
 {
   "name": "@expedients/client",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "expedients client",
   "author": "Christian Carrillo christiancazu@gmail.com",
   "private": true,
@@ -18,10 +18,11 @@
     "@cyntler/react-doc-viewer": "github:christiancazu/react-doc-viewer",
     "@expedients/shared": "workspace:*",
     "@tanstack/react-query": "^5.69.0",
+    "@tanstack/react-query-devtools": "^5.83.0",
     "@tiptap/extension-mention": "^2.11.5",
     "@tiptap/react": "^2.11.5",
     "@tiptap/starter-kit": "^2.11.5",
-    "antd": "^5.24.4",
+    "antd": "^5.26.2",
     "axios": "^1.8.4",
     "dayjs": "^1.11.13",
     "debounce": "^2.2.0",
@@ -49,5 +50,6 @@
     "typescript",
     "react",
     "ant design"
-  ]
+  ],
+  "packageManager": "pnpm@10.12.3"
 }

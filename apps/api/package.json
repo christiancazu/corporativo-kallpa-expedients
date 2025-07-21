@@ -1,6 +1,6 @@
 {
   "name": "@expedients/api",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "expedients api",
   "author": "Christian Carrillo christiancazu@gmail.com",
   "private": true,
@@ -17,8 +17,6 @@
     "lint": "pnpm biome lint ."
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.675.0",
-    "@aws-sdk/s3-request-presigner": "^3.675.0",
     "@expedients/shared": "workspace:*",
     "@nestjs-modules/mailer": "^2.0.2",
     "@nestjs/bullmq": "^10.2.3",
@@ -97,5 +95,6 @@
     "roots": [
       "<rootDir>/apps/"
     ]
-  }
+  },
+  "packageManager": "pnpm@10.12.3"
 }

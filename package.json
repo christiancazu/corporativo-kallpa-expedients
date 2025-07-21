@@ -1,6 +1,6 @@
 {
   "name": "@expedients/root",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "expedients root",
   "author": "Christian Carrillo christiancazu@gmail.com",
   "private": true,
@@ -12,11 +12,11 @@
   },
   "repository": "https://github.com/christiancazu/corporativo-kallpa-expedients",
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
-    "@types/node": "^22.13.11",
+    "@biomejs/biome": "^2.1.2",
+    "@types/node": "^24.0.6",
     "monorepo-root": "^3.3.1",
-    "typescript": "^5.8.2",
-    "vite": "^6.2.2"
+    "typescript": "^5.8.3",
+    "vite": "^7.0.0"
   },
   "engines": {
     "node": ">=22"
@@ -34,9 +34,5 @@
     "aws",
     "s3"
   ],
-  "pnpm": {
-    "ignoredBuiltDependencies": [
-      "@parcel/watcher"
-    ]
-  }
+  "packageManager": "pnpm@10.12.3"
 }

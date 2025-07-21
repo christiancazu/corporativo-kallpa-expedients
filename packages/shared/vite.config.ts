@@ -6,16 +6,10 @@ export default defineConfig({
 	plugins: [dts()],
 	build: {
 		lib: {
+			name: 'ryrliquidadores-lib',
 			entry: resolve(__dirname, 'src/index.ts'),
-			formats: ['cjs'],
-		},
-		rollupOptions: {
-			input: {
-				index: resolve(__dirname, 'src/index.ts'),
-			},
-			output: {
-				entryFileNames: '[name].js',
-			},
+			formats: ['cjs', 'es'],
+			fileName: (format) => `index.${format}.js`, // Output file naming
 		},
 	},
 })

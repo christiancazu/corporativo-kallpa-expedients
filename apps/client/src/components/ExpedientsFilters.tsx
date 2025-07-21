@@ -1,181 +1,158 @@
 import { ClearOutlined, SearchOutlined } from '@ant-design/icons'
-import { IFindExpedientDto } from '@expedients/shared'
 import { Button, Col, Flex, Form, Input, Row, theme } from 'antd'
 import { FormInstance } from 'antd/lib'
 import type React from 'react'
-import { useEffect, useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router'
+import { useMemo, useState } from 'react'
 import { useExpedientsState } from '../hooks/useExpedientsState'
-import { getInitialFormValues } from '../views/ExpedientsView'
 import ExpedientStatusSelect from './ExpedientStatusSelect'
 import MatterTypesSelect from './MatterTypeSelect'
 import UsersSelect from './UsersSelect'
 
 interface Props {
-	onSearch: () => void
-	onClearFilters: () => void
-	loading: boolean
-	form: FormInstance
+  onSearch: () => void
+  onClearFilters: () => void
+  loading: boolean
+  form: FormInstance
 }
 
 const expedientTypeTextPlaceHolder = {
-	asesoria: 'empresa, materia, entidad o trámite/consulta...',
-	'procesos-judiciales': 'expediente, materia, proceso o juzgado...',
-	'procesos-de-investigacion': 'carpeta fiscal, materia, proceso o fiscalia...',
+  asesoria: 'empresa, materia, entidad o trámite/consulta...',
+  'procesos-judiciales': 'expediente, materia, proceso o juzgado...',
+  'procesos-de-investigacion': 'carpeta fiscal, materia, proceso o fiscalia...',
 }
 
 const FilterExpedients: React.FC<Props> = ({
-	onSearch,
-	loading,
-	form,
-	onClearFilters,
+  onSearch,
+  loading,
+  form,
+  onClearFilters,
 }) => {
-	const {
-		token: { colorBgContainer, borderRadiusLG, paddingMD, marginMD },
-	} = theme.useToken()
+  const {
+    token: { colorBgContainer, borderRadiusLG, paddingMD, marginMD },
+  } = theme.useToken()
 
-	const { currentExpedientTypeRoute } = useExpedientsState()
-	const [searchParams] = useSearchParams()
+  const { currentExpedientTypeRoute } = useExpedientsState()
 
-	useEffect(() => {
-		const initialFormValues = getInitialFormValues()
-		for (const searchKey in initialFormValues) {
-			let value: string | string[] | null = null
+  const [canDeleteFilter, setCanDeleteFilters] = useState(false)
 
-			if (
-				Array.isArray(initialFormValues[searchKey as keyof IFindExpedientDto])
-			) {
-				value = searchParams.getAll(searchKey)
-			} else {
-				value = searchParams.get(searchKey)
-			}
+  function handleOnChange() {
+    setCanDeleteFilters(
+      Object.values(form.getFieldsValue()).some((value: any) =>
+        Array.isArray(value) ? value.length : !!value,
+      ),
+    )
+  }
 
-			initialFormValues[searchKey as keyof IFindExpedientDto] = value as any
-		}
+  const textPlaceHolder = useMemo(
+    () => expedientTypeTextPlaceHolder[currentExpedientTypeRoute],
+    [currentExpedientTypeRoute],
+  )
 
-		form.setFieldsValue(initialFormValues)
+  return (
+    <div
+      style={{
+        backgroundColor: colorBgContainer,
+        borderRadius: borderRadiusLG,
+        padding: paddingMD,
+        paddingBottom: 0,
+        marginBottom: marginMD,
+      }}
+    >
+      <Form
+        autoComplete="off"
+        form={form}
+        onChange={handleOnChange}
+        onFinish={onSearch}
+        layout="vertical"
+        validateTrigger="onSubmit"
+      >
+        <Row gutter={marginMD}>
+          <Col md={9} xs={24}>
+            <Form.Item name="text" label="Buscar por:" rules={[{ min: 3 }]}>
+              <Input
+                allowClear
+                placeholder={textPlaceHolder}
+                suffix={<SearchOutlined />}
+                onClear={handleOnChange}
+              />
+            </Form.Item>
+          </Col>
 
-		setCanDeleteFilters(!!searchParams.size)
-	}, [currentExpedientTypeRoute])
+          <Col md={4} xs={24}>
+            <MatterTypesSelect
+              label="Materia:"
+              fieldNames={{ label: 'label', value: 'label' }}
+              name={'matterType'}
+              onChange={handleOnChange}
+            />
+          </Col>
 
-	const [canDeleteFilter, setCanDeleteFilters] = useState(false)
+          <Col md={4} xs={24}>
+            <ExpedientStatusSelect
+              label="Estado:"
+              fieldNames={{ label: 'label', value: 'label' }}
+              name={'status'}
+              onChange={handleOnChange}
+            />
+          </Col>
 
-	function handleOnChange() {
-		setCanDeleteFilters(
-			Object.values(form.getFieldsValue()).some((value: any) =>
-				Array.isArray(value) ? value.length : !!value,
-			),
-		)
-	}
+          <Col md={4} xs={24}>
+            <UsersSelect
+              label="Actualizado por:"
+              name={'updatedByUser'}
+              onChange={(updatedByUser) => {
+                form.setFieldsValue({ updatedByUser })
+                handleOnChange()
+              }}
+            />
+          </Col>
 
-	const textPlaceHolder = useMemo(
-		() => expedientTypeTextPlaceHolder[currentExpedientTypeRoute],
-		[currentExpedientTypeRoute],
-	)
-
-	return (
-		<div
-			style={{
-				backgroundColor: colorBgContainer,
-				borderRadius: borderRadiusLG,
-				padding: paddingMD,
-				paddingBottom: 0,
-				marginBottom: marginMD,
-			}}
-		>
-			<Form
-				autoComplete="off"
-				form={form}
-				onChange={handleOnChange}
-				initialValues={getInitialFormValues()}
-				onFinish={onSearch}
-				layout="vertical"
-				validateTrigger="onSubmit"
-			>
-				<Row gutter={marginMD}>
-					<Col md={9} xs={24}>
-						<Form.Item name="text" label="Buscar por:" rules={[{ min: 3 }]}>
-							<Input
-								allowClear
-								placeholder={textPlaceHolder}
-								suffix={<SearchOutlined />}
-								onClear={handleOnChange}
-							/>
-						</Form.Item>
-					</Col>
-
-					<Col md={4} xs={24}>
-						<MatterTypesSelect
-							label="Materia:"
-							fieldNames={{ label: 'label', value: 'label' }}
-							name={'matterType'}
-							onChange={handleOnChange}
-						/>
-					</Col>
-
-					<Col md={4} xs={24}>
-						<ExpedientStatusSelect
-							label="Estado:"
-							fieldNames={{ label: 'label', value: 'label' }}
-							name={'status'}
-							onChange={handleOnChange}
-						/>
-					</Col>
-
-					<Col md={4} xs={24}>
-						<UsersSelect
-							label="Actualizado por:"
-							name={'updatedByUser'}
-							onChange={(updatedByUser) => {
-								form.setFieldsValue({ updatedByUser })
-								handleOnChange()
-							}}
-						/>
-					</Col>
-
-					<Col
-						md={3}
-						xs={24}
-						className={
-							canDeleteFilter
-								? 'flex flex-col justify-between'
-								: 'flex flex-col justify-end'
-						}
-					>
-						<Form.Item className="w-full">
-							<Flex justify="end">
-								{canDeleteFilter && (
-									<Button
-										danger
-										icon={<ClearOutlined />}
-										iconPosition="end"
-										style={{ transform: 'translateY(-8px)' }}
-										type="link"
-										onClick={() => {
-											setCanDeleteFilters(false)
-											onClearFilters()
-										}}
-									>
-										Quitar filtros
-									</Button>
-								)}
-							</Flex>
-							<Button
-								block
-								htmlType="submit"
-								icon={<SearchOutlined />}
-								iconPosition="end"
-								loading={loading}
-								type="primary"
-							>
-								Buscar
-							</Button>
-						</Form.Item>
-					</Col>
-				</Row>
-			</Form>
-		</div>
-	)
+          <Col
+            md={3}
+            xs={24}
+            className={
+              canDeleteFilter
+                ? 'flex flex-col justify-between'
+                : 'flex flex-col justify-end'
+            }
+          >
+            <Form.Item className="w-full">
+              <Flex justify="end">
+                {canDeleteFilter && (
+                  <Button
+                    danger
+                    icon={<ClearOutlined />}
+                    iconPosition="end"
+                    style={{ transform: 'translateY(-8px)' }}
+                    type="link"
+                    onClick={() => {
+                      setCanDeleteFilters(false)
+                      onClearFilters()
+                    }}
+                  >
+                    Quitar filtros
+                  </Button>
+                )}
+              </Flex>
+              <Button
+                block
+                htmlType="submit"
+                icon={<SearchOutlined />}
+                iconPosition="end"
+                loading={loading}
+                type="primary"
+              >
+                Buscar
+              </Button>
+            </Form.Item>
+          </Col>
+        </Row>
+        <Form.Item name="page" hidden>
+          <Input type="hidden" />
+        </Form.Item>
+      </Form>
+    </div>
+  )
 }
 
 export default FilterExpedients

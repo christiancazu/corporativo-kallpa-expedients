@@ -213,6 +213,7 @@ export interface IFindExpedientDto {
 	updatedByUser?: string | null
 	matterType?: string | null
 	status?: string | null
+	page?: number | null
 }
 
 export interface ICreateExpedientDto {
